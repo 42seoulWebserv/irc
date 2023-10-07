@@ -12,16 +12,4 @@ public:
 	std::vector<std::string> values;
 };
 
-class SimpleDirective : public Directive
-{
-public:
-	SimpleDirective(std::string key, std::string value);
-};
-
-class BlockDirective : public Directive
-{
-public:
-	std::vector<Directive> children;
-};
-
 #endif
