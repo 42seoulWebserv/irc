@@ -1,33 +1,31 @@
 #include "Directive.hpp"
 
-RootConfig RealConfigParser::somefunction()
-{
-	std::string configStr = FileReader::read(filepath);
-	ConfigLexer lexer(configStr);
-	if (lexer.fail())
-		return NULL;
+RootConfig RealConfigParser::somefunction() {
+  std::string configStr = FileReader::read(filepath);
+  ConfigLexer lexer(configStr);
+  if (lexer.fail())
+    return NULL;
 
-	BlockDirective rootDirective = lexer.getRootRedirective();
+  BlockDirective rootDirective = lexer.getRootRedirective();
 
-	ConfigParser parser(rootDirective);
-	if (parser.fail())
-		return NULL;
+  ConfigParser parser(rootDirective);
+  if (parser.fail())
+    return NULL;
 
-	RootConfig config = parser.getRootConfig();
+  RootConfig config = parser.getRootConfig();
 
-	return config;
+  return config;
 }
 
-int main()
-{
-	RealConfigParser parser("path");
+int main() {
+  RealConfigParser parser("path");
 
-	if (parser.fail())
-		return 1;
-	
-	RootConfig config = parser.somefunction();
+  if (parser.fail())
+    return 1;
 
-	--------
+  RootConfig config = parser.somefunction();
+
+  -- -- -- --
 }
 
 // Directive, Config, RealConfigParser -> junmkang
@@ -59,6 +57,6 @@ int main()
 
 // 	BlockDirective directive;
 // 	directive.key = "root";
-// 	directive.children.push_back(SimpleDirective("client_max_content_size", "50m"));
-// 	directive.children.push_back(BlockDirective(http));
+// 	directive.children.push_back(SimpleDirective("client_max_content_size",
+// "50m")); 	directive.children.push_back(BlockDirective(http));
 // }
