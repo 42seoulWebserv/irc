@@ -2,11 +2,11 @@
 #define CONFIGCHECKER_HPP
 
 #include "BlockDirective.hpp"
+#include "Config.hpp"
 
 class Checker {
 public:
-  Checker(BlockDirective directive);
-  bool fail();
+  static RootConfig &checkDirective(BlockDirective directive);
   BlockDirective getRootConfig();
 };
 

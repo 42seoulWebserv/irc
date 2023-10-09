@@ -1,6 +1,13 @@
 # webserv
 
+webserv convention
+
 - [webserv](#webserv)
+  - [Convention](#convention)
+    - [header 선언 순서](#header-선언-순서)
+    - [class 선언 순서](#class-선언-순서)
+    - [naming](#naming)
+    - [rules](#rules)
 
 ## Convention
 
@@ -19,48 +26,33 @@ c header
 public -> protected -> private
 
 ```c++
-class name {
+class Name {
 public:
-  name(void);
-  name(int idx);
-  name(const name &src);
-  name &operator=(const name &rhs);
-  ~name(void);
+  Name();
+  Name(int idx);
+  Name(const Name &src);
+  Name &operator=(const Name &rhs);
+  ~Name();
 
-  void anything(void);
+  void anything();
 
-  int idx;
+  int idx_;
 }
 ```
 
 ### naming
 
-변수 이름은 무조건 snake_case
+변수, 함수 이름은 무조건 camelCase  
+클래스 이름은 PascalCase  
+멤버 변수는 `varName_`
 
-```md
-변수: 변수_이름
-멤버 변수: 변수_이름_
-
-const kConstVar;
-```
-
-```md
-ThisIsFunction();
-get_var_name_();
-set_var_name_();
-```
-
-```md
-enum class UrlTableError {
-  kOk = 0,
-  kOutOfMemory,
-  kMalformedInput,
-};
-```
+accessor는 `getVarName`, `setVarName`  
+bool type 함수는 `bool isTrue()` 형식 추천
 
 ### rules
 
 ```md
 - return은 괄호 없이
 - space 2칸, 80 column 최대
+- 개행은 알아서
 ```

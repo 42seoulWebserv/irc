@@ -1,12 +1,25 @@
-#ifndef Config_HPP
-#define Config_HPP
+#ifndef CONFIG_HPP_
+#define CONFIG_HPP_
 
 #include <iostream>
 #include <map>
 #include <vector>
 
+#include "BlockDirective.hpp"
+
 class RootConfig {
+public:
+  RootConfig(BlockDirective Directive);
+  RootConfig(const RootConfig &src);
+  RootConfig &operator=(const RootConfig &rhs);
+  ~RootConfig(void);
+
+  void FillInConfig(void);
+
   std::vector<ServerConfig> serverConfigs;
+
+private:
+  RootConfig(void);
 };
 
 class ServerConfig {
