@@ -55,4 +55,6 @@ bool type 함수는 `bool isTrue()` 형식 추천
 - return은 괄호 없이
 - space 2칸, 80 column 최대
 - 개행은 알아서
+- if 한 줄이도 무조건 괄호
+- 괄호는 바로 옆에
 ```
