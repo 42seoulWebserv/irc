@@ -1,17 +1,16 @@
-#ifndef A_HPP
-#define A_HPP
+#ifndef DIRECTIVE_HPP
+#define DIRECTIVE_HPP
 
 #include <iostream>
 #include <map>
 #include <vector>
 
-class Directive
-{
+class Directive {
 public:
-	std::string key;
-	std::vector<std::string> values;
-    std::vector<Directive> children;
-
+  Directive(const std::string &value);
+  std::string key;
+  std::vector<std::string> values;
+  std::vector<Directive> children;
 };
 
 #endif
