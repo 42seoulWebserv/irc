@@ -5,34 +5,12 @@
 #include <map>
 #include <vector>
 
-#include "BlockDirective.hpp"
-
-class RootConfig {
-public:
-  RootConfig(BlockDirective Directive);
-  RootConfig(const RootConfig &src);
-  RootConfig &operator=(const RootConfig &rhs);
-  ~RootConfig(void);
-
-  void FillInConfig(void);
-
-  std::vector<ServerConfig> serverConfigs;
-
-private:
-  RootConfig(void);
-};
-
-class ServerConfig {
-  int port;
-  int limitClientBodySize;
-  std::string rootPath;
-  std::string serverName;
-  std::map<int, std::string> errorPages;
-
-  std::vector<LocationConfig> locationConfigs;
-};
+#include "Directive.hpp"
 
 class LocationConfig {
+public:
+  LocationConfig();
+
   std::string uri;
   std::vector<std::string> acceptMethods;
   std::string rootPath;
@@ -44,6 +22,34 @@ class LocationConfig {
   std::string indexFile;
 
   std::map<std::string, std::string> cgiPrograms;
+};
+
+class ServerConfig {
+public:
+  ServerConfig();
+
+  int port;
+  int limitClientBodySize;
+  std::string rootPath;
+  std::string serverName;
+  std::map<int, std::string> errorPages;
+
+  std::vector<LocationConfig> locationConfigs;
+};
+
+class RootConfig {
+public:
+  RootConfig();
+  RootConfig(Directive Directive);
+  RootConfig(const RootConfig &src);
+  RootConfig &operator=(const RootConfig &rhs);
+  ~RootConfig();
+
+  void FillInConfig(void);
+
+  std::vector<ServerConfig> serverConfigs;
+
+private:
 };
 
 #endif

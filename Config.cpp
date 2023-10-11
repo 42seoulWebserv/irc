@@ -5,6 +5,8 @@
 
 RootConfig::RootConfig(void) {}
 
+RootConfig::RootConfig(Directive Directive) {}
+
 RootConfig::RootConfig(const RootConfig &src) { *this = src; }
 
 RootConfig &RootConfig::operator=(const RootConfig &rhs) {
@@ -17,3 +19,7 @@ RootConfig &RootConfig::operator=(const RootConfig &rhs) {
 RootConfig::~RootConfig(void) {}
 
 void RootConfig::FillInConfig(void) {}
+
+ServerConfig::ServerConfig() {}
+
+LocationConfig::LocationConfig() {}
