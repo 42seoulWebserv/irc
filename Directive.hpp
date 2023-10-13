@@ -10,6 +10,8 @@ class Directive
 public:
 	std::string key;
 	std::vector<std::string> values;
+    std::vector<Directive> children;
+
 };
 
 #endif

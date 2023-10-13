@@ -1,18 +1,18 @@
 #ifndef Lexer_HPP
 #define Lexer_HPP
 
-#include <string>
+#include <iostream>
+#include <sstream>
+#include "parser/lexer/ParseResult.hpp"
+#include "Directive.hpp"
 
-class Lexer
+class ConfigLexer
 {
 public:
-	Lexer(std::string configStr);
-	BlockDirective getRootRedirective();
-	bool fail();
-	.
-	.
+    static const Directive run(const std::string raw);
+
 private:
-	BlockDirective lexedResult;
+    static const Directive parseResultToDirective(const ParseResult &res);
 };
 
 #endif
