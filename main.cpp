@@ -8,16 +8,23 @@ int main() {
 
   std::string file;
   file += "http {";
-  // file += "    root /www;";
+  file += "    root /www;";
   file += "    server {";
-  // file += "        server_name test;";
+  file += "        server_name test;";
   // file += "        client_max_content_size 50m;";
   file += "        listen 8080;";
   // file += "        server_name localhost;";
-  // file += "        client_max_content_size 50m;";
+  file += "        client_max_content_size 50m;";
   file += "        location / {";
   file += "            return 301 /www/error.html;";
-  // file += "            index index.html;";
+  file += "            index index.html;";
+  file += "            accept_methods POST GET DELETE;";
+  file += "            cgi_extension .php /bin/php;";
+  file += "            cgi_extension .py /bin/python3;";
+  file += "        }";
+  file += "        location / {";
+  file += "            return 301 /www/error.html;";
+  file += "            index index.html;";
   file += "            accept_methods POST GET DELETE;";
   file += "            cgi_extension .php /bin/php;";
   file += "            cgi_extension .py /bin/python3;";
