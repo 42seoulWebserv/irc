@@ -178,5 +178,6 @@ void ConfigChecker::checkDirective(Directive directive) {
     checkDirectiveChildren(directive);
   } catch (const std::exception &e) {
     std::cerr << "Error: Config: " << e.what() << '\n';
+    std::exit(1);
   }
 }
