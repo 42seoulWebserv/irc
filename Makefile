@@ -1,4 +1,4 @@
-NAME = main
+NAME = a.out
 .DEFAULT_GOAL = all
 
 CXXFLAGS = -std=c++98 -Wall -Wextra -MMD -MP -g3
