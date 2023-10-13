@@ -24,9 +24,10 @@ public:
   std::string redirectionPath_;
 
   bool autoIndex_; // default false
-  std::string indexFile_;
+  std::string indexPath_;
 
   std::map<std::string, std::string> cgiPrograms_;
+
 private:
 };
 

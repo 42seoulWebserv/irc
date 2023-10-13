@@ -87,12 +87,12 @@ void checkServerLocation(Directive location) {
       if (statusCode < 100 || statusCode > 600) {
         throw std::invalid_argument("status code is out of range");
       }
-    } else if (element->key == "accept_methods") {
-      checkValidMethod(element->values);
-    } else if (element->key == "cgi_extension") {
-      checkValidCgiExtension(element->values);
-    } else if (element->key == "index") {
-      checkValidIndex(element->values[0]);
+    } else if (element->key_ == "accept_methods") {
+      checkValidMethod(element->values_);
+    } else if (element->key_ == "cgi_extension") {
+      checkValidCgiExtension(element->values_);
+    } else if (element->key_ == "index") {
+      checkValidIndex(element->values_[0]);
     } else {
       throw std::invalid_argument("invalid server location directive");
     }
@@ -136,24 +136,24 @@ void checkServerDirective(Directive server) {
   std::set<std::string> serverNames;
   std::vector<Directive>::iterator element;
   bool isServerNameExist = false;
-  for (element = server.children.begin(); element != server.children.end();
+  for (element = server.children_.begin(); element != server.children_.end();
        element++) {
     if (element->key_ == "listen") {
       if (!isNumber(element->values_[0])) {
         throw std::invalid_argument("listen port");
       }
-      checkValidPort(strToInt(element->values[0]));
-    } else if (element->key == "location") {
-      checkServerLocationDuplicate(element->values[0], locationPaths);
+      checkValidPort(strToInt(element->values_[0]));
+    } else if (element->key_ == "location") {
+      checkServerLocationDuplicate(element->values_[0], locationPaths);
       checkServerLocation(*element);
-    } else if (element->key == "server_name") {
+    } else if (element->key_ == "server_name") {
       if (isServerNameExist) {
         throw std::invalid_argument("server_name already exist");
       }
       isServerNameExist = true;
-      checkServerName(element->values[0]);
-    } else if (element->key == "client_max_content_size") {
-      checkServerClientMaxContentSize(element->values[0]);
+      checkServerName(element->values_[0]);
+    } else if (element->key_ == "client_max_content_size") {
+      checkServerClientMaxContentSize(element->values_[0]);
     } else {
       throw std::invalid_argument("invalid server directive");
     }
@@ -162,7 +162,7 @@ void checkServerDirective(Directive server) {
 }
 
 void checkRootDirective(Directive root) {
-  if (root.values[0].at(0) != '/') {
+  if (root.values_[0].at(0) != '/') {
     throw std::invalid_argument("invalid root path");
   }
   return;
@@ -170,10 +170,11 @@ void checkRootDirective(Directive root) {
 
 void checkDirectives(Directive directive) {
   std::vector<Directive>::iterator it;
-  for (it = directive.children.begin(); it != directive.children.end(); it++) {
-    if (it->key == "server") {
+  for (it = directive.children_.begin(); it != directive.children_.end();
+       it++) {
+    if (it->key_ == "server") {
       checkServerDirective(*it);
-    } else if (it->key == "root") {
+    } else if (it->key_ == "root") {
       checkRootDirective(*it);
     }
   }

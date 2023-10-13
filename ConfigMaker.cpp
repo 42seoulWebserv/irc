@@ -30,15 +30,15 @@ LocationConfig makeLocationConfig(Directive location) {
   res.uri_ = location.values_[0];
   for (element = location.children_.begin();
        element != location.children_.end(); element++) {
-    if (element->key == "return") {
-      res.redirectionStatusCode = strToInteger(element->values[0]);
-      res.redirectionPath = element->values[1];
-    } else if (element->key == "accept_methods") {
-      fillInAcceptMethods(res, element->values);
-    } else if (element->key == "cgi_extension") {
-      fillInCgiExtension(res, element->values);
-    } else if (element->key == "index") {
-      res.indexPath = element->values[0];
+    if (element->key_ == "return") {
+      res.redirectionStatusCode_ = strToInteger(element->values_[0]);
+      res.redirectionPath_ = element->values_[1];
+    } else if (element->key_ == "accept_methods") {
+      fillInAcceptMethods(res, element->values_);
+    } else if (element->key_ == "cgi_extension") {
+      fillInCgiExtension(res, element->values_);
+    } else if (element->key_ == "index") {
+      res.indexPath_ = element->values_[0];
     }
   }
   return res;
@@ -49,40 +49,40 @@ ServerConfig makeSingleServerConfig(Directive server) {
   std::vector<Directive>::iterator element;
   for (element = server.children_.begin(); element != server.children_.end();
        element++) {
-    if (element->key == "listen") {
-      res.port = strToInteger(element->values[0]);
-    } else if (element->key == "location") {
-      res.locationConfigs.push_back(makeLocationConfig(*element));
-    } else if (element->key == "server_name") {
-      res.serverName = element->values[0];
-    } else if (element->key == "client_max_content_size") {
-      res.limitClientBodySize = strToInteger(element->values[0]);
+    if (element->key_ == "listen") {
+      res.port_ = strToInteger(element->values_[0]);
+    } else if (element->key_ == "location") {
+      res.locationConfigs_.push_back(makeLocationConfig(*element));
+    } else if (element->key_ == "server_name") {
+      res.serverName_ = element->values_[0];
+    } else if (element->key_ == "client_max_content_size") {
+      res.limitClientBodySize_ = strToInteger(element->values_[0]);
     }
   }
   return res;
 }
 
 void printServerConfig(ServerConfig res) {
-  std::cout << "listen: " << res.port << '\n';
-  std::cout << "server_name: " << res.serverName << '\n';
-  std::cout << "client_max_content_size: " << res.limitClientBodySize << 'm'
+  std::cout << "listen: " << res.port_ << '\n';
+  std::cout << "server_name: " << res.serverName_ << '\n';
+  std::cout << "client_max_content_size: " << res.limitClientBodySize_ << 'm'
             << '\n';
   std::vector<LocationConfig>::iterator location;
-  for (location = res.locationConfigs.begin();
-       location != res.locationConfigs.end(); location++) {
-    std::cout << "location " << location->uri << " {" << '\n';
-    std::cout << "  return " << location->redirectionStatusCode << ' '
-              << location->redirectionPath << '\n';
+  for (location = res.locationConfigs_.begin();
+       location != res.locationConfigs_.end(); location++) {
+    std::cout << "location " << location->uri_ << " {" << '\n';
+    std::cout << "  return " << location->redirectionStatusCode_ << ' '
+              << location->redirectionPath_ << '\n';
     std::cout << "  accept_methods ";
     std::vector<std::string>::iterator method;
-    for (method = location->acceptMethods.begin();
-         method != location->acceptMethods.end(); method++) {
+    for (method = location->acceptMethods_.begin();
+         method != location->acceptMethods_.end(); method++) {
       std::cout << *method << ' ';
     }
     std::cout << '\n';
     std::map<std::string, std::string>::iterator cgi;
-    for (cgi = location->cgiPrograms.begin();
-         cgi != location->cgiPrograms.end(); cgi++) {
+    for (cgi = location->cgiPrograms_.begin();
+         cgi != location->cgiPrograms_.end(); cgi++) {
       std::cout << "  cgi_extension " << cgi->first << ' ' << cgi->second
                 << '\n';
     }
