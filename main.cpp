@@ -92,4 +92,5 @@ int main() {
 
   Checker::checkDirective(directive);
   RootConfig res = ConfigMaker::makeConfig(directive);
+  res.printRootConfig();
 }

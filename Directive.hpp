@@ -9,9 +9,13 @@ class Directive {
 public:
   Directive();
   Directive(const std::string &value);
-  std::string key;
-  std::vector<std::string> values;
-  std::vector<Directive> children;
+  Directive(const Directive &src);
+  Directive &operator=(const Directive &rhs);
+  ~Directive();
+
+  std::string key_;
+  std::vector<std::string> values_;
+  std::vector<Directive> children_;
 };
 
 #endif

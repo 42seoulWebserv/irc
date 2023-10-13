@@ -152,9 +152,9 @@ const Directive ConfigLexer::parseResultToDirective(const ParseResult &res)
     Directive dir;
     if (res.getName() == "block") {
         const ParseResult &key = res.getChild(0);
-        dir.key = key.getValue(0);
+        dir.key_ = key.getValue(0);
         if (key.getValues().size() > 1) {
-            dir.values = std::vector<std::string>(
+            dir.values_ = std::vector<std::string>(
                 key.getValues().begin() + 1,
                 key.getValues().end()
             );
@@ -162,13 +162,13 @@ const Directive ConfigLexer::parseResultToDirective(const ParseResult &res)
         const ParseResult &body = res.getChild(1);
         const std::vector<ParseResult> &children = body.getChildren();
         for (size_t i = 0; i < children.size(); i++) {
-            dir.children.push_back(parseResultToDirective(children[i]));
+            dir.children_.push_back(parseResultToDirective(children[i]));
         }
     }
     else if (res.getName() == "key") {
-        dir.key = res.getValue(0);
+        dir.key_ = res.getValue(0);
         if (res.getValues().size() > 1) {
-            dir.values = std::vector<std::string>(
+            dir.values_ = std::vector<std::string>(
                 res.getValues().begin() + 1,
                 res.getValues().end()
             );
