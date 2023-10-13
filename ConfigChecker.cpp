@@ -2,6 +2,7 @@
 #include <cmath>
 #include <exception>
 #include <iostream>
+#include <set>
 #include <sstream>
 #include <vector>
 
@@ -69,50 +70,111 @@ void checkValidCgiExtension(std::vector<std::string> values) {
   return;
 }
 
+void checkValidIndex(std::string str) {
+  if (str.find(".") == std::string::npos) {
+    throw std::invalid_argument("invalid index format");
+  };
+}
+
 // checkServer -> location
 
 void checkServerLocation(Directive location) {
   std::vector<Directive>::iterator element;
-  for (element = location.children_.begin(); element != location.children_.end();
-       element++) {
+  for (element = location.children_.begin();
+       element != location.children_.end(); element++) {
     if (element->key_ == "return") {
       int statusCode = strToInt(element->values_[0]);
       if (statusCode < 100 || statusCode > 600) {
         throw std::invalid_argument("status code is out of range");
       }
-    } else if (element->key_ == "accept_methods") {
-      checkValidMethod(element->values_);
-    } else if (element->key_ == "cgi_extension") {
-      checkValidCgiExtension(element->values_);
+    } else if (element->key == "accept_methods") {
+      checkValidMethod(element->values);
+    } else if (element->key == "cgi_extension") {
+      checkValidCgiExtension(element->values);
+    } else if (element->key == "index") {
+      checkValidIndex(element->values[0]);
+    } else {
+      throw std::invalid_argument("invalid server location directive");
     }
   }
   return;
 }
 
-void checkSingleServerDirective(Directive server) {
+void checkServerName(std::string str) {
+  for (std::string::iterator i = str.begin(); i != str.end(); i++) {
+    if (!std::isalnum(*i) || *i == ';' || *i == ' ' || !std::isgraph(*i)) {
+      throw std::invalid_argument("server_name error");
+    }
+  }
+  return;
+}
+
+void checkServerClientMaxContentSize(std::string str) {
+  std::string errMsg = "client_max_content_size error";
+  for (std::string::iterator i = str.begin(); i != str.end(); i++) {
+    if (i < str.end() - 1 && !std::isdigit(*i)) {
+      throw std::invalid_argument(errMsg);
+    }
+    if (i == str.end() - 1 && *i != 'm') {
+      throw std::invalid_argument(errMsg);
+    }
+  }
+  return;
+}
+
+void checkServerLocationDuplicate(std::string locationUri,
+                                  std::set<std::string> &locationPaths) {
+  if (locationPaths.find(locationUri) != locationPaths.end()) {
+    locationPaths.insert(locationUri);
+  } else {
+    throw std::invalid_argument("location path cannot be duplicated");
+  }
+}
+
+void checkServerDirective(Directive server) {
+  std::set<std::string> locationPaths;
+  std::set<std::string> serverNames;
   std::vector<Directive>::iterator element;
-  for (element = server.children_.begin(); element != server.children_.end();
+  bool isServerNameExist = false;
+  for (element = server.children.begin(); element != server.children.end();
        element++) {
     if (element->key_ == "listen") {
       if (!isNumber(element->values_[0])) {
         throw std::invalid_argument("listen port");
       }
-      checkValidPort(strToInt(element->values_[0]));
-    } else if (element->key_ == "location") {
+      checkValidPort(strToInt(element->values[0]));
+    } else if (element->key == "location") {
+      checkServerLocationDuplicate(element->values[0], locationPaths);
       checkServerLocation(*element);
+    } else if (element->key == "server_name") {
+      if (isServerNameExist) {
+        throw std::invalid_argument("server_name already exist");
+      }
+      isServerNameExist = true;
+      checkServerName(element->values[0]);
+    } else if (element->key == "client_max_content_size") {
+      checkServerClientMaxContentSize(element->values[0]);
     } else {
-      throw std::invalid_argument("invalid directive");
+      throw std::invalid_argument("invalid server directive");
     }
   }
   return;
 }
 
-void checkServerDirectives(Directive directive) {
-  std::vector<Directive>::iterator server;
-  for (server = directive.children_.begin(); server != directive.children_.end();
-       server++) {
-    if (server->key_ == "server") {
-      checkSingleServerDirective(*server);
+void checkRootDirective(Directive root) {
+  if (root.values[0].at(0) != '/') {
+    throw std::invalid_argument("invalid root path");
+  }
+  return;
+}
+
+void checkDirectives(Directive directive) {
+  std::vector<Directive>::iterator it;
+  for (it = directive.children.begin(); it != directive.children.end(); it++) {
+    if (it->key == "server") {
+      checkServerDirective(*it);
+    } else if (it->key == "root") {
+      checkRootDirective(*it);
     }
   }
 }
@@ -122,17 +184,8 @@ void Checker::checkDirective(Directive directive) {
     if (!hasHttpDirective(directive)) {
       throw std::invalid_argument("http key invalid");
     }
-    checkServerDirectives(directive);
+    checkDirectives(directive);
   } catch (const std::exception &e) {
     std::cerr << "Error: Config: " << e.what() << '\n';
   }
 }
-
-/*
-우선 checker와 인스턴스화 하는 부분을 분리하고픔
-1. 검사 먼저 하고 인스턴스화 하기
-    - 인스턴스화 할 때 같은 내용을 또 읽어야 함
-
-인스턴스화 먼저 하고, 검사한 뒤에, 안에 내용 집어넣기. 만약 문제가 생긴다면
-인스턴스 지워짐
-*/
