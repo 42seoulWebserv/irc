@@ -81,8 +81,8 @@ void printServerConfig(ServerConfig res) {
 }
 
 RootConfig ConfigMaker::makeConfig(Directive directive) {
-  std::vector<Directive>::iterator server;
   RootConfig res;
+  std::vector<Directive>::iterator server;
   for (server = directive.children.begin(); server != directive.children.end();
        server++) {
     if (server->key == "server") {

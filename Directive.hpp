@@ -7,6 +7,7 @@
 
 class Directive {
 public:
+  Directive();
   Directive(const std::string &value);
   std::string key;
   std::vector<std::string> values;

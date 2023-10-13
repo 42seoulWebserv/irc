@@ -5,7 +5,7 @@
 
 RootConfig::RootConfig(void) {}
 
-RootConfig::RootConfig(Directive Directive) {}
+// RootConfig::RootConfig(Directive Directive) {}
 
 RootConfig::RootConfig(const RootConfig &src) { *this = src; }
 

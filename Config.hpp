@@ -40,7 +40,7 @@ public:
 class RootConfig {
 public:
   RootConfig();
-  RootConfig(Directive Directive);
+  // RootConfig(Directive Directive);
   RootConfig(const RootConfig &src);
   RootConfig &operator=(const RootConfig &rhs);
   ~RootConfig();

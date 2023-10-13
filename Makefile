@@ -11,6 +11,10 @@ SRC = \
 	parser/lexer/PatternOptional.cpp \
 	parser/lexer/PatternSequence.cpp \
 	ConfigLexer.cpp \
+	ConfigChecker.cpp \
+	ConfigMaker.cpp \
+	Config.cpp \
+	Directive.cpp \
 	main.cpp
 .PHONY: all clean fclean re test
 
