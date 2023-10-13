@@ -13,6 +13,7 @@ public:
   Directive &operator=(const Directive &rhs);
   ~Directive();
 
+private:
   std::string key_;
   std::vector<std::string> values_;
   std::vector<Directive> children_;

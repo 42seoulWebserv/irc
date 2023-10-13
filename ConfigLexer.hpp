@@ -1,14 +1,15 @@
-#ifndef Lexer_HPP
-#define Lexer_HPP
+#ifndef CONFIGLEXER_HPP_
+#define CONFIGLEXER_HPP_
 
-#include "Directive.hpp"
-#include "parser/lexer/ParseResult.hpp"
 #include <iostream>
 #include <sstream>
 
+#include "Directive.hpp"
+#include "parser/lexer/ParseResult.hpp"
+
 class ConfigLexer {
 public:
-  static const Directive run(const std::string raw);
+  static const Directive run(const std::string rawContent);
 
 private:
   static const Directive parseResultToDirective(const ParseResult &res);

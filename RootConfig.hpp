@@ -10,16 +10,14 @@
 class RootConfig {
 public:
   RootConfig();
-  // RootConfig(Directive Directive);
   RootConfig(const RootConfig &src);
   RootConfig &operator=(const RootConfig &rhs);
   ~RootConfig();
 
-  void FillInConfig(void);
-  void printRootConfig(void);
+  void printRootConfig();
 
-  std::vector<ServerConfig> serverConfigs_;
 private:
+  std::vector<ServerConfig> serverConfigs_;
 };
 
 #endif

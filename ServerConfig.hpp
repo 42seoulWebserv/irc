@@ -1,5 +1,5 @@
-#ifndef CONFIG_HPP_
-#define CONFIG_HPP_
+#ifndef SEVERCONFIG_HPP_
+#define SEVERCONFIG_HPP_
 
 #include <iostream>
 #include <map>
@@ -14,16 +14,15 @@ public:
   ServerConfig &operator=(const ServerConfig &rhs);
   ~ServerConfig();
 
-  void printServerConfig(void);
+  void printServerConfig();
 
+private:
   int port_;
   int limitClientBodySize_;
   std::string rootPath_;
   std::string serverName_;
   std::map<int, std::string> errorPages_;
-
   std::vector<LocationConfig> locationConfigs_;
-private:
 };
 
 #endif

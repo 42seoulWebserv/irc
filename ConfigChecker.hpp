@@ -3,7 +3,7 @@
 
 #include "Directive.hpp"
 
-class Checker {
+class ConfigChecker {
 public:
   static void checkDirective(Directive directive);
   // static RootConfig &checkDirective(Directive directive);

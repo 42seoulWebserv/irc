@@ -97,7 +97,7 @@ int main() {
 
   // http.children.push_back(server);
 
-  Checker::checkDirective(directive);
+  ConfigChecker::checkDirective(directive);
   RootConfig res = ConfigMaker::makeConfig(directive);
   res.printRootConfig();
 }

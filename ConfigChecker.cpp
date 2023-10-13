@@ -11,14 +11,7 @@
 
 // asset
 
-bool isNumber(const std::string &s) {
-  std::string::const_iterator it = s.begin();
-  while (it != s.end() && std::isdigit(*it))
-    ++it;
-  return !s.empty() && it == s.end();
-}
-
-int strToInt(const std::string &s) {
+static int strToInt(const std::string &s) {
   char *end = NULL;
   double tmp = std::strtod(s.c_str(), &end);
   int n = static_cast<int>(tmp);
@@ -32,7 +25,7 @@ int strToInt(const std::string &s) {
 
 // checkHTTP
 
-bool hasHttpDirective(Directive directive) {
+static bool hasHttpDirective(Directive directive) {
   if (directive.key_ == "http") {
     return true;
   }
@@ -41,7 +34,7 @@ bool hasHttpDirective(Directive directive) {
 
 // checkServer -> listen
 
-void checkValidPort(int port) {
+static void checkValidPort(int port) {
   if (port < 0 || port > 65536) {
     throw std::invalid_argument("port number is out of range");
   }
@@ -50,7 +43,7 @@ void checkValidPort(int port) {
 
 // checkServerLocation -> method
 
-void checkValidMethod(std::vector<std::string> values) {
+static void checkValidMethod(std::vector<std::string> values) {
   std::vector<std::string>::iterator value;
   for (value = values.begin(); value != values.end(); value++) {
     if (*value != "GET" && *value != "POST" && *value != "PUT" &&
@@ -63,14 +56,14 @@ void checkValidMethod(std::vector<std::string> values) {
 
 // checkServerLocation -> cgi
 
-void checkValidCgiExtension(std::vector<std::string> values) {
+static void checkValidCgiExtension(std::vector<std::string> values) {
   if (values[0].at(0) != '.') {
     throw std::invalid_argument("invalid cgi extension format");
   }
   return;
 }
 
-void checkValidIndex(std::string str) {
+static void checkValidIndex(std::string str) {
   if (str.find(".") == std::string::npos) {
     throw std::invalid_argument("invalid index format");
   };
@@ -78,7 +71,7 @@ void checkValidIndex(std::string str) {
 
 // checkServer -> location
 
-void checkServerLocation(Directive location) {
+static void checkServerLocation(Directive location) {
   std::vector<Directive>::iterator element;
   for (element = location.children_.begin();
        element != location.children_.end(); element++) {
@@ -100,7 +93,7 @@ void checkServerLocation(Directive location) {
   return;
 }
 
-void checkServerName(std::string str) {
+static void checkServerName(std::string str) {
   for (std::string::iterator i = str.begin(); i != str.end(); i++) {
     if (!std::isalnum(*i) || *i == ';' || *i == ' ' || !std::isgraph(*i)) {
       throw std::invalid_argument("server_name error");
@@ -109,7 +102,7 @@ void checkServerName(std::string str) {
   return;
 }
 
-void checkServerClientMaxContentSize(std::string str) {
+static void checkServerClientMaxContentSize(std::string str) {
   std::string errMsg = "client_max_content_size error";
   for (std::string::iterator i = str.begin(); i != str.end(); i++) {
     if (i < str.end() - 1 && !std::isdigit(*i)) {
@@ -122,8 +115,8 @@ void checkServerClientMaxContentSize(std::string str) {
   return;
 }
 
-void checkServerLocationDuplicate(std::string locationUri,
-                                  std::set<std::string> &locationPaths) {
+static void checkServerLocationDuplicate(std::string locationUri,
+                                         std::set<std::string> &locationPaths) {
   if (locationPaths.find(locationUri) != locationPaths.end()) {
     locationPaths.insert(locationUri);
   } else {
@@ -131,7 +124,7 @@ void checkServerLocationDuplicate(std::string locationUri,
   }
 }
 
-void checkServerDirective(Directive server) {
+static void checkServerDirective(Directive server) {
   std::set<std::string> locationPaths;
   std::set<std::string> serverNames;
   std::vector<Directive>::iterator element;
@@ -139,9 +132,6 @@ void checkServerDirective(Directive server) {
   for (element = server.children_.begin(); element != server.children_.end();
        element++) {
     if (element->key_ == "listen") {
-      if (!isNumber(element->values_[0])) {
-        throw std::invalid_argument("listen port");
-      }
       checkValidPort(strToInt(element->values_[0]));
     } else if (element->key_ == "location") {
       checkServerLocationDuplicate(element->values_[0], locationPaths);
@@ -161,14 +151,14 @@ void checkServerDirective(Directive server) {
   return;
 }
 
-void checkRootDirective(Directive root) {
+static void checkRootDirective(Directive root) {
   if (root.values_[0].at(0) != '/') {
     throw std::invalid_argument("invalid root path");
   }
   return;
 }
 
-void checkDirectives(Directive directive) {
+static void checkDirectiveChildren(Directive directive) {
   std::vector<Directive>::iterator it;
   for (it = directive.children_.begin(); it != directive.children_.end();
        it++) {
@@ -180,12 +170,12 @@ void checkDirectives(Directive directive) {
   }
 }
 
-void Checker::checkDirective(Directive directive) {
+void ConfigChecker::checkDirective(Directive directive) {
   try {
     if (!hasHttpDirective(directive)) {
       throw std::invalid_argument("http key invalid");
     }
-    checkDirectives(directive);
+    checkDirectiveChildren(directive);
   } catch (const std::exception &e) {
     std::cerr << "Error: Config: " << e.what() << '\n';
   }

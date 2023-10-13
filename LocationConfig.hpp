@@ -15,20 +15,17 @@ public:
   void printLocationConfig(void);
 
   const std::string &getUri() const;
-
-  std::string uri_;
-  std::vector<std::string> acceptMethods_;
-  std::string rootPath_;
-
-  int redirectionStatusCode_;
-  std::string redirectionPath_;
-
-  bool autoIndex_; // default false
-  std::string indexPath_;
-
-  std::map<std::string, std::string> cgiPrograms_;
+  const std::string &setUri() const;
 
 private:
+  bool autoIndex_; // default false
+  int redirectionStatusCode_;
+  std::string uri_;
+  std::string rootPath_;
+  std::string indexPath_;
+  std::string redirectionPath_;
+  std::vector<std::string> acceptMethods_;
+  std::map<std::string, std::string> cgiPrograms_;
 };
 
 #endif
