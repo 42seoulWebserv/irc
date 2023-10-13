@@ -13,7 +13,9 @@ SRC = \
 	ConfigLexer.cpp \
 	ConfigChecker.cpp \
 	ConfigMaker.cpp \
-	Config.cpp \
+	RootConfig.cpp \
+	ServerConfig.cpp \
+	LocationConfig.cpp \
 	Directive.cpp \
 	main.cpp
 .PHONY: all clean fclean re test
