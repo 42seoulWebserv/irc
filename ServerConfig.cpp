@@ -27,3 +27,67 @@ void ServerConfig::printServerConfig(void) {
     location->printLocationConfig();
   }
 }
+
+int ServerConfig::getPort() const {
+  return port_;
+}
+
+void ServerConfig::setPort(const int &port) {
+  port_ = port;
+}
+
+int ServerConfig::getLimitClientBodySize() const {
+  return limitClientBodySize_;
+}
+
+void ServerConfig::setLimitClientBodySize(const int &limitClientBodySize) {
+  limitClientBodySize_ = limitClientBodySize; 
+}
+
+std::string ServerConfig::getRootPath() const {
+  return rootPath_;
+}
+
+void ServerConfig::setRootPath(const std::string &rootPath) {
+  rootPath_ = rootPath; 
+}
+
+std::string ServerConfig::getServerName() const {
+  return serverName_;
+}
+
+void ServerConfig::setServerName(const std::string &serverName) {
+  serverName_ = serverName; 
+}
+
+std::map<int, std::string> ServerConfig::getErrorPages() const {
+  return errorPages_;
+}
+
+void ServerConfig::setErrorPages(const std::map<int, std::string> &errorPages) {
+  errorPages_ = errorPages; 
+}
+
+void ServerConfig::addErrorPages(const std::pair<int, std::string> &errorPages) {
+  errorPages_.insert(errorPages);
+}
+
+std::vector<LocationConfig> ServerConfig::getLocationConfigs() const {
+  return locationConfigs_;
+}
+
+void ServerConfig::setLocationConfigs(const std::vector<LocationConfig> &locationConfigs) {
+  locationConfigs_ = locationConfigs; 
+}
+
+void ServerConfig::addLocationConfigs(const LocationConfig &locationConfigs) {
+  locationConfigs_.push_back(locationConfigs);
+}
+
+const std::vector<LocationConfig>::iterator ServerConfig::beginLocationConfigs() {
+  return locationConfigs_.begin();
+}
+
+const std::vector<LocationConfig>::iterator ServerConfig::endLocationConfigs() {
+  return locationConfigs_.end();
+}
