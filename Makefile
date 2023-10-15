@@ -1,15 +1,28 @@
 NAME = webserv
+
 .DEFAULT_GOAL = all
 
-CXXFLAGS = -std=c++98 -Wall -Wextra -MMD -MP -g3
-SRC = \
-	parser/lexer/Parser.cpp \
-	parser/lexer/ParseResult.cpp \
-	parser/lexer/Pattern.cpp \
-	parser/lexer/PatternLetters.cpp \
-	parser/lexer/PatternWord.cpp \
-	parser/lexer/PatternOptional.cpp \
-	parser/lexer/PatternSequence.cpp \
+INC_DIR = ./
+SRC_DIR = ./
+BUILD_DIR = ./build
+
+RM = rm -rf
+CXXFLAGS = -std=c++98 -Wall -Wextra -MMD -MP -g3 -I $(INC_DIR)
+
+# ===============================================
+
+LEXER_DIR = ./parser/lexer/
+LEXER_NAME = \
+	Parser.cpp \
+	ParseResult.cpp \
+	Pattern.cpp \
+	PatternLetters.cpp \
+	PatternWord.cpp \
+	PatternOptional.cpp \
+	PatternSequence.cpp
+
+CHECKER_DIR = ./
+CHECKER_NAME = \
 	ConfigLexer.cpp \
 	ConfigChecker.cpp \
 	ConfigMaker.cpp \
@@ -18,23 +31,38 @@ SRC = \
 	LocationConfig.cpp \
 	Directive.cpp \
 	main.cpp
-.PHONY: all clean fclean re test
+
+SRCS = \
+	$(addprefix $(LEXER_DIR), $(LEXER_NAME)) \
+	$(addprefix $(CHECKER_DIR), $(CHECKER_NAME))
+
+vpath %.cpp $(LEXER_DIR) $(CHECKER_DIR)
+
+OBJS = $(SRCS:.cpp=.o)
+DEPS = $(SRCS:.cpp=.d)
+OBJS_FILES = $(addprefix $(BUILD_DIR)/, $(notdir $(OBJS)))
+
+-include $(DEPS)
+
+# ===============================================
 
 all: $(NAME)
 
-DEP = $(SRC:.cpp=.d)
--include $(DEP)
+$(NAME): $(OBJS_FILES)
+	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS_FILES)
 
-$(NAME): $(SRC:.cpp=.o)
-	$(CXX) $(CXXFLAGS) $(OUTPUT_OPTION) $(SRC:.cpp=.o)
+$(BUILD_DIR):
+	@mkdir -p $(BUILD_DIR)
 
-$(CLASS:.cpp=.o): %.o: %.cpp %.hpp
+$(BUILD_DIR)/%.o : %.cpp $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	find . -type f \( -name '*.o' -or -name '*.d' \) -print -delete
+	$(RM) $(BUILD_DIR)
 
 fclean: clean
-	rm -f $(NAME)
+	$(RM) $(NAME)
 
-re: fclean
-	make all
+re: fclean all
+
+.PHONY: all clean fclean re
