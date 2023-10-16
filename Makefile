@@ -3,16 +3,17 @@ NAME = webserv
 .DEFAULT_GOAL = all
 
 INC_DIR = -I./src -I./src/config -I./src/parser/lexer -I./src/config/configChecker -I./src/config/configLexer -I./src/config/configMaker
-SRC_DIR = ./src
+SRC_DIR = ./src/
 BUILD_DIR = ./build
 
+CXX = c++
 CXXFLAGS = -std=c++98 -Wall -Wextra -MMD -MP -g3 $(INC_DIR)
 
 # ===============================================
 
-SRC_DIR := ./
-SRC_NAME := \
-	main.cpp
+MAIN_DIR := ./src/
+MAIN_NAME := \
+	main.cpp \
 
 CONFIG_DIR := ./src/config/
 CONFIG_NAME := \
@@ -25,14 +26,18 @@ CONFIGCHECKER_DIR = ./src/config/configChecker/
 CONFIGCHECKER_NAME = \
 	ConfigChecker.cpp \
 
+CONFIGMAKER_DIR = ./src/config/configMaker/
+CONFIGMAKER_NAME = \
+	ConfigMaker.cpp \
+
 CONFIGLEXER_DIR = ./src/config/configLexer/
 CONFIGLEXER_NAME = \
 	ConfigLexer.cpp \
 
-PASER_LEXER_DIR = ./src/parser/lexer
+PASER_LEXER_DIR = ./src/parser/lexer/
 PASER_LEXER_NAME = \
-	Paser.cpp \
-	PasseResult.cpp \
+	Parser.cpp \
+	ParseResult.cpp \
 	Pattern.cpp \
 	PatternLetters.cpp \
 	PatternOptional.cpp \
@@ -40,12 +45,14 @@ PASER_LEXER_NAME = \
 	PatternWord.cpp \
 
 SRCS = \
+	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \
 	$(addprefix $(CONFIG_DIR), $(CONFIG_NAME)) \
 	$(addprefix $(CONFIGCHECKER_DIR), $(CONFIGCHECKER_NAME)) \
 	$(addprefix $(CONFIGLEXER_DIR), $(CONFIGLEXER_NAME)) \
+	$(addprefix $(CONFIGMAKER_DIR), $(CONFIGMAKER_NAME)) \
 	$(addprefix $(PASER_LEXER_DIR), $(PASER_LEXER_NAME))
 
-vpath %.cpp $(CONFIG_DIR) $(CONFIGCHECKER_DIR) $(CONFIGLEXER_DIR) $(PASER_LEXER_DIR)
+vpath %.cpp $(MAIN_DIR) $(CONFIG_DIR) $(CONFIGCHECKER_DIR) $(CONFIGLEXER_DIR) $(CONFIGMAKER_DIR) $(PASER_LEXER_DIR)
 
 %.o	:	%.cpp
 	$(CXX) $(CXXFLAGS) -MD -c -o $@ $^
