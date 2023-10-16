@@ -1,93 +1,89 @@
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <iostream>
+#include <sys/time.h>
+#include <sys/event.h>
+#include <sys/types.h>
+
 #include "ConfigChecker.hpp"
 #include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"
 #include "Directive.hpp"
+#include "ConfigLexer.hpp"
+
+#define BUFF_SIZE 1024
 
 int main() {
+  int serverSocket;
 
-  std::string file;
-  file += "http {";
-  file += "    root /www;";
-  file += "    server {";
-  file += "        server_name test;";
-  file += "        listen 8080;";
-  file += "        client_max_content_size 50m;";
-  file += "        location / {";
-  file += "            return 301 /www/error.html;";
-  file += "            index index.html;";
-  file += "            accept_methods POST GET DELETE;";
-  file += "            cgi_extension .php /bin/php;";
-  file += "            cgi_extension .py /bin/python3;";
-  file += "        }";
-  file += "    }";
-  file += "    server {";
-  file += "        listen 8080;";
-  file += "        server_name localhost;";
-  file += "    }";
-  file += "    server {";
-  file += "        listen 8080;";
-  file += "        server_name localhost;";
-  file += "    }";
-  file += "}";
+  serverSocket = socket(PF_INET, SOCK_STREAM, 0);
+  if (serverSocket == -1) return 1;
 
-  Directive directive = ConfigLexer::run(file);
+  struct sockaddr_in addr;
 
-  // Directive http("http");
-  // // Directive root("root");
-  // // root.values.push_back("/www");
-  // // http.children.push_back(root);
+  memset(&addr, 0, sizeof(addr));
 
-  // Directive server("server");
+  addr.sin_family      = AF_INET;              // IPv4 인터넷 프로토롤 
+  addr.sin_port        = htons(4000);         // 사용할 port 번호는 4000
+  addr.sin_addr.s_addr = htonl(INADDR_ANY);   // 32bit IPV4 주소
 
-  // // server_name
-  // Directive server_name("server_name");
-  // server_name.values.push_back("test");
-  // server.children.push_back(server_name);
+  if (bind(serverSocket, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
+    return 1;	
+  }
+  if (listen(serverSocket, 5) == -1) {
+    return 1;
+  }
 
-  // // client_max_content_size
-  // Directive client_max_content_size("client_max_content_size");
-  // client_max_content_size.values.push_back("50m");
-  // server.children.push_back(client_max_content_size);
+  int kq = kqueue();
 
-  // // listen
-  // Directive listen("listen");
-  // listen.values.push_back("8080");
-  // server.children.push_back(listen);
+  struct kevent event;
 
-  // // location
-  // Directive location("location");
-  // location.values.push_back("/");
+  EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+  kevent(kq, &event, 1, NULL, 0, 0);
 
-  // Directive location_return("return");
-  // location_return.values.push_back("301");
-  // location_return.values.push_back("/www/error.html");
-  // location.children.push_back(location_return);
 
-  // Directive location_index("index");
-  // location_index.values.push_back("index.html");
-  // location.children.push_back(location_index);
+  while(1) {
+    socklen_t  client_addr_size;
+    sockaddr_in client_addr;
+    client_addr_size = sizeof(client_addr); // client 주소의 크기
 
-  // Directive accept("accept_methods");
-  // accept.values.push_back("POST");
-  // accept.values.push_back("GET");
-  // accept.values.push_back("DELETE");
-  // location.children.push_back(accept);
+    struct kevent eventList[5];
+    int number = kevent(kq, 0, 0, eventList, 5, NULL);
+    std::cout << "start!!" << std::endl;
+    for (int i = 0; i < number; i++) {
+      std::cout << eventList[i].ident <<std::endl;
+      if (eventList[i].ident == (uintptr_t)serverSocket) {
+        std::cout << "---------- client accept" << std::endl;
+        int client_socket = accept(eventList[i].ident, (struct sockaddr*)&client_addr, &client_addr_size);
+        if (client_socket == -1) {
+          return 1;
+        }
+        struct kevent clientEvent;
 
-  // Directive cgi1("cgi_extension");
-  // cgi1.values.push_back(".php");
-  // cgi1.values.push_back("/bin/php");
-  // location.children.push_back(cgi1);
+        EV_SET(&clientEvent, client_socket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+        kevent(kq, &clientEvent, 1, NULL, 0, 0);
+      }
+      else {
+        std::cout << "------- client read" << std::endl;
+        char buff_rcv[BUFF_SIZE];
+        int tmp  = read(eventList[i].ident, buff_rcv, BUFF_SIZE);
+        if (tmp == 0 || tmp == -1){
+          std::cout << "FUCK YOU" << std::endl;
+          struct kevent clientEvent;
 
-  // Directive cgi2("cgi_extension");
-  // cgi2.values.push_back(".py");
-  // cgi2.values.push_back("/bin/python3");
-  // location.children.push_back(cgi2);
+          EV_SET(&clientEvent, eventList[i].ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+          kevent(kq, &clientEvent, 1, NULL, 0, 0);
+        }
+        std::cout << "receive: " << buff_rcv << std::endl;
+      }
+    }
+    std::cout << "end!!" << std::endl;
 
-  // server.children.push_back(location);
 
-  // http.children.push_back(server);
-
-  ConfigChecker::checkDirective(directive);
-  RootConfig res = ConfigMaker::makeConfig(directive);
-  res.printRootConfig();
+    // sprintf(buff_snd, "%d : %s", strlen(buff_rcv), buff_rcv);
+    // write(client_socket, "write", strlen(buff_snd) + 1); // +1: NULL까지 포함해서 전송
+    // close(client_socket);
+  }
 }
