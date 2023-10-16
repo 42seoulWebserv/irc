@@ -11,8 +11,23 @@ CXXFLAGS = -std=c++98 -Wall -Wextra -MMD -MP -g3 -I $(INC_DIR)
 
 # ===============================================
 
-LEXER_DIR = ./parser/lexer/
-LEXER_NAME = \
+SRC_DIR := ./
+SRC_NAME := \
+	main.cpp
+
+CONFIG_DIR := ./src/config/
+CONFIG_NAME := \
+	Directive.cpp \
+	LocationConfig.cpp \
+	RootConfig.cpp \
+	ServerConfig.cpp \
+
+CONFIGCHECKER_DIR = ./src/config/configChecker/
+CONFIGCHECKER_NAME = \
+	ConfigChecker.cpp
+
+CONFIGLEXER_DIR = ./src/config/configLexer/
+CONFIGLEXER_NAME = \
 	Parser.cpp \
 	ParseResult.cpp \
 	Pattern.cpp \
@@ -20,17 +35,12 @@ LEXER_NAME = \
 	PatternWord.cpp \
 	PatternOptional.cpp \
 	PatternSequence.cpp
-
-CHECKER_DIR = ./
-CHECKER_NAME = \
-	ConfigLexer.cpp \
-	ConfigChecker.cpp \
 	ConfigMaker.cpp \
-	RootConfig.cpp \
-	ServerConfig.cpp \
-	LocationConfig.cpp \
-	Directive.cpp \
-	main.cpp
+	ConfigLexer.cpp \
+
+
+CONFIGCHECKER_DIR = ./src/ConfigChecker
+CONFIGCHECKER_NAME = 
 
 SRCS = \
 	$(addprefix $(LEXER_DIR), $(LEXER_NAME)) \
