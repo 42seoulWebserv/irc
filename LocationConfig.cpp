@@ -109,7 +109,7 @@ const std::vector<std::string>::iterator LocationConfig::endAcceptMethods() {
 
 
 const std::string LocationConfig::getElementAtIndexAcceptMethods(size_t index) const {
-  if (0 <= index && index < acceptMethods_.size()) {
+  if (index < acceptMethods_.size()) {
     return acceptMethods_[index];
   } else {
     throw std::invalid_argument("invalid index format");
