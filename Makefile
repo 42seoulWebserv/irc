@@ -65,7 +65,7 @@ OBJS_FILES = $(addprefix $(BUILD_DIR)/, $(notdir $(OBJS)))
 
 # ===============================================
 
-all: $(NAME)
+all: $(BUILD_DIR) $(NAME)
 
 $(NAME): $(OBJS_FILES)
 	$(CXX) $(CXXFLAGS) $(OBJS_FILES) -o $(NAME)
@@ -73,7 +73,7 @@ $(NAME): $(OBJS_FILES)
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
-$(BUILD_DIR)/%.o : %.cpp $(BUILD_DIR)
+$(BUILD_DIR)/%.o : %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
