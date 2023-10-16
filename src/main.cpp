@@ -1,8 +1,7 @@
 #include "ConfigChecker.hpp"
+#include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"
 #include "Directive.hpp"
-
-#include "ConfigLexer.hpp"
 
 int main() {
 

@@ -3,7 +3,7 @@ NAME = webserv
 .DEFAULT_GOAL = all
 
 INC_DIR = -I./src -I./src/config -I./src/parser/lexer -I./src/config/configChecker -I./src/config/configLexer -I./src/config/configMaker
-SRC_DIR = ./src/
+SRC_DIR = ./src
 BUILD_DIR = ./build
 
 CXX = c++
