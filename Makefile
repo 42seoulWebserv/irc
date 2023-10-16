@@ -1,13 +1,20 @@
-NAME = webserv
+NAME := webserv
 
-.DEFAULT_GOAL = all
+.DEFAULT_GOAL := all
 
-INC_DIR = -I./src -I./src/config -I./src/parser/lexer -I./src/config/configChecker -I./src/config/configLexer -I./src/config/configMaker
-SRC_DIR = ./src
-BUILD_DIR = ./build
+INC_DIR := \
+	-I./src \
+	-I./src/config \
+	-I./src/parser/lexer \
+	-I./src/config/configChecker \
+	-I./src/config/configLexer \
+	-I./src/config/configMaker
 
-CXX = c++
-CXXFLAGS = -std=c++98 -Wall -Wextra -MMD -MP -g3 $(INC_DIR)
+SRC_DIR := ./src
+BUILD_DIR := ./build
+
+CXX := c++
+CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 $(INC_DIR)
 
 # ===============================================
 
@@ -22,20 +29,20 @@ CONFIG_NAME := \
 	RootConfig.cpp \
 	ServerConfig.cpp \
 
-CONFIGCHECKER_DIR = ./src/config/configChecker/
-CONFIGCHECKER_NAME = \
+CONFIGCHECKER_DIR := ./src/config/configChecker/
+CONFIGCHECKER_NAME := \
 	ConfigChecker.cpp \
 
-CONFIGMAKER_DIR = ./src/config/configMaker/
-CONFIGMAKER_NAME = \
+CONFIGMAKER_DIR := ./src/config/configMaker/
+CONFIGMAKER_NAME := \
 	ConfigMaker.cpp \
 
-CONFIGLEXER_DIR = ./src/config/configLexer/
-CONFIGLEXER_NAME = \
+CONFIGLEXER_DIR := ./src/config/configLexer/
+CONFIGLEXER_NAME := \
 	ConfigLexer.cpp \
 
-PASER_LEXER_DIR = ./src/parser/lexer/
-PASER_LEXER_NAME = \
+PASER_LEXER_DIR := ./src/parser/lexer/
+PASER_LEXER_NAME := \
 	Parser.cpp \
 	ParseResult.cpp \
 	Pattern.cpp \
@@ -44,7 +51,7 @@ PASER_LEXER_NAME = \
 	PatternSequence.cpp \
 	PatternWord.cpp \
 
-SRCS = \
+SRCS := \
 	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \
 	$(addprefix $(CONFIG_DIR), $(CONFIG_NAME)) \
 	$(addprefix $(CONFIGCHECKER_DIR), $(CONFIGCHECKER_NAME)) \
@@ -52,14 +59,22 @@ SRCS = \
 	$(addprefix $(CONFIGMAKER_DIR), $(CONFIGMAKER_NAME)) \
 	$(addprefix $(PASER_LEXER_DIR), $(PASER_LEXER_NAME))
 
-vpath %.cpp $(MAIN_DIR) $(CONFIG_DIR) $(CONFIGCHECKER_DIR) $(CONFIGLEXER_DIR) $(CONFIGMAKER_DIR) $(PASER_LEXER_DIR)
+SRCS_DIR := \
+	$(MAIN_DIR) \
+	$(CONFIG_DIR) \
+	$(CONFIGCHECKER_DIR) \
+	$(CONFIGLEXER_DIR) \
+	$(CONFIGMAKER_DIR) \
+	$(PASER_LEXER_DIR)
 
-%.o	:	%.cpp
+vpath %.cpp $(SRCS_DIR)
+
+%.o	: %.cpp
 	$(CXX) $(CXXFLAGS) -MD -c -o $@ $^
 
-OBJS = $(SRCS:.cpp=.o)
-DEPS = $(SRCS:.cpp=.d)
-OBJS_FILES = $(addprefix $(BUILD_DIR)/, $(notdir $(OBJS)))
+OBJS := $(SRCS:.cpp=.o)
+DEPS := $(SRCS:.cpp=.d)
+OBJS_FILES := $(addprefix $(BUILD_DIR)/, $(notdir $(OBJS)))
 
 -include $(DEPS)
 
