@@ -39,9 +39,7 @@ void LocationConfig::printLocationConfig(void) {
   std::cout << '}' << '\n';
 }
 
-bool LocationConfig::getAutoIndex() const {
-  return autoIndex_;
-}
+bool LocationConfig::getAutoIndex() const { return autoIndex_; }
 
 void LocationConfig::setAutoIndex(const bool &autoIndex) {
   autoIndex_ = autoIndex;
@@ -51,29 +49,22 @@ int LocationConfig::getRedirectionStatusCode() const {
   return redirectionStatusCode_;
 }
 
-void LocationConfig::setRedirectionStatusCode(const int &redirectionStatusCode) {
+void LocationConfig::setRedirectionStatusCode(
+    const int &redirectionStatusCode) {
   redirectionStatusCode_ = redirectionStatusCode;
 }
 
-std::string LocationConfig::getUri() const {
-  return uri_;
-}
+std::string LocationConfig::getUri() const { return uri_; }
 
-void LocationConfig::setUri(const std::string &uri) {
-  uri_ = uri;
-}
+void LocationConfig::setUri(const std::string &uri) { uri_ = uri; }
 
-std::string LocationConfig::getRootPath() const {
-  return rootPath_;
-}
+std::string LocationConfig::getRootPath() const { return rootPath_; }
 
 void LocationConfig::setRootPath(const std::string &rootPath) {
   rootPath_ = rootPath;
 }
 
-std::string LocationConfig::getIndexPath() const {
-  return indexPath_;
-}
+std::string LocationConfig::getIndexPath() const { return indexPath_; }
 
 void LocationConfig::setIndexPath(const std::string &indexPath) {
   indexPath_ = indexPath;
@@ -91,7 +82,8 @@ std::vector<std::string> LocationConfig::getAcceptMethods() const {
   return acceptMethods_;
 }
 
-void LocationConfig::setAcceptMethods(const std::vector<std::string> &acceptMethods) {
+void LocationConfig::setAcceptMethods(
+    const std::vector<std::string> &acceptMethods) {
   acceptMethods_ = acceptMethods;
 }
 
@@ -120,20 +112,22 @@ std::map<std::string, std::string> LocationConfig::getCgiPrograms() const {
   return cgiPrograms_;
 }
 
-void LocationConfig::setCgiPrograms(const std::map<std::string, std::string> &cgiPrograms) {
+void LocationConfig::setCgiPrograms(
+    const std::map<std::string, std::string> &cgiPrograms) {
   cgiPrograms_ = cgiPrograms;
 }
 
-void LocationConfig::addCgiPrograms(const std::pair<std::string, std::string> &cgiPrograms) {
+void LocationConfig::addCgiPrograms(
+    const std::pair<std::string, std::string> &cgiPrograms) {
   cgiPrograms_.insert(cgiPrograms);
 }
 
-const std::map<std::string, std::string>::iterator LocationConfig::beginCgiPrograms() {
+const std::map<std::string, std::string>::iterator
+LocationConfig::beginCgiPrograms() {
   return cgiPrograms_.begin();
 }
 
-const std::map<std::string, std::string>::iterator LocationConfig::endCgiPrograms() {
+const std::map<std::string, std::string>::iterator
+LocationConfig::endCgiPrograms() {
   return cgiPrograms_.end();
 }
-
-

@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "Directive.hpp"
-#include "parser/lexer/ParseResult.hpp"
+#include "ParseResult.hpp"
 
 class ConfigLexer {
 public:
