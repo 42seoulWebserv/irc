@@ -1,7 +1,9 @@
 #include <cctype>
 #include <cmath>
+#include <cstdlib>
 #include <exception>
 #include <iostream>
+#include <limits>
 #include <set>
 #include <sstream>
 #include <vector>
@@ -73,8 +75,8 @@ static void checkValidIndex(std::string str) {
 
 static void checkServerLocation(Directive location) {
   std::vector<Directive>::iterator element;
-  for (element = location.beginChildren();
-       element != location.endChildren(); element++) {
+  for (element = location.beginChildren(); element != location.endChildren();
+       element++) {
     if (element->getKey() == "return") {
       int statusCode = strToInt(element->getElementAtIndexValues(0));
       if (statusCode < 100 || statusCode > 600) {
@@ -117,7 +119,7 @@ static void checkServerClientMaxContentSize(std::string str) {
 
 static void checkServerLocationDuplicate(std::string locationUri,
                                          std::set<std::string> &locationPaths) {
-  if (locationPaths.find(locationUri) != locationPaths.end()) {
+  if (locationPaths.find(locationUri) == locationPaths.end()) {
     locationPaths.insert(locationUri);
   } else {
     throw std::invalid_argument("location path cannot be duplicated");
@@ -134,7 +136,8 @@ static void checkServerDirective(Directive server) {
     if (element->getKey() == "listen") {
       checkValidPort(strToInt(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "location") {
-      checkServerLocationDuplicate(element->getElementAtIndexValues(0), locationPaths);
+      checkServerLocationDuplicate(element->getElementAtIndexValues(0),
+                                   locationPaths);
       checkServerLocation(*element);
     } else if (element->getKey() == "server_name") {
       if (isServerNameExist) {
@@ -160,8 +163,7 @@ static void checkRootDirective(Directive root) {
 
 static void checkDirectiveChildren(Directive directive) {
   std::vector<Directive>::iterator it;
-  for (it = directive.beginChildren(); it != directive.endChildren();
-       it++) {
+  for (it = directive.beginChildren(); it != directive.endChildren(); it++) {
     if (it->getKey() == "server") {
       checkServerDirective(*it);
     } else if (it->getKey() == "root") {
