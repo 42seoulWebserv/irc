@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdlib>
 
 #include "ConfigMaker.hpp"
 #include "ServerConfig.hpp"
@@ -28,11 +29,12 @@ LocationConfig makeLocationConfig(Directive location) {
   LocationConfig res;
   std::vector<Directive>::iterator element;
   res.setUri(location.getElementAtIndexValues(0));
-  for (element = location.beginChildren();
-       element != location.endChildren(); element++) {
+  for (element = location.beginChildren(); element != location.endChildren();
+       element++) {
     if (element->getKey() == "return") {
-      
-      res.setRedirectionStatusCode(strToInteger(element->getElementAtIndexValues(0)));
+
+      res.setRedirectionStatusCode(
+          strToInteger(element->getElementAtIndexValues(0)));
       res.setRedirectionPath(element->getElementAtIndexValues(1));
     } else if (element->getKey() == "accept_methods") {
       fillInAcceptMethods(res, element->getValues());
@@ -57,7 +59,8 @@ ServerConfig makeSingleServerConfig(Directive server) {
     } else if (element->getKey() == "server_name") {
       res.setServerName(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "client_max_content_size") {
-      res.setLimitClientBodySize(strToInteger(element->getElementAtIndexValues(0)));
+      res.setLimitClientBodySize(
+          strToInteger(element->getElementAtIndexValues(0)));
     }
   }
   return res;
@@ -66,8 +69,8 @@ ServerConfig makeSingleServerConfig(Directive server) {
 void printServerConfig(ServerConfig res) {
   std::cout << "listen: " << res.getPort() << '\n';
   std::cout << "server_name: " << res.getServerName() << '\n';
-  std::cout << "client_max_content_size: " << res.getLimitClientBodySize() << 'm'
-            << '\n';
+  std::cout << "client_max_content_size: " << res.getLimitClientBodySize()
+            << 'm' << '\n';
   std::vector<LocationConfig>::iterator location;
   for (location = res.beginLocationConfigs();
        location != res.endLocationConfigs(); location++) {
@@ -82,8 +85,8 @@ void printServerConfig(ServerConfig res) {
     }
     std::cout << '\n';
     std::map<std::string, std::string>::iterator cgi;
-    for (cgi = location->beginCgiPrograms();
-         cgi != location->endCgiPrograms(); cgi++) {
+    for (cgi = location->beginCgiPrograms(); cgi != location->endCgiPrograms();
+         cgi++) {
       std::cout << "  cgi_extension " << cgi->first << ' ' << cgi->second
                 << '\n';
     }
@@ -94,8 +97,8 @@ void printServerConfig(ServerConfig res) {
 RootConfig ConfigMaker::makeConfig(Directive directive) {
   RootConfig res;
   std::vector<Directive>::iterator server;
-  for (server = directive.beginChildren();
-       server != directive.endChildren(); server++) {
+  for (server = directive.beginChildren(); server != directive.endChildren();
+       server++) {
     if (server->getKey() == "server") {
       ServerConfig tmp = makeSingleServerConfig(*server);
       res.addServerConfigs(makeSingleServerConfig(*server));
