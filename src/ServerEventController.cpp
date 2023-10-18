@@ -7,9 +7,9 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "ServerConnector.hpp"
+#include "ServerEventController.hpp"
 
-ServerConnector::ServerConnector(int kq) : kq_(kq) {
+ServerEventController::ServerEventController(int kq) : kq_(kq) {
   this->socket_ = socket(PF_INET, SOCK_STREAM, 0);
   if (this->socket_ == -1) {
     throw std::logic_error("bind error");
@@ -36,15 +36,15 @@ ServerConnector::ServerConnector(int kq) : kq_(kq) {
   kevent(kq, &event, 1, NULL, 0, 0);
 }
 
-ServerConnector::ServerConnector(const ServerConnector &src) {}
+ServerEventController::ServerEventController(const ServerEventController &src) {}
 
-ServerConnector &ServerConnector::operator=(const ServerConnector &rhs) {
+ServerEventController &ServerEventController::operator=(const ServerEventController &rhs) {
   return *this;
 }
 
-ServerConnector::~ServerConnector() {}
+ServerEventController::~ServerEventController() {}
 
-enum Connector::returnType ServerConnector::handleEvent(const struct kevent &event) {
+enum EventController::returnType ServerEventController::handleEvent(const struct kevent &event) {
   socklen_t client_addr_size;
   sockaddr_in client_addr;
   client_addr_size = sizeof(client_addr); // client 주소의 크기
@@ -56,6 +56,6 @@ enum Connector::returnType ServerConnector::handleEvent(const struct kevent &eve
   }
   struct kevent clientEvent;
 
-  EV_SET(&clientEvent, clientSocket, EVFILT_READ, EV_ADD, 0, 0, new ClientConnector(this->kq_, clientSocket));
+  EV_SET(&clientEvent, clientSocket, EVFILT_READ, EV_ADD, 0, 0, new ClientEventController(this->kq_, clientSocket));
   kevent(this->kq_, &clientEvent, 1, NULL, 0, 0);
 }

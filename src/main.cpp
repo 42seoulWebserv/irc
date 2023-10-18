@@ -4,18 +4,18 @@
 
 #include <iostream>
 
-#include "ServerConnector.hpp"
+#include "ServerEventController.hpp"
 
 int run() {
   int kq = kqueue();
-  ServerConnector *serverConnector = new ServerConnector(kq);
+  ServerEventController *serverEventController = new ServerEventController(kq);
 
   while(1) {
     struct kevent eventList[5];
     int number = kevent(kq, 0, 0, eventList, 5, NULL);
     std::cout << "start!!" << std::endl;
     for (int i = 0; i < number; i++) {
-      Connector *connector = reinterpret_cast<Connector *>(eventList[i].udata);
+      EventController *connector = reinterpret_cast<EventController *>(eventList[i].udata);
       connector->handleEvent(eventList[i]);
     }
     std::cout << "end!!" << std::endl;

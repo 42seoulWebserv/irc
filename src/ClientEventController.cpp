@@ -2,22 +2,22 @@
 #include <unistd.h>
 #include <sys/event.h>
 
-#include "ClientConnector.hpp"
-#include "Connector.hpp"
+#include "ClientEventController.hpp"
+#include "EventController.hpp"
 
-ClientConnector::ClientConnector(int kq, int clientSocket) : kq_(kq), clientSocket_(clientSocket) {}
+ClientEventController::ClientEventController(int kq, int clientSocket) : kq_(kq), clientSocket_(clientSocket) {}
 
-ClientConnector::ClientConnector(const ClientConnector &src) : kq_(src.kq_), clientSocket_(src.clientSocket_) {}
+ClientEventController::ClientEventController(const ClientEventController &src) : kq_(src.kq_), clientSocket_(src.clientSocket_) {}
 
-ClientConnector &ClientConnector::operator=(const ClientConnector &rhs) {
+ClientEventController &ClientEventController::operator=(const ClientEventController &rhs) {
   this->kq_ = rhs.kq_;
   this->clientSocket_ = rhs.clientSocket_;
   return *this;
 }
 
-ClientConnector::~ClientConnector() {}
+ClientEventController::~ClientEventController() {}
 
-enum Connector::returnType ClientConnector::handleEvent(const struct kevent &event) {
+enum EventController::returnType ClientEventController::handleEvent(const struct kevent &event) {
   if (event.filter == EVFILT_READ) {
     std::cout << "------- client read" << std::endl;
     char buff_rcv[BUFF_SIZE];

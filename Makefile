@@ -21,9 +21,9 @@ CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 $(INC_DIR)
 MAIN_DIR := ./src/
 MAIN_NAME := \
 	main.cpp \
-	Connector.cpp \
-	ClientConnector.cpp \
-	ServerConnector.cpp
+	EventController.cpp \
+	ClientEventController.cpp \
+	ServerEventController.cpp
 
 CONFIG_DIR := ./src/config/
 CONFIG_NAME := \
