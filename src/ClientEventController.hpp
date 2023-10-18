@@ -18,6 +18,10 @@ public:
 	int kq_;
 	int clientSocket_;
 private:
+	enum EventController::returnType clientRead(const struct kevent &event);
+	enum EventController::returnType clientWrite(const struct kevent &event);
+	enum EventController::returnType clientTimeout(const struct kevent &event);
+
 };
 
 #endif

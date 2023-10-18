@@ -13,8 +13,10 @@ public:
 	virtual ~EventController();
 
 	enum returnType {
-		OK,
-		FAIL
+		SUCCESS,
+		FAIL,
+		PENDING,
+		TIMEOUT,
 	};
 
 	virtual enum returnType handleEvent(const struct kevent &event) = 0;

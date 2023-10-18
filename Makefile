@@ -23,6 +23,9 @@ MAIN_NAME := \
 	main.cpp \
 	EventController.cpp \
 	ClientEventController.cpp \
+	ClientEventControllerRead.cpp \
+	ClientEventControllerWrite.cpp \
+	ClientEventControllerTime.cpp \
 	ServerEventController.cpp
 
 CONFIG_DIR := ./src/config/

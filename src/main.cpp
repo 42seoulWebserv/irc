@@ -16,7 +16,10 @@ int run() {
     std::cout << "start!!" << std::endl;
     for (int i = 0; i < number; i++) {
       EventController *connector = reinterpret_cast<EventController *>(eventList[i].udata);
-      connector->handleEvent(eventList[i]);
+      EventController::returnType type = connector->handleEvent(eventList[i]);
+      if (type == EventController::SUCCESS || type == EventController::FAIL) {
+        delete connector;
+      }
     }
     std::cout << "end!!" << std::endl;
 

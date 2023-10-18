@@ -19,16 +19,16 @@ ClientEventController::~ClientEventController() {}
 
 enum EventController::returnType ClientEventController::handleEvent(const struct kevent &event) {
   if (event.filter == EVFILT_READ) {
-    std::cout << "------- client read" << std::endl;
-    char buff_rcv[BUFF_SIZE];
-    int tmp  = read(event.ident, buff_rcv, BUFF_SIZE);
-    if (tmp == 0 || tmp == -1){
-      struct kevent clientEvent;
-
-      EV_SET(&clientEvent, event.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-      kevent(kq_, &clientEvent, 1, NULL, 0, 0);
-    }
-    std::cout << "receive: " << buff_rcv << std::endl;
+    return clientRead(event);
   }
-  return OK;
+  else if (event.filter == EVFILT_WRITE) { // cgi
+    return clientWrite(event);
+  }
+  else if (event.filter == EVFILT_TIMER) {
+    return clientTimeout(event);
+  }
+  else {
+    return FAIL;
+  }
+  return SUCCESS;
 }
