@@ -21,6 +21,9 @@ CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 $(INC_DIR)
 MAIN_DIR := ./src/
 MAIN_NAME := \
 	main.cpp \
+	Connector.cpp \
+	ClientConnector.cpp \
+	ServerConnector.cpp
 
 CONFIG_DIR := ./src/config/
 CONFIG_NAME := \
@@ -49,7 +52,7 @@ PASER_LEXER_NAME := \
 	PatternLetters.cpp \
 	PatternOptional.cpp \
 	PatternSequence.cpp \
-	PatternWord.cpp \
+	PatternWord.cpp
 
 SRCS := \
 	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \
