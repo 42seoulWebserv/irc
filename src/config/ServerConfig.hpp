@@ -28,7 +28,7 @@ public:
   void setErrorPages(const std::map<int, std::string> &errorPages);
   void addErrorPages(const std::pair<int, std::string> &errorPages);
   std::vector<LocationConfig> getLocationConfigs() const;
-  void setLocationConfigs(const std::vector<LocationConfig> &locationConfigs); 
+  void setLocationConfigs(const std::vector<LocationConfig> &locationConfigs);
   void addLocationConfigs(const LocationConfig &locationConfigs);
   const std::vector<LocationConfig>::iterator beginLocationConfigs();
   const std::vector<LocationConfig>::iterator endLocationConfigs();
