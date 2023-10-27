@@ -5,9 +5,17 @@
 #include "ClientEventController.hpp"
 #include "EventController.hpp"
 
-ClientEventController::ClientEventController(int kq, int clientSocket) : kq_(kq), clientSocket_(clientSocket) {}
+ClientEventController::ClientEventController(int kq, int clientSocket) :
+  kq_(kq),
+  clientSocket_(clientSocket),
+  status_(START_LINE)
+  {}
 
-ClientEventController::ClientEventController(const ClientEventController &src) : kq_(src.kq_), clientSocket_(src.clientSocket_) {}
+ClientEventController::ClientEventController(const ClientEventController &src) :
+  kq_(src.kq_),
+  clientSocket_(src.clientSocket_),
+  status_(src.status_)
+  {}
 
 ClientEventController &ClientEventController::operator=(const ClientEventController &rhs) {
   this->kq_ = rhs.kq_;
@@ -31,4 +39,12 @@ enum EventController::returnType ClientEventController::handleEvent(const struct
     return FAIL;
   }
   return SUCCESS;
+}
+
+std::ostream& operator<<(std::ostream& o, const std::map<std::string, std::string>& rhs)
+{
+	for (std::map<std::string, std::string>::const_iterator it = rhs.begin(); it != rhs.end(); it++) {
+		o << "key: " << it->first << ", value: " << it->second << '\n';
+	}
+	return o;
 }
