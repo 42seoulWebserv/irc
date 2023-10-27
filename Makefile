@@ -8,7 +8,7 @@ INC_DIR := \
 	-I./src/parser/lexer \
 	-I./src/config/configChecker \
 	-I./src/config/configLexer \
-	-I./src/config/configMaker
+	-I./src/config/configMaker \
 
 SRC_DIR := ./src
 BUILD_DIR := ./build
@@ -22,11 +22,11 @@ MAIN_DIR := ./src/
 MAIN_NAME := \
 	main.cpp \
 	EventController.cpp \
+	ServerEventController.cpp \
 	ClientEventController.cpp \
 	ClientEventControllerRead.cpp \
 	ClientEventControllerWrite.cpp \
 	ClientEventControllerTime.cpp \
-	ServerEventController.cpp
 
 CONFIG_DIR := ./src/config/
 CONFIG_NAME := \
@@ -55,7 +55,7 @@ PASER_LEXER_NAME := \
 	PatternLetters.cpp \
 	PatternOptional.cpp \
 	PatternSequence.cpp \
-	PatternWord.cpp
+	PatternWord.cpp \
 
 SRCS := \
 	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \
