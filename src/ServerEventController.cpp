@@ -1,3 +1,4 @@
+#include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/event.h>
@@ -18,6 +19,11 @@ ServerEventController::ServerEventController(int kq) : kq_(kq) {
   struct sockaddr_in addr;
 
   memset(&addr, 0, sizeof(addr));
+
+	int opt = 1;
+	if (setsockopt(this->socket_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int))) {
+		throw std::logic_error("bind error");
+	}
 
   addr.sin_family = AF_INET;        // IPv4 인터넷 프로토롤
   addr.sin_port = htons(4000);     // 사용할 port 번호는 4000
@@ -55,7 +61,8 @@ enum EventController::returnType ServerEventController::handleEvent(const struct
     return FAIL;
   }
   struct kevent clientEvent;
+  struct timespec timeout = {10, 0}; // 10 seconds
 
   EV_SET(&clientEvent, clientSocket, EVFILT_READ, EV_ADD, 0, 0, new ClientEventController(this->kq_, clientSocket));
-  kevent(this->kq_, &clientEvent, 1, NULL, 0, 0);
+  kevent(this->kq_, &clientEvent, 1, NULL, 0, &timeout);
 }
