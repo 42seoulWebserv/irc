@@ -12,5 +12,5 @@ enum EventController::returnType ClientEventController::clientTimeout(const stru
   std::cout << "타이머 이벤트 발생!!" << std::endl;
   close(this->clientSocket_);
 
-  return TIMEOUT;
+  return FAIL;
 }
