@@ -74,7 +74,6 @@ void ClientEventController::parseStartLine(std::string str) {
 /* 하나의 요청이 여러 개로 찢어져서 들어온 건지, 다 들어왔는지도 확인. */
 /* 주: cheseo 부: yonshin 검: junmkang */
 enum EventController::returnType ClientEventController::clientRead(const struct kevent &event) {
-  std::cout << "------- client read" << std::endl;
   char recvBuff[BUFF_SIZE];
 
   int tmpInt  = read(event.ident, recvBuff, BUFF_SIZE); // 3000 1024 / 1024 / 나머지

@@ -13,7 +13,6 @@ int run() {
   while(1) {
     struct kevent eventList[5];
     int number = kevent(kq, 0, 0, eventList, 5, NULL);
-    std::cout << "start!!" << std::endl;
     for (int i = 0; i < number; i++) {
       EventController *connector = reinterpret_cast<EventController *>(eventList[i].udata);
       EventController::returnType type = connector->handleEvent(eventList[i]);
@@ -21,7 +20,6 @@ int run() {
         delete connector;
       }
     }
-    std::cout << "end!!" << std::endl;
 
     // sprintf(buff_snd, "%d : %s", strlen(buff_rcv), buff_rcv);
     // write(client_socket, "write", strlen(buff_snd) + 1); // +1: NULL까지 포함해서 전송
