@@ -28,7 +28,6 @@ public:
 	void parseStartLine(std::string str);
 	void printParseResult();
 
-	bool isValidReq_;
 	int statusCode_;
 	enum READ_STATUS readStatus_;
 	int kq_;

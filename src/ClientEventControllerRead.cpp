@@ -78,7 +78,6 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
 
   int tmpInt  = read(event.ident, recvBuff, BUFF_SIZE - 1);
   if (tmpInt == -1) {
-    isValidReq_ = false;
     evSet(EVFILT_READ, EV_DELETE);
     evSet(EVFILT_WRITE, EV_ADD);
     return PENDING;
