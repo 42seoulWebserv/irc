@@ -29,8 +29,8 @@ public:
 	void printParseResult();
 
 	bool isValidReq_;
-	enum READ_STATUS readStatus_;
 	int statusCode_;
+	enum READ_STATUS readStatus_;
 	int kq_;
 	int clientSocket_;
 	std::string method_;
