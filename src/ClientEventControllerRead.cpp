@@ -76,21 +76,20 @@ void ClientEventController::parseStartLine(std::string str) {
 enum EventController::returnType ClientEventController::clientRead(const struct kevent &event) {
   char recvBuff[BUFF_SIZE];
 
-  int tmpInt  = read(event.ident, recvBuff, BUFF_SIZE);
+  int tmpInt  = read(event.ident, recvBuff, BUFF_SIZE - 1);
   if (tmpInt == -1) {
     isValidReq_ = false;
-    struct kevent clientEvent;
-    EV_SET(&clientEvent, event.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-    EV_SET(&clientEvent, event.ident, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-    kevent(kq_, &clientEvent, 1, NULL, 0, 0);
+    evSet(EVFILT_READ, EV_DELETE);
+    evSet(EVFILT_WRITE, EV_ADD);
     return PENDING;
   }
+  recvBuff[tmpInt] = '\0';
   std::string tmpStr(recvBuff);
   if (readStatus_ != BODY && tmpStr.find('\r\n') == std::string::npos) {
     headerBuffer_ += tmpStr;
     return PENDING;
   }
-  if (tmpInt != 0) {
+  if (tmpInt > 0 && readStatus_ == BODY) {
     bodyBuffer_ += tmpStr;
     return PENDING;
   }
@@ -102,6 +101,9 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
       if (idx == 0) {
         readStatus_ = START_LINE;
         parseStartLine(split);
+      } else if (split == "\r") {
+        readStatus_ = BODY;
+        break;
       } else {
         readStatus_ = HEADER;
         parseHeaderLineByLine(split);
@@ -123,7 +125,7 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
       }
     }
   } catch (std::exception& e) {
-    std::cout << "Error: " << e.what() << std::endl; // debuggin용
+    std::cout << "Error: " << e.what() << std::endl; // debug
     statusCode_ = 400;
     return PENDING;
   }

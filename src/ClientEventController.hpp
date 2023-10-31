@@ -45,6 +45,8 @@ private:
 	enum EventController::returnType clientRead(const struct kevent &event);
 	enum EventController::returnType clientWrite(const struct kevent &event);
 	enum EventController::returnType clientTimeout(const struct kevent &event);
+
+	void evSet(int filter, int action);
 };
 /*
 // 우선 key에 공백 있으면 안됨.

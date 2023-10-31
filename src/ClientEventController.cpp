@@ -52,3 +52,10 @@ std::ostream& operator<<(std::ostream& o, const std::map<std::string, std::strin
 	}
 	return o;
 }
+
+void ClientEventController::evSet(int filter, int action)
+{
+  struct kevent clientEvent;
+  EV_SET(&clientEvent, this->clientSocket_, filter, action, 0, 0, this);
+  kevent(kq_, &clientEvent, 1, NULL, 0, 0);
+}
