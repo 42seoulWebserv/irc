@@ -30,6 +30,7 @@ public:
 
 	bool isValidReq_;
 	enum READ_STATUS readStatus_;
+	int statusCode_;
 	int kq_;
 	int clientSocket_;
 	std::string method_;
