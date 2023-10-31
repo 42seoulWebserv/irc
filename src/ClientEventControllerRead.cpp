@@ -79,8 +79,7 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
   int tmpInt  = read(event.ident, recvBuff, BUFF_SIZE - 1);
   if (tmpInt == -1) {
     evSet(EVFILT_READ, EV_DELETE);
-    evSet(EVFILT_WRITE, EV_ADD);
-    return PENDING;
+    return FAIL;
   }
   recvBuff[tmpInt] = '\0';
   std::string tmpStr(recvBuff);
@@ -129,5 +128,7 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
     return PENDING;
   }
   printParseResult();
+  evSet(EVFILT_READ, EV_DELETE);
+  evSet(EVFILT_WRITE, EV_ADD);
   return PENDING;
 }
