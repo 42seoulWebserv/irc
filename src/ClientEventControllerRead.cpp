@@ -76,7 +76,7 @@ void ClientEventController::parseStartLine(std::string str) {
 enum EventController::returnType ClientEventController::clientRead(const struct kevent &event) {
   char recvBuff[BUFF_SIZE];
 
-  int tmpInt  = read(event.ident, recvBuff, BUFF_SIZE); // 3000 1024 / 1024 / 나머지
+  int tmpInt  = read(event.ident, recvBuff, BUFF_SIZE);
   if (tmpInt == -1) {
     isValidReq_ = false;
     struct kevent clientEvent;
@@ -109,11 +109,12 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
       idx++;
     }
     if (readStatus_ == BODY) {
-      std::map<std::string, std::string>::iterator it = headers_.find("content_length");
+      std::map<std::string, std::string>::iterator it = headers_.find("Content-Length");
       char *end;
       if (it != headers_.end()) {
         double contentLen = std::strtod(it->second.c_str(), &end);
         if (end && *end != '\0') {
+          statusCode_ = 400;
           return PENDING;
         }
         if (bodyBuffer_.size() == contentLen) {
@@ -122,24 +123,10 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
       }
     }
   } catch (std::exception& e) {
-    std::cout << "Error: " << e.what() << std::endl;
-    return FAIL;
+    std::cout << "Error: " << e.what() << std::endl; // debuggin용
+    statusCode_ = 400;
+    return PENDING;
   }
   printParseResult();
   return PENDING;
-  // if (tmp == 0 || tmp == -1){
-  //   struct kevent clientEvent;
-
-  //   EV_SET(&clientEvent, event.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-  //   kevent(kq_, &clientEvent, 1, NULL, 0, 0);
-  // }
-  /* 검사가 끝나면 wirte 해달라고 켜야함 */
-  // if (read all header) {
-  //   struct kevent clientEvent;
-
-  //   EV_SET(&clientEvent, event.ident, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-  //   EV_SET(&clientEvent, event.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-  //   kevent(kq_, &clientEvent, 1, NULL, 0, 0);
-  // }
-  // std::cout << "receive: " << recvBuff << std::endl;
 }
