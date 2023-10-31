@@ -25,7 +25,7 @@ void ClientEventController::printParseResult() {
   std::cout << "uri: " << uri_ << std::endl;
   std::cout << "version: " << version_ << std::endl;
   std::cout << headers_ << std::endl;
-  std::cout << "=====ParseResult=====\n";
+  std::cout << "======================\n";
 }
 
 void ClientEventController::parseHeaderLineByLine(std::string str) {
@@ -125,6 +125,8 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
   } catch (std::exception& e) {
     std::cout << "Error: " << e.what() << std::endl; // debug
     statusCode_ = 400;
+    evSet(EVFILT_READ, EV_DELETE);
+    evSet(EVFILT_WRITE, EV_ADD);
     return PENDING;
   }
   printParseResult();
