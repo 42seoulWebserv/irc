@@ -66,34 +66,6 @@ ServerConfig makeSingleServerConfig(Directive server) {
   return res;
 }
 
-void printServerConfig(ServerConfig res) {
-  std::cout << "listen: " << res.getPort() << '\n';
-  std::cout << "server_name: " << res.getServerName() << '\n';
-  std::cout << "client_max_content_size: " << res.getLimitClientBodySize()
-            << 'm' << '\n';
-  std::vector<LocationConfig>::iterator location;
-  for (location = res.beginLocationConfigs();
-       location != res.endLocationConfigs(); location++) {
-    std::cout << "location " << location->getUri() << " {" << '\n';
-    std::cout << "  return " << location->getRedirectionStatusCode() << ' '
-              << location->getRedirectionPath() << '\n';
-    std::cout << "  accept_methods ";
-    std::vector<std::string>::iterator method;
-    for (method = location->beginAcceptMethods();
-         method != location->endAcceptMethods(); method++) {
-      std::cout << *method << ' ';
-    }
-    std::cout << '\n';
-    std::map<std::string, std::string>::iterator cgi;
-    for (cgi = location->beginCgiPrograms(); cgi != location->endCgiPrograms();
-         cgi++) {
-      std::cout << "  cgi_extension " << cgi->first << ' ' << cgi->second
-                << '\n';
-    }
-    std::cout << '}' << '\n';
-  }
-}
-
 RootConfig ConfigMaker::makeConfig(Directive directive) {
   RootConfig res;
   std::vector<Directive>::iterator server;

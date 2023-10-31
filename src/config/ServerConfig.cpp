@@ -20,12 +20,15 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &rhs) {
 ServerConfig::~ServerConfig(void) {}
 
 void ServerConfig::printServerConfig(void) {
-  std::cout << "listen: " << this->port_ << '\n';
+  std::cout << "server {" << '\n';
+  std::cout << "  listen: " << this->port_ << '\n';
+  std::cout << "  server_name: " << this->serverName_ << '\n';
   std::vector<LocationConfig>::iterator location;
   for (location = this->locationConfigs_.begin();
        location != this->locationConfigs_.end(); location++) {
     location->printLocationConfig();
   }
+  std::cout << '}' << '\n';
 }
 
 int ServerConfig::getPort() const {
@@ -41,7 +44,7 @@ int ServerConfig::getLimitClientBodySize() const {
 }
 
 void ServerConfig::setLimitClientBodySize(const int &limitClientBodySize) {
-  limitClientBodySize_ = limitClientBodySize; 
+  limitClientBodySize_ = limitClientBodySize;
 }
 
 std::string ServerConfig::getRootPath() const {
@@ -49,7 +52,7 @@ std::string ServerConfig::getRootPath() const {
 }
 
 void ServerConfig::setRootPath(const std::string &rootPath) {
-  rootPath_ = rootPath; 
+  rootPath_ = rootPath;
 }
 
 std::string ServerConfig::getServerName() const {
@@ -57,7 +60,7 @@ std::string ServerConfig::getServerName() const {
 }
 
 void ServerConfig::setServerName(const std::string &serverName) {
-  serverName_ = serverName; 
+  serverName_ = serverName;
 }
 
 std::map<int, std::string> ServerConfig::getErrorPages() const {
@@ -65,7 +68,7 @@ std::map<int, std::string> ServerConfig::getErrorPages() const {
 }
 
 void ServerConfig::setErrorPages(const std::map<int, std::string> &errorPages) {
-  errorPages_ = errorPages; 
+  errorPages_ = errorPages;
 }
 
 void ServerConfig::addErrorPages(const std::pair<int, std::string> &errorPages) {
@@ -77,7 +80,7 @@ std::vector<LocationConfig> ServerConfig::getLocationConfigs() const {
 }
 
 void ServerConfig::setLocationConfigs(const std::vector<LocationConfig> &locationConfigs) {
-  locationConfigs_ = locationConfigs; 
+  locationConfigs_ = locationConfigs;
 }
 
 void ServerConfig::addLocationConfigs(const LocationConfig &locationConfigs) {

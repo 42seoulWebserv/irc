@@ -1,12 +1,11 @@
-#include "ConfigLexer.hpp"
 #include <exception>
 #include <vector>
 
+#include "ConfigLexer.hpp"
 #include "PatternLetters.hpp"
 #include "PatternOptional.hpp"
 #include "PatternSequence.hpp"
 #include "PatternWord.hpp"
-
 #include "ParseResult.hpp"
 #include "Parser.hpp"
 
@@ -122,6 +121,7 @@ const Directive ConfigLexer::run(const std::string raw) {
                    .setAlias("block"))
           .add(PatternOptional("httpBody")
                    .add("rootPattern")
+                   .add("clientMaxContentSizePattern")
                    .add("serverBlock")
                    .setAlias("body"))
           .add(PatternSequence("serverBlock")
@@ -144,6 +144,8 @@ const Directive ConfigLexer::run(const std::string raw) {
                    .add("blockEnd")
                    .setAlias("block"))
           .add(PatternOptional("locationBody")
+                   .add("rootPattern")
+                   .add("clientMaxContentSizePattern")
                    .add("returnPattern")
                    .add("indexPattern")
                    .add("acceptMethodsPattern")

@@ -2,10 +2,14 @@
 #include <sys/socket.h>
 #include <sys/event.h>
 #include <vector>
+#include <fstream>
+#include <iterator>
 
 #include <iostream>
 
 #include "ServerEventController.hpp"
+#include "ConfigLexer.hpp"
+#include "ConfigMaker.hpp"
 
 int run() {
   int kq = kqueue();
@@ -33,7 +37,28 @@ int run() {
   return 0;
 }
 
-int main() {
+int main(int argc, char **argv) {
+  std::string filepath;
+  if (argc < 2) {
+    filepath = "default.conf";
+  } else if (argc == 2) {
+    filepath = argv[1];
+  } else {
+    std::cout << "Error: too many args" << std::endl;
+    return 1;
+  }
+  std::ifstream configFile(filepath.c_str());
+  if (!configFile.is_open()) {
+    std::cout << "Error: config file open error" << std::endl;
+    return 1;
+  }
+  std::string configStr((std::istreambuf_iterator<char>(configFile)), std::istreambuf_iterator<char>());
+  configFile.close();
+
+  Directive directive = ConfigLexer::run(configStr);
+  RootConfig config = ConfigMaker::makeConfig(directive);
+  config.printRootConfig();
+
   run();
   return 0;
 }
