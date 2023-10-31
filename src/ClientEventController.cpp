@@ -7,18 +7,19 @@
 
 ClientEventController::ClientEventController(int kq, int clientSocket) :
   kq_(kq),
-  clientSocket_(clientSocket),
-  readStatus_(START_LINE)
+  readStatus_(START_LINE),
+  clientSocket_(clientSocket)
   {}
 
 ClientEventController::ClientEventController(const ClientEventController &src) :
   kq_(src.kq_),
-  clientSocket_(src.clientSocket_),
-  readStatus_(src.readStatus_)
+  readStatus_(src.readStatus_),
+  clientSocket_(src.clientSocket_)
   {}
 
 ClientEventController &ClientEventController::operator=(const ClientEventController &rhs) {
   this->kq_ = rhs.kq_;
+  this->readStatus_ = rhs.readStatus_;
   this->clientSocket_ = rhs.clientSocket_;
   return *this;
 }
