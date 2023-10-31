@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/event.h>
+#include <vector>
 
 #include <iostream>
 
@@ -13,12 +14,16 @@ int run() {
   while(1) {
     struct kevent eventList[5];
     int number = kevent(kq, 0, 0, eventList, 5, NULL);
+    std::vector<EventController *> deleteList;
     for (int i = 0; i < number; i++) {
       EventController *connector = reinterpret_cast<EventController *>(eventList[i].udata);
       EventController::returnType type = connector->handleEvent(eventList[i]);
       if (type == EventController::SUCCESS || type == EventController::FAIL) {
-        delete connector;
+        deleteList.push_back(connector);
       }
+    }
+    for (int i = 0; i < deleteList.size(); i++) {
+      delete deleteList[i];
     }
 
     // sprintf(buff_snd, "%d : %s", strlen(buff_rcv), buff_rcv);
