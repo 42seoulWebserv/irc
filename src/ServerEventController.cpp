@@ -65,4 +65,5 @@ enum EventController::returnType ServerEventController::handleEvent(const struct
 
   EV_SET(&clientEvent, clientSocket, EVFILT_READ, EV_ADD, 0, 0, new ClientEventController(this->kq_, clientSocket));
   kevent(this->kq_, &clientEvent, 1, NULL, 0, &timeout);
+  return PENDING;
 }
