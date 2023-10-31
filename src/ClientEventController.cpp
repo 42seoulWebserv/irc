@@ -8,13 +8,13 @@
 ClientEventController::ClientEventController(int kq, int clientSocket) :
   kq_(kq),
   clientSocket_(clientSocket),
-  status_(START_LINE)
+  readStatus_(START_LINE)
   {}
 
 ClientEventController::ClientEventController(const ClientEventController &src) :
   kq_(src.kq_),
   clientSocket_(src.clientSocket_),
-  status_(src.status_)
+  readStatus_(src.readStatus_)
   {}
 
 ClientEventController &ClientEventController::operator=(const ClientEventController &rhs) {

@@ -86,7 +86,7 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
     return PENDING;
   }
   std::string tmpStr(recvBuff);
-  if (status_ != BODY && tmpStr.find('\r\n') == std::string::npos) {
+  if (readStatus_ != BODY && tmpStr.find('\r\n') == std::string::npos) {
     headerBuffer_ += tmpStr;
     return PENDING;
   }
@@ -98,17 +98,17 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
   std::string split;
   int idx = 0;
   try {
-    while (status_ != BODY && std::getline(readBuff, split, '\n')) {
+    while (readStatus_ != BODY && std::getline(readBuff, split, '\n')) {
       if (idx == 0) {
-        status_ = START_LINE;
+        readStatus_ = START_LINE;
         parseStartLine(split);
       } else {
-        status_ = HEADER;
+        readStatus_ = HEADER;
         parseHeaderLineByLine(split);
       }
       idx++;
     }
-    if (status_ == BODY) {
+    if (readStatus_ == BODY) {
       std::map<std::string, std::string>::iterator it = headers_.find("content_length");
       char *end;
       if (it != headers_.end()) {
