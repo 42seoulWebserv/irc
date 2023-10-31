@@ -7,9 +7,10 @@
 
 #include "LocationConfig.hpp"
 
+class RootConfig;
 class ServerConfig {
 public:
-  ServerConfig();
+  ServerConfig(const RootConfig &rootConfig);
   ServerConfig(const ServerConfig &src);
   ServerConfig &operator=(const ServerConfig &rhs);
   ~ServerConfig();

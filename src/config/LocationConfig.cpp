@@ -1,19 +1,26 @@
 #include "LocationConfig.hpp"
+#include "ServerConfig.hpp"
 
-LocationConfig::LocationConfig(void) {}
+LocationConfig::LocationConfig(const ServerConfig &src)
+    : limitClientBodySize_(0), autoIndex_(false), redirectionStatusCode_(0) {
+  this->rootPath_ = src.getRootPath();
+  this->limitClientBodySize_ = src.getLimitClientBodySize();
+}
 
 LocationConfig::LocationConfig(const LocationConfig &src) { *this = src; }
 
 LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
-  if (this == &rhs)
+  if (this == &rhs) {
     return *this;
-  this->uri_ = rhs.uri_;
-  this->acceptMethods_ = rhs.acceptMethods_;
-  this->rootPath_ = rhs.rootPath_;
-  this->redirectionStatusCode_ = rhs.redirectionStatusCode_;
-  this->redirectionPath_ = rhs.redirectionPath_;
+  }
+  this->limitClientBodySize_ = rhs.limitClientBodySize_;
   this->autoIndex_ = rhs.autoIndex_;
+  this->redirectionStatusCode_ = rhs.redirectionStatusCode_;
+  this->uri_ = rhs.uri_;
+  this->rootPath_ = rhs.rootPath_;
   this->indexPath_ = rhs.indexPath_;
+  this->redirectionPath_ = rhs.redirectionPath_;
+  this->acceptMethods_ = rhs.acceptMethods_;
   this->cgiPrograms_ = rhs.cgiPrograms_;
   return *this;
 }
@@ -22,6 +29,8 @@ LocationConfig::~LocationConfig(void) {}
 
 void LocationConfig::printLocationConfig(void) {
   std::cout << "  location " << this->uri_ << " {" << '\n';
+  std::cout << "    root: " << this->rootPath_ << '\n';
+  std::cout << "    client_max_content_size: " << this->limitClientBodySize_ << '\n';
   std::cout << "    return " << this->redirectionStatusCode_ << ' '
             << this->redirectionPath_ << '\n';
   std::cout << "    accept_methods ";
@@ -37,6 +46,14 @@ void LocationConfig::printLocationConfig(void) {
     std::cout << "    cgi_extension " << cgi->first << ' ' << cgi->second << '\n';
   }
   std::cout << "  }" << '\n';
+}
+
+int LocationConfig::getLimitClientBodySize() const {
+  return limitClientBodySize_;
+}
+
+void LocationConfig::setLimitClientBodySize(const int &limitClientBodySize) {
+  limitClientBodySize_ = limitClientBodySize;
 }
 
 bool LocationConfig::getAutoIndex() const { return autoIndex_; }

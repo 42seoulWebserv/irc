@@ -25,14 +25,16 @@ void fillInCgiExtension(LocationConfig &res, std::vector<std::string> values) {
   return;
 }
 
-LocationConfig makeLocationConfig(Directive location) {
-  LocationConfig res;
+LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
   std::vector<Directive>::iterator element;
   res.setUri(location.getElementAtIndexValues(0));
   for (element = location.beginChildren(); element != location.endChildren();
        element++) {
-    if (element->getKey() == "return") {
-
+    if (element->getKey() == "root") {
+      res.setRootPath(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "client_max_content_size") {
+      res.setLimitClientBodySize(strToInteger(element->getElementAtIndexValues(0)));
+    } else if (element->getKey() == "return") {
       res.setRedirectionStatusCode(
           strToInteger(element->getElementAtIndexValues(0)));
       res.setRedirectionPath(element->getElementAtIndexValues(1));
@@ -47,15 +49,19 @@ LocationConfig makeLocationConfig(Directive location) {
   return res;
 }
 
-ServerConfig makeSingleServerConfig(Directive server) {
-  ServerConfig res;
+ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
   std::vector<Directive>::iterator element;
   for (element = server.beginChildren(); element != server.endChildren();
        element++) {
-    if (element->getKey() == "listen") {
+    if (element->getKey() == "root") {
+      res.setRootPath(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "client_max_content_size") {
+      res.setLimitClientBodySize(strToInteger(element->getElementAtIndexValues(0)));
+    } else if (element->getKey() == "listen") {
       res.setPort(strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "location") {
-      res.addLocationConfigs(makeLocationConfig(*element));
+      LocationConfig locationConf(res);
+      res.addLocationConfigs(makeLocationConfig(locationConf, *element));
     } else if (element->getKey() == "server_name") {
       res.setServerName(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "client_max_content_size") {
@@ -68,12 +74,16 @@ ServerConfig makeSingleServerConfig(Directive server) {
 
 RootConfig ConfigMaker::makeConfig(Directive directive) {
   RootConfig res;
-  std::vector<Directive>::iterator server;
-  for (server = directive.beginChildren(); server != directive.endChildren();
-       server++) {
-    if (server->getKey() == "server") {
-      ServerConfig tmp = makeSingleServerConfig(*server);
-      res.addServerConfigs(makeSingleServerConfig(*server));
+  std::vector<Directive>::iterator element;
+  for (element = directive.beginChildren(); element != directive.endChildren();
+       element++) {
+    if (element->getKey() == "root") {
+      res.setRootPath(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "client_max_content_size") {
+      res.setLimitClientBodySize(strToInteger(element->getElementAtIndexValues(0)));
+    } else if (element->getKey() == "server") {
+      ServerConfig serverConf(res);
+      res.addServerConfigs(makeSingleServerConfig(serverConf, *element));
     }
   }
   return res;

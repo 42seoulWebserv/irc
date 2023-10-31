@@ -1,13 +1,17 @@
 #include "ServerConfig.hpp"
+#include "RootConfig.hpp"
 
-ServerConfig::ServerConfig(void) {}
-
-// ServerConfig::ServerConfig(Directive Directive) {}
+ServerConfig::ServerConfig(const RootConfig &src): port_(0), limitClientBodySize_(0) {
+  this->rootPath_ = src.getRootPath();
+  this->limitClientBodySize_ = src.getLimitClientBodySize();
+}
 
 ServerConfig::ServerConfig(const ServerConfig &src) { *this = src; }
 
 ServerConfig &ServerConfig::operator=(const ServerConfig &rhs) {
-  if (this == &rhs) return *this;
+  if (this == &rhs) {
+    return *this;
+  }
   this->port_ = rhs.port_;
   this->limitClientBodySize_ = rhs.limitClientBodySize_;
   this->rootPath_ = rhs.rootPath_;
@@ -21,8 +25,10 @@ ServerConfig::~ServerConfig(void) {}
 
 void ServerConfig::printServerConfig(void) {
   std::cout << "server {" << '\n';
-  std::cout << "  listen: " << this->port_ << '\n';
+  std::cout << "  root: " << this->rootPath_ << '\n';
   std::cout << "  server_name: " << this->serverName_ << '\n';
+  std::cout << "  client_max_content_size: " << this->limitClientBodySize_ << '\n';
+  std::cout << "  listen: " << this->port_ << '\n';
   std::vector<LocationConfig>::iterator location;
   for (location = this->locationConfigs_.begin();
        location != this->locationConfigs_.end(); location++) {

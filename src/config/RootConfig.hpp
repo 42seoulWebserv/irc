@@ -16,6 +16,10 @@ public:
 
   void printRootConfig();
 
+  std::string getRootPath() const;
+  void setRootPath(const std::string &rootPath);
+  int getLimitClientBodySize() const;
+  void setLimitClientBodySize(const int &limitClientBodySize);
   std::vector<ServerConfig> getServerConfigs() const;
   void setServerConfigs(const std::vector<ServerConfig> &serverConfigs);
   void addServerConfigs(const ServerConfig &serverConfigs);
@@ -23,6 +27,8 @@ public:
   const std::vector<ServerConfig>::iterator endServerConfigs();
 
 private:
+  std::string rootPath_;
+  int limitClientBodySize_;
   std::vector<ServerConfig> serverConfigs_;
 };
 
