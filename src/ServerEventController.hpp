@@ -14,10 +14,10 @@ public:
 
 	enum EventController::returnType handleEvent(const struct kevent &event);
 
+private:
 	int kq_;
 	int socket_;
 	int port_;
-private:
 };
 
 #endif
