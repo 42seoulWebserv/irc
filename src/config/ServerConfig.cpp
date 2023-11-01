@@ -1,7 +1,7 @@
 #include "ServerConfig.hpp"
 #include "RootConfig.hpp"
 
-ServerConfig::ServerConfig(const RootConfig &src): port_(0), limitClientBodySize_(0) {
+ServerConfig::ServerConfig(const RootConfig &src): port_(80), limitClientBodySize_(0) {
   this->rootPath_ = src.getRootPath();
   this->limitClientBodySize_ = src.getLimitClientBodySize();
 }
