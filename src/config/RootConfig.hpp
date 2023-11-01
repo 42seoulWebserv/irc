@@ -20,7 +20,7 @@ public:
   void setRootPath(const std::string &rootPath);
   int getLimitClientBodySize() const;
   void setLimitClientBodySize(const int &limitClientBodySize);
-  std::vector<ServerConfig> getServerConfigs() const;
+  std::vector<ServerConfig> &getServerConfigs();
   void setServerConfigs(const std::vector<ServerConfig> &serverConfigs);
   void addServerConfigs(const ServerConfig &serverConfigs);
   const std::vector<ServerConfig>::iterator beginServerConfigs();

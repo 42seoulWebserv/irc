@@ -7,7 +7,7 @@
 class ServerEventController : public EventController
 {
 public:
-	ServerEventController(int kq);
+	ServerEventController(int kq, int port);
 	ServerEventController(const ServerEventController &src);
 	ServerEventController &operator=(const ServerEventController &rhs);
 	~ServerEventController();
@@ -16,6 +16,7 @@ public:
 
 	int kq_;
 	int socket_;
+	int port_;
 private:
 };
 

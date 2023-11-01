@@ -1,11 +1,12 @@
 #ifndef EVENTCONTROLLER_HPP_
 #define EVENTCONTROLLER_HPP_
 
+#include "RootConfig.hpp"
+
 /* event hadling
 ** kqueue가 발생시키는 event를 handle
 */
-class EventController
-{
+class EventController {
 public:
 	EventController();
 	EventController(const EventController &src);
@@ -21,7 +22,13 @@ public:
 
 	virtual enum returnType handleEvent(const struct kevent &event) = 0;
 
+	void addServerConfig(ServerConfig *serverConfigs);
+	void setServerConfigs(const std::vector<ServerConfig*> &serverConfigs);
+	std::vector<ServerConfig*> getServerConfigs() const;
+
 private:
+	std::vector<ServerConfig*> serverConfigs_;
+
 };
 
 #endif

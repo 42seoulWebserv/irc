@@ -42,7 +42,7 @@ void RootConfig::setLimitClientBodySize(const int &limitClientBodySize) {
   limitClientBodySize_ = limitClientBodySize;
 }
 
-std::vector<ServerConfig> RootConfig::getServerConfigs() const {
+std::vector<ServerConfig> &RootConfig::getServerConfigs() {
   return serverConfigs_;
 }
 
