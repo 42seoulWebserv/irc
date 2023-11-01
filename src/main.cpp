@@ -5,15 +5,37 @@
 #include <fstream>
 #include <iterator>
 
+#include <set>
 #include <iostream>
 
+#include "RootConfig.hpp"
+#include "ServerConfig.hpp"
 #include "ServerEventController.hpp"
 #include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"
 
-int run() {
+int run(RootConfig &config) {
   int kq = kqueue();
-  ServerEventController *serverEventController = new ServerEventController(kq);
+
+  std::vector<ServerConfig> &serverConfigs = config.getServerConfigs();
+  std::map<int, ServerEventController *> serverEventControllers;
+  for (size_t i = 0; i < serverConfigs.size(); i++) {
+    if (serverEventControllers.find(serverConfigs[i].getPort()) == serverEventControllers.end()) {
+      int port = serverConfigs[i].getPort();
+      ServerEventController *serverEventController = new ServerEventController(kq, port);
+      serverEventControllers.insert(std::make_pair(serverConfigs[i].getPort(), serverEventController));
+    }
+  }
+
+  std::map<int, ServerEventController *>::iterator iter;
+  for (iter = serverEventControllers.begin(); iter != serverEventControllers.end(); iter++) {
+    for (size_t i = 0; i < serverConfigs.size(); i++) {
+      if (serverConfigs[i].getPort() == iter->first) {
+        ServerEventController *serverEventController = iter->second;
+        serverEventController->addServerConfig(&(serverConfigs[i]));
+      }
+    }
+  }
 
   while(1) {
     struct kevent eventList[5];
@@ -26,7 +48,7 @@ int run() {
         deleteList.push_back(connector);
       }
     }
-    for (int i = 0; i < deleteList.size(); i++) {
+    for (size_t i = 0; i < deleteList.size(); i++) {
       delete deleteList[i];
     }
 
@@ -59,6 +81,6 @@ int main(int argc, char **argv) {
   RootConfig config = ConfigMaker::makeConfig(directive);
   config.printRootConfig();
 
-  run();
+  run(config);
   return 0;
 }
