@@ -31,7 +31,11 @@ LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
   for (element = location.beginChildren(); element != location.endChildren();
        element++) {
     if (element->getKey() == "root") {
-      res.setRootPath(element->getElementAtIndexValues(0));
+      std::string rootPath = element->getElementAtIndexValues(0);
+      if (rootPath.back() == '/') {
+        rootPath.pop_back();
+      }
+      res.setRootPath(rootPath);
     } else if (element->getKey() == "client_max_content_size") {
       res.setLimitClientBodySize(strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "return") {

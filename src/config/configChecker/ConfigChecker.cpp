@@ -119,11 +119,21 @@ static void checkServerClientMaxContentSize(std::string str) {
 
 static void checkServerLocationDuplicate(std::string locationUri,
                                          std::set<std::string> &locationPaths) {
+  if (locationUri.at(0) != '/') {
+    throw std::invalid_argument("location path must be in absolute path form");
+  }
   if (locationPaths.find(locationUri) == locationPaths.end()) {
     locationPaths.insert(locationUri);
   } else {
     throw std::invalid_argument("location path cannot be duplicated");
   }
+}
+
+static void checkRootDirective(Directive root) {
+  if (root.getElementAtIndexValues(0).at(0) != '/') {
+    throw std::invalid_argument("invalid root path");
+  }
+  return;
 }
 
 static void checkServerDirective(Directive server) {
@@ -147,16 +157,11 @@ static void checkServerDirective(Directive server) {
       checkServerName(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "client_max_content_size") {
       checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "root") {
+      checkRootDirective(*element);
     } else {
       throw std::invalid_argument("invalid server directive");
     }
-  }
-  return;
-}
-
-static void checkRootDirective(Directive root) {
-  if (root.getElementAtIndexValues(0).at(0) != '/') {
-    throw std::invalid_argument("invalid root path");
   }
   return;
 }
