@@ -1,17 +1,16 @@
-#include <iostream>
-#include <sstream>
-#include <fstream>
-
 #include <sys/event.h>
 #include <unistd.h>
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 #include "ClientEventController.hpp"
 #include "EventController.hpp"
 
 // ": "
 static bool hasSpace(std::string str) {
-  for (size_t i = 0; i < str.length(); i++)
-  {
+  for (size_t i = 0; i < str.length(); i++) {
     if (isspace(str[i])) {
       return true;
     }
@@ -73,17 +72,18 @@ void ClientEventController::parseStartLine(std::string str) {
 /* body는 필요한 순간에 읽는다, 여기선 header 내용만 검사한다. */
 /* 하나의 요청이 여러 개로 찢어져서 들어온 건지, 다 들어왔는지도 확인. */
 /* 주: cheseo 부: yonshin 검: junmkang */
-enum EventController::returnType ClientEventController::clientRead(const struct kevent &event) {
+enum EventController::returnType ClientEventController::clientRead(
+    const struct kevent &event) {
   char recvBuff[BUFF_SIZE];
 
-  int tmpInt  = read(event.ident, recvBuff, BUFF_SIZE - 1);
+  int tmpInt = read(event.ident, recvBuff, BUFF_SIZE - 1);
   if (tmpInt == -1) {
     evSet(EVFILT_READ, EV_DELETE);
     return FAIL;
   }
   recvBuff[tmpInt] = '\0';
   std::string tmpStr(recvBuff);
-  if (readStatus_ != BODY && tmpStr.find('\r\n') == std::string::npos) {
+  if (readStatus_ != BODY && tmpStr.find('\r') == std::string::npos) {
     headerBuffer_ += tmpStr;
     return PENDING;
   }
@@ -109,7 +109,8 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
       idx++;
     }
     if (readStatus_ == BODY) {
-      std::map<std::string, std::string>::iterator it = headers_.find("Content-Length");
+      std::map<std::string, std::string>::iterator it =
+          headers_.find("Content-Length");
       char *end;
       if (it != headers_.end()) {
         double contentLen = std::strtod(it->second.c_str(), &end);
@@ -122,8 +123,8 @@ enum EventController::returnType ClientEventController::clientRead(const struct 
         }
       }
     }
-  } catch (std::exception& e) {
-    std::cout << "Error: " << e.what() << std::endl; // debug
+  } catch (std::exception &e) {
+    std::cout << "Error: " << e.what() << std::endl;  // debug
     statusCode_ = 400;
     evSet(EVFILT_READ, EV_DELETE);
     evSet(EVFILT_WRITE, EV_ADD);
