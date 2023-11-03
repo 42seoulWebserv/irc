@@ -22,8 +22,9 @@ class ClientEventController : public EventController {
   void parseHeaderLineByLine(std::string str);
   void parseStartLine(std::string str);
   void printParseResult();
+  ServerConfig *selectServerConfig();
 
- private:
+private:
   enum READ_STATUS readStatus_;
   int kq_;
   int statusCode_;
@@ -35,6 +36,7 @@ class ClientEventController : public EventController {
   std::string body_;
   std::string headerBuffer_;
   std::string bodyBuffer_;
+  ServerConfig *config_;
 
   enum EventController::returnType clientRead(const struct kevent &event);
   enum EventController::returnType clientWrite(const struct kevent &event);
