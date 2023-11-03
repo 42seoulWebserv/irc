@@ -1,3 +1,5 @@
+#include "ConfigChecker.hpp"
+
 #include <cctype>
 #include <cmath>
 #include <cstdlib>
@@ -8,7 +10,6 @@
 #include <sstream>
 #include <vector>
 
-#include "ConfigChecker.hpp"
 #include "Directive.hpp"
 
 // asset
@@ -73,33 +74,9 @@ static void checkValidIndex(std::string str) {
 
 // checkServer -> location
 
-static void checkServerLocation(Directive location) {
-  std::vector<Directive>::iterator element;
-  for (element = location.beginChildren(); element != location.endChildren();
-       element++) {
-    if (element->getKey() == "return") {
-      int statusCode = strToInt(element->getElementAtIndexValues(0));
-      if (statusCode < 100 || statusCode > 600) {
-        throw std::invalid_argument("status code is out of range");
-      }
-    } else if (element->getKey() == "accept_methods") {
-      checkValidMethod(element->getValues());
-    } else if (element->getKey() == "cgi_extension") {
-      checkValidCgiExtension(element->getValues());
-    } else if (element->getKey() == "index") {
-      checkValidIndex(element->getElementAtIndexValues(0));
-    } else {
-      throw std::invalid_argument("invalid server location directive");
-    }
-  }
-  return;
-}
-
-static void checkServerName(std::string str) {
-  for (std::string::iterator i = str.begin(); i != str.end(); i++) {
-    if (!std::isalnum(*i) || *i == ';' || *i == ' ' || !std::isgraph(*i)) {
-      throw std::invalid_argument("server_name error");
-    }
+static void checkRootDirective(Directive root) {
+  if (root.getElementAtIndexValues(0).at(0) != '/') {
+    throw std::invalid_argument("invalid root path");
   }
   return;
 }
@@ -117,6 +94,42 @@ static void checkServerClientMaxContentSize(std::string str) {
   return;
 }
 
+static void checkServerLocation(Directive location) {
+  std::vector<Directive>::iterator element;
+  for (element = location.beginChildren(); element != location.endChildren();
+       element++) {
+    if (element->getKey() == "return") {
+      int statusCode = strToInt(element->getElementAtIndexValues(0));
+      if (statusCode < 100 || statusCode > 600) {
+        throw std::invalid_argument("status code is out of range");
+      }
+    } else if (element->getKey() == "accept_methods") {
+      checkValidMethod(element->getValues());
+    } else if (element->getKey() == "cgi_extension") {
+      checkValidCgiExtension(element->getValues());
+    } else if (element->getKey() == "index") {
+      checkValidIndex(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "root") {
+      checkRootDirective(*element);
+    } else if (element->getKey() == "client_max_content_size") {
+      checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
+    } else {
+      throw std::invalid_argument('"' + element->getKey() + '"' +
+                                  " is invalid server location directive");
+    }
+  }
+  return;
+}
+
+static void checkServerName(std::string str) {
+  for (std::string::iterator i = str.begin(); i != str.end(); i++) {
+    if (!std::isalnum(*i) || *i == ';' || *i == ' ' || !std::isgraph(*i)) {
+      throw std::invalid_argument("server_name error");
+    }
+  }
+  return;
+}
+
 static void checkServerLocationDuplicate(std::string locationUri,
                                          std::set<std::string> &locationPaths) {
   if (locationUri.at(0) != '/') {
@@ -127,13 +140,6 @@ static void checkServerLocationDuplicate(std::string locationUri,
   } else {
     throw std::invalid_argument("location path cannot be duplicated");
   }
-}
-
-static void checkRootDirective(Directive root) {
-  if (root.getElementAtIndexValues(0).at(0) != '/') {
-    throw std::invalid_argument("invalid root path");
-  }
-  return;
 }
 
 static void checkServerDirective(Directive server) {
@@ -173,6 +179,11 @@ static void checkDirectiveChildren(Directive directive) {
       checkServerDirective(*it);
     } else if (it->getKey() == "root") {
       checkRootDirective(*it);
+    } else if (it->getKey() == "client_max_content_size") {
+      checkServerClientMaxContentSize(it->getElementAtIndexValues(0));
+    } else {
+      throw std::invalid_argument('"' + it->getKey() + '"' +
+                                  " is invalid config directive");
     }
   }
 }

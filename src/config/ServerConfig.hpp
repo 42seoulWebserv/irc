@@ -9,7 +9,7 @@
 
 class RootConfig;
 class ServerConfig {
-public:
+ public:
   ServerConfig(const RootConfig &rootConfig);
   ServerConfig(const ServerConfig &src);
   ServerConfig &operator=(const ServerConfig &rhs);
@@ -25,6 +25,8 @@ public:
   void setRootPath(const std::string &rootPath);
   std::string getServerName() const;
   void setServerName(const std::string &serverName);
+  std::string getIndex() const;
+  void setIndex(const std::string &index);
   std::map<int, std::string> getErrorPages() const;
   void setErrorPages(const std::map<int, std::string> &errorPages);
   void addErrorPages(const std::pair<int, std::string> &errorPages);
@@ -34,11 +36,12 @@ public:
   const std::vector<LocationConfig>::iterator beginLocationConfigs();
   const std::vector<LocationConfig>::iterator endLocationConfigs();
 
-private:
+ private:
   int port_;
   int limitClientBodySize_;
   std::string rootPath_;
   std::string serverName_;
+  std::string index_;
   std::map<int, std::string> errorPages_;
   std::vector<LocationConfig> locationConfigs_;
 };

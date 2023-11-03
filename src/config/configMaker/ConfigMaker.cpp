@@ -1,7 +1,9 @@
+#include "ConfigMaker.hpp"
+
 #include <cmath>
 #include <cstdlib>
 
-#include "ConfigMaker.hpp"
+#include "ConfigChecker.hpp"
 #include "ServerConfig.hpp"
 
 int strToInteger(const std::string &s) {
@@ -37,7 +39,8 @@ LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
       }
       res.setRootPath(rootPath);
     } else if (element->getKey() == "client_max_content_size") {
-      res.setLimitClientBodySize(strToInteger(element->getElementAtIndexValues(0)));
+      res.setLimitClientBodySize(
+          strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "return") {
       res.setRedirectionStatusCode(
           strToInteger(element->getElementAtIndexValues(0)));
@@ -60,7 +63,8 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
     if (element->getKey() == "root") {
       res.setRootPath(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "client_max_content_size") {
-      res.setLimitClientBodySize(strToInteger(element->getElementAtIndexValues(0)));
+      res.setLimitClientBodySize(
+          strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "listen") {
       res.setPort(strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "location") {
@@ -71,6 +75,8 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
     } else if (element->getKey() == "client_max_content_size") {
       res.setLimitClientBodySize(
           strToInteger(element->getElementAtIndexValues(0)));
+    } else if (element->getKey() == "index") {
+      res.setIndex(element->getElementAtIndexValues(0));
     }
   }
   return res;
@@ -79,12 +85,14 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
 RootConfig ConfigMaker::makeConfig(Directive directive) {
   RootConfig res;
   std::vector<Directive>::iterator element;
+  ConfigChecker::checkDirective(directive);
   for (element = directive.beginChildren(); element != directive.endChildren();
        element++) {
     if (element->getKey() == "root") {
       res.setRootPath(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "client_max_content_size") {
-      res.setLimitClientBodySize(strToInteger(element->getElementAtIndexValues(0)));
+      res.setLimitClientBodySize(
+          strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "server") {
       ServerConfig serverConf(res);
       res.addServerConfigs(makeSingleServerConfig(serverConf, *element));
