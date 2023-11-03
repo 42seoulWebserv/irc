@@ -1,18 +1,18 @@
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <sys/event.h>
-#include <vector>
+#include <sys/socket.h>
+#include <sys/types.h>
+
 #include <fstream>
-#include <iterator>
-
-#include <set>
 #include <iostream>
+#include <iterator>
+#include <set>
+#include <vector>
 
+#include "ConfigLexer.hpp"
+#include "ConfigMaker.hpp"
 #include "RootConfig.hpp"
 #include "ServerConfig.hpp"
 #include "ServerEventController.hpp"
-#include "ConfigLexer.hpp"
-#include "ConfigMaker.hpp"
 
 int run(RootConfig &config) {
   int kq = kqueue();
@@ -20,15 +20,19 @@ int run(RootConfig &config) {
   std::vector<ServerConfig> &serverConfigs = config.getServerConfigs();
   std::map<int, ServerEventController *> serverEventControllers;
   for (size_t i = 0; i < serverConfigs.size(); i++) {
-    if (serverEventControllers.find(serverConfigs[i].getPort()) == serverEventControllers.end()) {
+    if (serverEventControllers.find(serverConfigs[i].getPort()) ==
+        serverEventControllers.end()) {
       int port = serverConfigs[i].getPort();
-      ServerEventController *serverEventController = new ServerEventController(kq, port);
-      serverEventControllers.insert(std::make_pair(serverConfigs[i].getPort(), serverEventController));
+      ServerEventController *serverEventController =
+          new ServerEventController(kq, port);
+      serverEventControllers.insert(
+          std::make_pair(serverConfigs[i].getPort(), serverEventController));
     }
   }
 
   std::map<int, ServerEventController *>::iterator iter;
-  for (iter = serverEventControllers.begin(); iter != serverEventControllers.end(); iter++) {
+  for (iter = serverEventControllers.begin();
+       iter != serverEventControllers.end(); iter++) {
     for (size_t i = 0; i < serverConfigs.size(); i++) {
       if (serverConfigs[i].getPort() == iter->first) {
         ServerEventController *serverEventController = iter->second;
@@ -37,12 +41,13 @@ int run(RootConfig &config) {
     }
   }
 
-  while(1) {
+  while (1) {
     struct kevent eventList[5];
     int number = kevent(kq, 0, 0, eventList, 5, NULL);
     std::vector<EventController *> deleteList;
     for (int i = 0; i < number; i++) {
-      EventController *connector = reinterpret_cast<EventController *>(eventList[i].udata);
+      EventController *connector =
+          reinterpret_cast<EventController *>(eventList[i].udata);
       EventController::returnType type = connector->handleEvent(eventList[i]);
       if (type == EventController::SUCCESS || type == EventController::FAIL) {
         deleteList.push_back(connector);
@@ -53,8 +58,8 @@ int run(RootConfig &config) {
     }
 
     // sprintf(buff_snd, "%d : %s", strlen(buff_rcv), buff_rcv);
-    // write(client_socket, "write", strlen(buff_snd) + 1); // +1: NULL까지 포함해서 전송
-    // close(client_socket);
+    // write(client_socket, "write", strlen(buff_snd) + 1); // +1: NULL까지
+    // 포함해서 전송 close(client_socket);
   }
   return 0;
 }
@@ -74,7 +79,8 @@ int main(int argc, char **argv) {
     std::cout << "Error: config file open error" << std::endl;
     return 1;
   }
-  std::string configStr((std::istreambuf_iterator<char>(configFile)), std::istreambuf_iterator<char>());
+  std::string configStr((std::istreambuf_iterator<char>(configFile)),
+                        std::istreambuf_iterator<char>());
   configFile.close();
 
   Directive directive = ConfigLexer::run(configStr);
