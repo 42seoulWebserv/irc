@@ -30,7 +30,7 @@ class ServerConfig {
   std::map<int, std::string> getErrorPages() const;
   void setErrorPages(const std::map<int, std::string> &errorPages);
   void addErrorPages(const std::pair<int, std::string> &errorPages);
-  std::vector<LocationConfig> getLocationConfigs() const;
+  const std::vector<LocationConfig> &getLocationConfigs() const;
   void setLocationConfigs(const std::vector<LocationConfig> &locationConfigs);
   void addLocationConfigs(const LocationConfig &locationConfigs);
   const std::vector<LocationConfig>::iterator beginLocationConfigs();
