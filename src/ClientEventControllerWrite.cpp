@@ -28,14 +28,100 @@ ServerConfig *ClientEventController::selectServerConfig()
   return config;
 }
 
+static std::vector<std::string> strSplit(const std::string &str, char delim)
+{
+  std::vector<std::string> result;
+  size_t prev = 0;
+  for (size_t i = 0; i < str.size(); i++) {
+    if (str[i] == delim) {
+      result.push_back(str.substr(prev, i - prev));
+      prev = i + 1;
+    }
+  }
+  if (prev < str.size()) {
+    result.push_back(str.substr(prev, str.size() - prev));
+  }
+  return result;
+}
+
+static bool isParentPath(const std::string &parent, const std::string &child)
+{
+  if (parent.size() > child.size()) {
+    return false;
+  }
+  const std::vector<std::string> parentSplit = strSplit(parent, '/');
+  const std::vector<std::string> childSplit = strSplit(child, '/');
+  if (parentSplit.size() > childSplit.size()) {
+    return false;
+  }
+  for (size_t i = 0; i < parentSplit.size(); i++) {
+    if (parentSplit[i] != childSplit[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+static std::string strTrim(const std::string &str)
+{
+  size_t start = 0;
+  size_t end = str.size();
+  for (size_t i = 0; i < str.size(); i++) {
+    if (isspace(str[i])) {
+      start++;
+    } else {
+      break;
+    }
+  }
+  for (size_t i = str.size() - 1; i >= 0; i--) {
+    if (isspace(str[i])) {
+      end--;
+    } else {
+      break;
+    }
+  }
+  return str.substr(start, end - start);
+}
+
+static const LocationConfig *selectLocationConfig(const std::vector<LocationConfig> &locations, const std::string &uri) {
+  const LocationConfig *res = NULL;
+  size_t maxLocationLen = 0;
+  for (size_t i = 0; i < locations.size(); i++) {
+    const std::string &locationURI = locations[i].getUri();
+    if (isParentPath(locationURI, uri) == false) {
+      continue;
+    }
+    if (maxLocationLen > locationURI.size()) {
+      continue;
+    }
+    if (locationURI[locationURI.size() - 1] != '/' && locationURI != uri) {
+      continue;
+    }
+    maxLocationLen = locationURI.size();
+
+    res = &locations[i];
+  }
+  return res;
+}
+
 enum EventController::returnType ClientEventController::clientWrite(const struct kevent &event)
 {
   if (config_ == NULL) {
-    config_ = selectServerConfig();
-    if (config_ == NULL) {
+    ServerConfig *serverConfig = selectServerConfig();
+    if (serverConfig == NULL) {
       statusCode_ = 400;
+      return PENDING;
     }
+    config_ = selectLocationConfig(serverConfig->getLocationConfigs(), strTrim(uri_));
+    if (config_ == NULL) {
+      statusCode_ = 404;
+      return PENDING;
+    }
+    std::cout << "selected location path: " << config_->getUri() << std::endl;
   }
+
+
+
   std::cout << "statusCode_ : " << this->statusCode_ << std::endl;
   write(event.ident, "HTTP/1.1 200 OK\r\n", 17);
   write(event.ident, "Host: localhost:420\r\n", 21);

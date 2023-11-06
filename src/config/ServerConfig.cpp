@@ -81,7 +81,7 @@ void ServerConfig::addErrorPages(
   errorPages_.insert(errorPages);
 }
 
-std::vector<LocationConfig> ServerConfig::getLocationConfigs() const {
+const std::vector<LocationConfig> &ServerConfig::getLocationConfigs() const {
   return locationConfigs_;
 }
 
