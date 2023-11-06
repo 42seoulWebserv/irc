@@ -5,13 +5,13 @@
 #include "ClientEventController.hpp"
 #include "EventController.hpp"
 
-ServerConfig *ClientEventController::selectServerConfig()
-{
-  if (headers_.find("Host") == headers_.end()) {
+static ServerConfig *selectServerConfig(
+    std::map<std::string, std::string> &headers,
+    std::vector<ServerConfig *> serverConfigs) {
+  if (headers.find("Host") == headers.end()) {
     return NULL;
   }
-  std::string host = headers_["Host"].substr(0, headers_["Host"].find(":"));
-  std::vector<ServerConfig *> serverConfigs = getServerConfigs();
+  std::string host = headers["Host"].substr(0, headers["Host"].find(":"));
   if (serverConfigs.size() == 0) {
     return NULL;
   }
@@ -21,7 +21,7 @@ ServerConfig *ClientEventController::selectServerConfig()
       candidates.push_back(serverConfigs[i]);
     }
   }
-  ServerConfig *config = getServerConfigs()[0];
+  ServerConfig *config = serverConfigs[0];
   if (candidates.size() > 0) {
     config = candidates[0];
   }
@@ -107,7 +107,7 @@ static const LocationConfig *selectLocationConfig(const std::vector<LocationConf
 enum EventController::returnType ClientEventController::clientWrite(const struct kevent &event)
 {
   if (config_ == NULL) {
-    ServerConfig *serverConfig = selectServerConfig();
+    ServerConfig *serverConfig = selectServerConfig(headers_, getServerConfigs());
     if (serverConfig == NULL) {
       statusCode_ = 400;
       return PENDING;

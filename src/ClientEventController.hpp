@@ -19,7 +19,9 @@ class ClientEventController : public EventController {
   virtual ~ClientEventController();
 
   enum EventController::returnType handleEvent(const struct kevent &event);
-  ServerConfig *selectServerConfig();
+  void parseHeaderLineByLine(std::string str);
+  void parseStartLine(std::string str);
+  void printParseResult();
 
 private:
   enum READ_STATUS readStatus_;
