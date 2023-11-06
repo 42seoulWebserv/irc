@@ -67,14 +67,14 @@ static std::string strTrim(const std::string &str)
   size_t start = 0;
   size_t end = str.size();
   for (size_t i = 0; i < str.size(); i++) {
-    if (isspace(str[i])) {
+    if (std::isspace(str[i])) {
       start++;
     } else {
       break;
     }
   }
   for (size_t i = str.size() - 1; i >= 0; i--) {
-    if (isspace(str[i])) {
+    if (std::isspace(str[i])) {
       end--;
     } else {
       break;
