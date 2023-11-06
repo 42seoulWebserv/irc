@@ -19,9 +19,6 @@ class ClientEventController : public EventController {
   virtual ~ClientEventController();
 
   enum EventController::returnType handleEvent(const struct kevent &event);
-  void parseHeaderLineByLine(std::string str);
-  void parseStartLine(std::string str);
-  void printParseResult();
   ServerConfig *selectServerConfig();
 
 private:
@@ -29,6 +26,7 @@ private:
   int kq_;
   int statusCode_;
   int clientSocket_;
+  size_t contentLength_;
   std::string method_;
   std::string uri_;
   std::string version_;
@@ -42,6 +40,11 @@ private:
   enum EventController::returnType clientWrite(const struct kevent &event);
   enum EventController::returnType clientTimeout(const struct kevent &event);
 
+  void parseHeaderLineByLine(std::string str);
+  void parseStartLine(std::string str);
+  void printParseResult();
+  void parseHeader();
+  void parseBody();
   void evSet(int filter, int action);
 };
 /*

@@ -48,7 +48,7 @@ std::ostream &operator<<(std::ostream &o,
                          const std::map<std::string, std::string> &rhs) {
   for (std::map<std::string, std::string>::const_iterator it = rhs.begin();
        it != rhs.end(); it++) {
-    o << "key: " << it->first << ", value: " << it->second << '\n';
+    o << it->first << ": " << it->second << '\n';
   }
   return o;
 }
