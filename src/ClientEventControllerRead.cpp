@@ -117,6 +117,10 @@ void ClientEventController::parseBody() {
 enum EventController::returnType ClientEventController::clientRead(
     const struct kevent &event) {
 
+  if (event.data == 0) { // closed socket
+    return SUCCESS;
+  }
+
   char recvBuff[event.data + 1];
   int tmpInt = read(event.ident, recvBuff, event.data);
   if (tmpInt == -1) {
