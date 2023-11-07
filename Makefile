@@ -9,7 +9,7 @@ INC_DIR := \
 	-I./src/config/configChecker \
 	-I./src/config/configLexer \
 	-I./src/config/configMaker \
-
+	
 SRC_DIR := ./src
 BUILD_DIR := ./build
 
@@ -27,6 +27,8 @@ MAIN_NAME := \
 	ClientEventControllerRead.cpp \
 	ClientEventControllerWrite.cpp \
 	ClientEventControllerTime.cpp \
+	RequestVO.cpp \
+	ResponseVO.cpp \
 
 CONFIG_DIR := ./src/config/
 CONFIG_NAME := \

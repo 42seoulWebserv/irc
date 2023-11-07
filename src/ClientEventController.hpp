@@ -6,6 +6,8 @@
 #include <string>
 
 #include "EventController.hpp"
+#include "RequestVO.hpp"
+#include "ResponseVO.hpp"
 
 #define BUFF_SIZE 4
 /* server(port) 또는 client가 보낸 요청을 수행하는 클래스 */
@@ -20,20 +22,18 @@ class ClientEventController : public EventController {
 
   enum EventController::returnType handleEvent(const struct kevent &event);
 
-private:
+ private:
   enum READ_STATUS readStatus_;
   int kq_;
   int statusCode_;
   int clientSocket_;
   size_t contentLength_;
-  std::string method_;
-  std::string uri_;
-  std::string version_;
-  std::map<std::string, std::string> headers_;
-  std::string body_;
   std::string headerBuffer_;
   std::string bodyBuffer_;
   const LocationConfig *config_;
+
+  RequestVO request_;
+  ResponseVO response_;
 
   enum EventController::returnType clientRead(const struct kevent &event);
   enum EventController::returnType clientWrite(const struct kevent &event);

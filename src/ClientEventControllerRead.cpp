@@ -41,10 +41,10 @@ static std::string strTrim(const std::string &str)
 
 void ClientEventController::printParseResult() {
   std::cout << "=====ParseResult=====\n";
-  std::cout << "method: " << method_ << std::endl;
-  std::cout << "uri: " << uri_ << std::endl;
-  std::cout << "version: " << version_ << std::endl;
-  std::cout << headers_ << std::endl;
+  std::cout << "method: " << request_.getMethod() << std::endl;
+  std::cout << "uri: " << request_.getUri() << std::endl;
+  std::cout << "version: " << request_.getVersion() << std::endl;
+  std::cout << request_.getHeaders() << std::endl;
   std::cout << "======================\n";
 }
 
@@ -58,7 +58,7 @@ void ClientEventController::parseHeaderLineByLine(std::string str) {
     throw std::invalid_argument('"' + str + '"' + "key has sapce");
   }
   std::string value = strTrim(str.substr(i + 2, std::string::npos));
-  headers_.insert(std::make_pair(key, value));
+  request_.setHeader(key, value);
 }
 
 void ClientEventController::parseStartLine(std::string str) {
@@ -73,19 +73,19 @@ void ClientEventController::parseStartLine(std::string str) {
   if (method != "GET" && method != "POST" && method != "DELETE") {
     throw std::invalid_argument("wrong method");
   }
-  method_ = method;
+  request_.setMethod(method);
   size_t j = str.rfind(' ');
   if (j == std::string::npos || j == i) {
     throw std::invalid_argument("no space");
   }
   std::string uri = str.substr(i + 1, j - i);
-  uri_ = uri;
+  request_.setUri(uri);
   std::string httpVersion = strTrim(str.substr(j + 1, std::string::npos));
   httpVersion = strTrim(httpVersion);
   if (httpVersion != "HTTP/1.1") {
     throw std::invalid_argument("wrong HTTP version");
   }
-  version_ = httpVersion;
+  request_.setVersion(httpVersion);
 }
 
 void ClientEventController::parseHeader() {
@@ -148,9 +148,9 @@ enum EventController::returnType ClientEventController::clientRead(
         evSet(EVFILT_WRITE, EV_ADD);
         return PENDING;
       }
-      std::map<std::string, std::string>::iterator it =
-          headers_.find("Content-Length");
-      if (it != headers_.end()) {
+      std::map<std::string, std::string>::const_iterator it =
+          request_.getHeaders().find("Content-Length");
+      if (it != request_.getHeaders().end()) {
         char *end;
         double contentLen = std::strtod(it->second.c_str(), &end);
         if ((end && *end != '\0') || contentLen < 0) {
