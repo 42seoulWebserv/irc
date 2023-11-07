@@ -27,6 +27,8 @@ MAIN_NAME := \
 	ClientEventControllerRead.cpp \
 	ClientEventControllerWrite.cpp \
 	ClientEventControllerTime.cpp \
+	FileReadEventController.cpp \
+	FileWriteEventController.cpp \
 	RequestVO.cpp \
 	ResponseVO.cpp \
 
