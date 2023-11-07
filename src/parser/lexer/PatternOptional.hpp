@@ -1,11 +1,12 @@
 #ifndef PatternOptional_HPP
 #define PatternOptional_HPP
 
-#include "Pattern.hpp"
 #include <vector>
 
+#include "Pattern.hpp"
+
 class PatternOptional : public Pattern {
-public:
+ public:
   PatternOptional(std::string name);
   PatternOptional(const PatternOptional &rhs);
   PatternOptional &operator=(PatternOptional &rhs);
@@ -18,7 +19,7 @@ public:
   Pattern *clone() const;
   bool compile(std::stringstream &ss, ParseResult &res, bool debug) const;
 
-private:
+ private:
   std::vector<std::string> patterns_;
   unsigned int min_;
   unsigned int max_;

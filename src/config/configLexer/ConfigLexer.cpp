@@ -1,13 +1,14 @@
+#include "ConfigLexer.hpp"
+
 #include <exception>
 #include <vector>
 
-#include "ConfigLexer.hpp"
+#include "ParseResult.hpp"
+#include "Parser.hpp"
 #include "PatternLetters.hpp"
 #include "PatternOptional.hpp"
 #include "PatternSequence.hpp"
 #include "PatternWord.hpp"
-#include "ParseResult.hpp"
-#include "Parser.hpp"
 
 const Directive ConfigLexer::run(const std::string raw) {
   if (raw.empty()) {

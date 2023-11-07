@@ -1,12 +1,12 @@
 #ifndef CONFIGMAKER_HPP_
 #define CONFIGMAKER_HPP_
 
-#include "ServerConfig.hpp"
-#include "RootConfig.hpp"
 #include "Directive.hpp"
+#include "RootConfig.hpp"
+#include "ServerConfig.hpp"
 
 class ConfigMaker {
-public:
+ public:
   static RootConfig makeConfig(Directive directive);
 };
 

@@ -1,11 +1,12 @@
 #ifndef PatternSequence_HPP
 #define PatternSequence_HPP
 
-#include "Pattern.hpp"
 #include <vector>
 
+#include "Pattern.hpp"
+
 class PatternSequence : public Pattern {
-public:
+ public:
   PatternSequence(std::string name);
   PatternSequence(const PatternSequence &rhs);
   PatternSequence &operator=(const PatternSequence &rhs);
@@ -16,7 +17,7 @@ public:
   Pattern *clone() const;
   bool compile(std::stringstream &ss, ParseResult &res, bool debug) const;
 
-private:
+ private:
   std::vector<std::string> patterns_;
 };
 

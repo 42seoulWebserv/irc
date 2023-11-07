@@ -1,4 +1,3 @@
-
 #include <sys/event.h>
 #include <unistd.h>
 
@@ -18,8 +17,7 @@ static bool hasSpace(std::string str) {
   return false;
 }
 
-static std::string strTrim(const std::string &str)
-{
+static std::string strTrim(const std::string &str) {
   size_t start = 0;
   size_t end = str.size();
   for (size_t i = 0; i < str.size(); i++) {
@@ -55,7 +53,7 @@ void ClientEventController::parseHeaderLineByLine(std::string str) {
   }
   std::string key = str.substr(0, i);
   if (hasSpace(key)) {
-    throw std::invalid_argument('"' + str + '"' + "key has sapce");
+    throw std::invalid_argument('"' + str + '"' + "key has space");
   }
   std::string value = strTrim(str.substr(i + 2, std::string::npos));
   headers_.insert(std::make_pair(key, value));
@@ -116,8 +114,7 @@ void ClientEventController::parseBody() {
 /* 주: cheseo 부: yonshin 검: junmkang */
 enum EventController::returnType ClientEventController::clientRead(
     const struct kevent &event) {
-
-  if (event.data == 0) { // closed socket
+  if (event.data == 0) {  // closed socket
     return SUCCESS;
   }
 
@@ -135,9 +132,8 @@ enum EventController::returnType ClientEventController::clientRead(
     if (headerBuffer_.find("\r\n\r\n") != std::string::npos) {
       readStatus_ = BODY;
       int idx = headerBuffer_.find("\r\n\r\n");
-      bodyBuffer_  += headerBuffer_.substr(idx + 4, std::string::npos);
+      bodyBuffer_ += headerBuffer_.substr(idx + 4, std::string::npos);
       headerBuffer_.erase(idx, std::string::npos);
-      std::cout << headerBuffer_ << "$" << std::endl;
       try {
         parseHeader();
       } catch (std::exception &e) {

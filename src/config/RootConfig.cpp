@@ -19,24 +19,21 @@ RootConfig::~RootConfig() {}
 void RootConfig::printRootConfig() {
   std::vector<ServerConfig>::iterator server;
   std::cout << "root: " << this->rootPath_ << '\n';
-  std::cout << "client_max_content_size: " << this->limitClientBodySize_ << '\n';
+  std::cout << "client_max_content_size: " << this->limitClientBodySize_
+            << '\n';
   for (server = this->serverConfigs_.begin();
        server != this->serverConfigs_.end(); server++) {
     server->printServerConfig();
   }
 }
 
-std::string RootConfig::getRootPath() const {
-  return rootPath_;
-}
+std::string RootConfig::getRootPath() const { return rootPath_; }
 
 void RootConfig::setRootPath(const std::string &rootPath) {
   rootPath_ = rootPath;
 }
 
-int RootConfig::getLimitClientBodySize() const {
-  return limitClientBodySize_;
-}
+int RootConfig::getLimitClientBodySize() const { return limitClientBodySize_; }
 
 void RootConfig::setLimitClientBodySize(const int &limitClientBodySize) {
   limitClientBodySize_ = limitClientBodySize;
@@ -46,7 +43,8 @@ std::vector<ServerConfig> &RootConfig::getServerConfigs() {
   return serverConfigs_;
 }
 
-void RootConfig::setServerConfigs(const std::vector<ServerConfig> &serverConfigs) {
+void RootConfig::setServerConfigs(
+    const std::vector<ServerConfig> &serverConfigs) {
   serverConfigs_ = serverConfigs;
 }
 

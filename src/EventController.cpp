@@ -10,7 +10,8 @@ void EventController::addServerConfig(ServerConfig *serverConfig) {
   serverConfigs_.push_back(serverConfig);
 }
 
-void EventController::setServerConfigs(const std::vector<ServerConfig *> &serverConfigs) {
+void EventController::setServerConfigs(
+    const std::vector<ServerConfig *> &serverConfigs) {
   serverConfigs_ = serverConfigs;
 }
 

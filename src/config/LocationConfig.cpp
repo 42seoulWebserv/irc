@@ -1,4 +1,5 @@
 #include "LocationConfig.hpp"
+
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
@@ -30,7 +31,8 @@ LocationConfig::~LocationConfig(void) {}
 void LocationConfig::printLocationConfig(void) {
   std::cout << "  location " << this->uri_ << " {" << '\n';
   std::cout << "    root: " << this->rootPath_ << '\n';
-  std::cout << "    client_max_content_size: " << this->limitClientBodySize_ << '\n';
+  std::cout << "    client_max_content_size: " << this->limitClientBodySize_
+            << '\n';
   std::cout << "    return " << this->redirectionStatusCode_ << ' '
             << this->redirectionPath_ << '\n';
   std::cout << "    accept_methods ";
@@ -43,7 +45,8 @@ void LocationConfig::printLocationConfig(void) {
   std::map<std::string, std::string>::iterator cgi;
   for (cgi = this->cgiPrograms_.begin(); cgi != this->cgiPrograms_.end();
        cgi++) {
-    std::cout << "    cgi_extension " << cgi->first << ' ' << cgi->second << '\n';
+    std::cout << "    cgi_extension " << cgi->first << ' ' << cgi->second
+              << '\n';
   }
   std::cout << "  }" << '\n';
 }
@@ -116,8 +119,8 @@ const std::vector<std::string>::iterator LocationConfig::endAcceptMethods() {
   return acceptMethods_.end();
 }
 
-
-const std::string LocationConfig::getElementAtIndexAcceptMethods(size_t index) const {
+const std::string LocationConfig::getElementAtIndexAcceptMethods(
+    size_t index) const {
   if (index < acceptMethods_.size()) {
     return acceptMethods_[index];
   } else {

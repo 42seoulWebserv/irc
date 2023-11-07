@@ -1,6 +1,7 @@
-#include <iostream>
-#include <unistd.h>
 #include <sys/event.h>
+#include <unistd.h>
+
+#include <iostream>
 
 #include "ClientEventController.hpp"
 #include "EventController.hpp"
@@ -28,8 +29,7 @@ static ServerConfig *selectServerConfig(
   return config;
 }
 
-static std::vector<std::string> strSplit(const std::string &str, char delim)
-{
+static std::vector<std::string> strSplit(const std::string &str, char delim) {
   std::vector<std::string> result;
   size_t prev = 0;
   for (size_t i = 0; i < str.size(); i++) {
@@ -44,8 +44,7 @@ static std::vector<std::string> strSplit(const std::string &str, char delim)
   return result;
 }
 
-static bool isParentPath(const std::string &parent, const std::string &child)
-{
+static bool isParentPath(const std::string &parent, const std::string &child) {
   if (parent.size() > child.size()) {
     return false;
   }
@@ -62,8 +61,7 @@ static bool isParentPath(const std::string &parent, const std::string &child)
   return true;
 }
 
-static std::string strTrim(const std::string &str)
-{
+static std::string strTrim(const std::string &str) {
   size_t start = 0;
   size_t end = str.size();
   for (size_t i = 0; i < str.size(); i++) {
@@ -83,7 +81,8 @@ static std::string strTrim(const std::string &str)
   return str.substr(start, end - start);
 }
 
-static const LocationConfig *selectLocationConfig(const std::vector<LocationConfig> &locations, const std::string &uri) {
+static const LocationConfig *selectLocationConfig(
+    const std::vector<LocationConfig> &locations, const std::string &uri) {
   const LocationConfig *res = NULL;
   size_t maxLocationLen = 0;
   for (size_t i = 0; i < locations.size(); i++) {
@@ -104,23 +103,23 @@ static const LocationConfig *selectLocationConfig(const std::vector<LocationConf
   return res;
 }
 
-enum EventController::returnType ClientEventController::clientWrite(const struct kevent &event)
-{
+enum EventController::returnType ClientEventController::clientWrite(
+    const struct kevent &event) {
   if (config_ == NULL) {
-    ServerConfig *serverConfig = selectServerConfig(headers_, getServerConfigs());
+    ServerConfig *serverConfig =
+        selectServerConfig(headers_, getServerConfigs());
     if (serverConfig == NULL) {
       statusCode_ = 400;
       return PENDING;
     }
-    config_ = selectLocationConfig(serverConfig->getLocationConfigs(), strTrim(uri_));
+    config_ =
+        selectLocationConfig(serverConfig->getLocationConfigs(), strTrim(uri_));
     if (config_ == NULL) {
       statusCode_ = 404;
       return PENDING;
     }
     std::cout << "selected location path: " << config_->getUri() << std::endl;
   }
-
-
 
   std::cout << "statusCode_ : " << this->statusCode_ << std::endl;
   write(event.ident, "HTTP/1.1 200 OK\r\n", 17);
@@ -129,6 +128,6 @@ enum EventController::returnType ClientEventController::clientWrite(const struct
   write(event.ident, "Content-Type: text/html\r\n", 25);
   write(event.ident, "\r\n", 2);
   write(event.ident, "hello\n", 6);
-  evSet(EVFILT_WRITE, EV_DELETE); // write 이벤트를 안 받는다
+  evSet(EVFILT_WRITE, EV_DELETE);  // write 이벤트를 안 받는다
   return SUCCESS;
 }
