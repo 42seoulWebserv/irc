@@ -130,5 +130,5 @@ enum EventController::returnType ClientEventController::clientWrite(const struct
   write(event.ident, "\r\n", 2);
   write(event.ident, "hello\n", 6);
   evSet(EVFILT_WRITE, EV_DELETE); // write 이벤트를 안 받는다
-  return SUCCESS;
+  return PENDING;
 }

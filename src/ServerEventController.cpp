@@ -58,7 +58,8 @@ enum EventController::returnType ServerEventController::handleEvent(const struct
   std::cout << "---------- client accept" << std::endl;
   int clientSocket = accept(event.ident, (struct sockaddr*)&client_addr, &client_addr_size);
   if (clientSocket == -1) {
-    return FAIL;
+    std::cout << "accept error" << std::endl;
+    return PENDING;
   }
   struct kevent clientEvent;
   struct timespec timeout = {10, 0}; // 10 seconds
