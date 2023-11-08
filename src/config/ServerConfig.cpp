@@ -29,7 +29,7 @@ void ServerConfig::printServerConfig(void) {
   std::cout << "server {" << '\n';
   std::cout << "  root: " << this->rootPath_ << '\n';
   std::cout << "  server_name: " << this->serverName_ << '\n';
-  std::cout << "  client_max_content_size: " << this->limitClientBodySize_
+  std::cout << "  client_max_body_size: " << this->limitClientBodySize_
             << '\n';
   std::cout << "  listen: " << this->port_ << '\n';
   std::vector<LocationConfig>::iterator location;

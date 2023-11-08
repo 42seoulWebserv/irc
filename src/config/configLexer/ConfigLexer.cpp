@@ -52,7 +52,7 @@ const Directive ConfigLexer::run(const std::string raw) {
           .add(PatternWord("http", "http").setAlias("key"))
           .add(PatternWord("server", "server").setAlias("key"))
           .add(PatternWord("location", "location").setAlias("key"))
-          .add(PatternWord("clientMaxContentSize", "client_max_content_size")
+          .add(PatternWord("clientMaxContentSize", "client_max_body_size")
                    .setAlias("key"))
           .add(PatternWord("root", "root").setAlias("key"))
           .add(PatternWord("serverName", "server_name").setAlias("key"))

@@ -19,7 +19,7 @@ RootConfig::~RootConfig() {}
 void RootConfig::printRootConfig() {
   std::vector<ServerConfig>::iterator server;
   std::cout << "root: " << this->rootPath_ << '\n';
-  std::cout << "client_max_content_size: " << this->limitClientBodySize_ << '\n';
+  std::cout << "client_max_body_size: " << this->limitClientBodySize_ << '\n';
   for (server = this->serverConfigs_.begin();
        server != this->serverConfigs_.end(); server++) {
     server->printServerConfig();

@@ -38,7 +38,7 @@ LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
         rootPath.pop_back();
       }
       res.setRootPath(rootPath);
-    } else if (element->getKey() == "client_max_content_size") {
+    } else if (element->getKey() == "client_max_body_size") {
       res.setLimitClientBodySize(
           strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "return") {
@@ -62,7 +62,7 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
        element++) {
     if (element->getKey() == "root") {
       res.setRootPath(element->getElementAtIndexValues(0));
-    } else if (element->getKey() == "client_max_content_size") {
+    } else if (element->getKey() == "client_max_body_size") {
       res.setLimitClientBodySize(
           strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "listen") {
@@ -72,7 +72,7 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
       res.addLocationConfigs(makeLocationConfig(locationConf, *element));
     } else if (element->getKey() == "server_name") {
       res.setServerName(element->getElementAtIndexValues(0));
-    } else if (element->getKey() == "client_max_content_size") {
+    } else if (element->getKey() == "client_max_body_size") {
       res.setLimitClientBodySize(
           strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "index") {
@@ -90,7 +90,7 @@ RootConfig ConfigMaker::makeConfig(Directive directive) {
        element++) {
     if (element->getKey() == "root") {
       res.setRootPath(element->getElementAtIndexValues(0));
-    } else if (element->getKey() == "client_max_content_size") {
+    } else if (element->getKey() == "client_max_body_size") {
       res.setLimitClientBodySize(
           strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "server") {

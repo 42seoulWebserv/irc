@@ -82,7 +82,7 @@ static void checkRootDirective(Directive root) {
 }
 
 static void checkServerClientMaxContentSize(std::string str) {
-  std::string errMsg = "client_max_content_size error";
+  std::string errMsg = "client_max_body_size error";
   for (std::string::iterator i = str.begin(); i != str.end(); i++) {
     if (i < str.end() - 1 && !std::isdigit(*i)) {
       throw std::invalid_argument(errMsg);
@@ -111,7 +111,7 @@ static void checkServerLocation(Directive location) {
       checkValidIndex(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "root") {
       checkRootDirective(*element);
-    } else if (element->getKey() == "client_max_content_size") {
+    } else if (element->getKey() == "client_max_body_size") {
       checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
     } else {
       throw std::invalid_argument('"' + element->getKey() + '"' +
@@ -161,7 +161,7 @@ static void checkServerDirective(Directive server) {
       }
       isServerNameExist = true;
       checkServerName(element->getElementAtIndexValues(0));
-    } else if (element->getKey() == "client_max_content_size") {
+    } else if (element->getKey() == "client_max_body_size") {
       checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "root") {
       checkRootDirective(*element);
@@ -179,7 +179,7 @@ static void checkDirectiveChildren(Directive directive) {
       checkServerDirective(*it);
     } else if (it->getKey() == "root") {
       checkRootDirective(*it);
-    } else if (it->getKey() == "client_max_content_size") {
+    } else if (it->getKey() == "client_max_body_size") {
       checkServerClientMaxContentSize(it->getElementAtIndexValues(0));
     } else {
       throw std::invalid_argument('"' + it->getKey() + '"' +

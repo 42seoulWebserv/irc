@@ -30,7 +30,7 @@ LocationConfig::~LocationConfig(void) {}
 void LocationConfig::printLocationConfig(void) {
   std::cout << "  location " << this->uri_ << " {" << '\n';
   std::cout << "    root: " << this->rootPath_ << '\n';
-  std::cout << "    client_max_content_size: " << this->limitClientBodySize_ << '\n';
+  std::cout << "    client_max_body_size: " << this->limitClientBodySize_ << '\n';
   std::cout << "    return " << this->redirectionStatusCode_ << ' '
             << this->redirectionPath_ << '\n';
   std::cout << "    accept_methods ";
