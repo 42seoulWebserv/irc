@@ -53,6 +53,7 @@ class ClientEventController : public EventController,
   void parseHeader();
   void parseBody();
   void evSet(int filter, int action);
+  void beginProcess(int statusCode);
 };
 /*
 // 우선 key에 공백 있으면 안됨.
