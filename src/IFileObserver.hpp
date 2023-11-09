@@ -9,11 +9,9 @@
 #define FILE_WRITE 8
 
 class IFileObserver {
-public:
-
+ public:
   virtual ~IFileObserver() {}
   virtual void fileEvent(int status, const std::string &result) = 0;
-
 };
 
 #endif

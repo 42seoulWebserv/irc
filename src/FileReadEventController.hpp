@@ -6,18 +6,18 @@
 #include "EventController.hpp"
 #include "IFileObserver.hpp"
 
-class FileReadEventController : public EventController{
-public:
-  FileReadEventController(int kq, const std::string &filepath, IFileObserver *observer);
+class FileReadEventController : public EventController {
+ public:
+  FileReadEventController(int kq, const std::string &filepath,
+                          IFileObserver *observer);
   enum EventController::returnType handleEvent(const struct kevent &event);
 
-private:
+ private:
   int kq_;
   int fd_;
   std::string filepath_;
   std::string content_;
   IFileObserver *observer_;
-
 };
 
 #endif

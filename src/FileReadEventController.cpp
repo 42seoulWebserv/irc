@@ -1,15 +1,15 @@
-#include <fcntl.h>
-#include <unistd.h>
-#include <exception>
-#include <sys/event.h> // kevent
 #include "FileReadEventController.hpp"
 
-FileReadEventController::FileReadEventController(
-    int kq,
-    const std::string &filepath,
-    IFileObserver *observer)
-    : kq_(kq), filepath_(filepath), observer_(observer)
-{
+#include <fcntl.h>
+#include <sys/event.h>  // kevent
+#include <unistd.h>
+
+#include <exception>
+
+FileReadEventController::FileReadEventController(int kq,
+                                                 const std::string &filepath,
+                                                 IFileObserver *observer)
+    : kq_(kq), filepath_(filepath), observer_(observer) {
   fd_ = open(filepath_.c_str(), O_RDONLY);
   if (fd_ == -1) {
     throw std::invalid_argument("file open error");
@@ -21,8 +21,8 @@ FileReadEventController::FileReadEventController(
   kevent(kq_, &event, 1, NULL, 0, 0);
 }
 
-EventController::returnType FileReadEventController::handleEvent(const struct kevent &event)
-{
+EventController::returnType FileReadEventController::handleEvent(
+    const struct kevent &event) {
   if (event.filter != EVFILT_READ) {
     std::cout << "unexpected event" << std::endl;
     close(fd_);

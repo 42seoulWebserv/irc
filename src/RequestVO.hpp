@@ -1,11 +1,11 @@
 #ifndef RequestVO_HPP_
 #define RequestVO_HPP_
 
-#include <string>
 #include <map>
+#include <string>
 
 class RequestVO {
-public:
+ public:
   const std::string &getUri() const;
   void setUri(const std::string &uri);
   const std::string &getMethod() const;
@@ -21,13 +21,12 @@ public:
   bool hasHeader(const std::string &key) const;
   const std::string &getHeader(const std::string &key) const;
 
-private:
+ private:
   std::string uri_;
   std::string method_;
   std::string version_;
   std::string body_;
   std::map<std::string, std::string> headers_;
-
 };
 
 #endif
