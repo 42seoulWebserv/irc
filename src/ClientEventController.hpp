@@ -6,12 +6,16 @@
 #include <string>
 
 #include "EventController.hpp"
+#include "IObserver.hpp"
+#include "IRequestProcessor.hpp"
+#include "RequestProcessorFactory.hpp"
 #include "RequestVO.hpp"
 #include "ResponseVO.hpp"
 
 #define BUFF_SIZE 4
 /* server(port) 또는 client가 보낸 요청을 수행하는 클래스 */
-class ClientEventController : public EventController {
+class ClientEventController : public EventController,
+                              public IObserver<ResponseVO> {
  public:
   enum READ_STATUS { START_LINE, HEADER, BODY };
 
@@ -21,6 +25,8 @@ class ClientEventController : public EventController {
   virtual ~ClientEventController();
 
   enum EventController::returnType handleEvent(const struct kevent &event);
+
+  void onEvent(const ResponseVO &p);
 
  private:
   enum READ_STATUS readStatus_;
@@ -34,6 +40,8 @@ class ClientEventController : public EventController {
 
   RequestVO request_;
   ResponseVO response_;
+
+  IRequestProcessor *processor_;
 
   enum EventController::returnType clientRead(const struct kevent &event);
   enum EventController::returnType clientWrite(const struct kevent &event);
