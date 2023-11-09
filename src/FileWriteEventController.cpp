@@ -9,7 +9,7 @@
 FileWriteEventController::FileWriteEventController(int kq,
                                                    const std::string &filepath,
                                                    const std::string &content,
-                                                   IFileObserver *observer)
+                                                   IObserver<Event> *observer)
     : kq_(kq),
       filepath_(filepath),
       content_(content),
@@ -26,12 +26,28 @@ FileWriteEventController::FileWriteEventController(int kq,
   kevent(kq_, &event, 1, NULL, 0, 0);
 }
 
+void FileWriteEventController::addEventController(int kq,
+                                                  const std::string &filepath,
+                                                  const std::string &content,
+                                                  IObserver<Event> *observer) {
+  try {
+    new FileWriteEventController(kq, filepath, content, observer);
+  } catch (...) {
+    if (observer) {
+      observer->onEvent(Event(FileWriteEventController::FAIL));
+    }
+  }
+}
+
 EventController::returnType FileWriteEventController::handleEvent(
     const struct kevent &event) {
   if (event.filter != EVFILT_WRITE) {
     std::cout << "unexpected event" << std::endl;
     close(fd_);
-    return FAIL;
+    if (observer_) {
+      observer_->onEvent(Event(FileWriteEventController::FAIL));
+    }
+    return EventController::FAIL;
   }
   size_t size =
       write(fd_, content_.c_str() + offset_, content_.size() - offset_);
@@ -41,7 +57,9 @@ EventController::returnType FileWriteEventController::handleEvent(
   }
   close(fd_);
   if (observer_) {
-    observer_->fileEvent(FILE_WRITE | FILE_SUCCESS, "success");
+    observer_->onEvent(Event(FileWriteEventController::SUCCESS));
   }
-  return SUCCESS;
+  return EventController::SUCCESS;
 }
+
+FileWriteEventController::Event::Event(EventType type) : type_(type) {}
