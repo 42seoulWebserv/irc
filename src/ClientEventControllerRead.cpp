@@ -18,8 +18,7 @@ static bool hasSpace(std::string str) {
   return false;
 }
 
-static std::string strTrim(const std::string &str)
-{
+static std::string strTrim(const std::string &str) {
   size_t start = 0;
   size_t end = str.size();
   for (size_t i = 0; i < str.size(); i++) {
@@ -189,7 +188,7 @@ static const LocationConfig *selectLocationConfig(
 
 void ClientEventController::beginProcess(int statusCode) {
   evSet(EVFILT_READ, EV_DELETE);
-  statusCode_ = statusCode; 
+  statusCode_ = statusCode;
   if (statusCode >= 200) {
     // TODO: 적절한 processor 처리 필요.
     std::cout << "error code: " << statusCode << std::endl;
@@ -210,7 +209,8 @@ void ClientEventController::beginProcess(int statusCode) {
       // TODO: 적절한 processor 처리 필요.
       return;
     }
-    std::cout << "debug - selected location path: " << config_->getUri() << std::endl;
+    std::cout << "debug - selected location path: " << config_->getUri()
+              << std::endl;
   }
   processor_ = RequestProcessorFactory::createRequestProcessor(
       request_, config_, kq_, this);
@@ -222,8 +222,7 @@ void ClientEventController::beginProcess(int statusCode) {
 /* 주: cheseo 부: yonshin 검: junmkang */
 enum EventController::returnType ClientEventController::clientRead(
     const struct kevent &event) {
-
-  if (event.flags & EV_EOF) { // closed socket
+  if (event.flags & EV_EOF) {  // closed socket
     close(clientSocket_);
     return SUCCESS;
   }
@@ -242,7 +241,7 @@ enum EventController::returnType ClientEventController::clientRead(
     if (headerBuffer_.find("\r\n\r\n") != std::string::npos) {
       readStatus_ = BODY;
       int idx = headerBuffer_.find("\r\n\r\n");
-      bodyBuffer_  += headerBuffer_.substr(idx + 4, std::string::npos);
+      bodyBuffer_ += headerBuffer_.substr(idx + 4, std::string::npos);
       headerBuffer_.erase(idx, std::string::npos);
       std::cout << headerBuffer_ << "$" << std::endl;
       try {

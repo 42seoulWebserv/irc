@@ -7,7 +7,7 @@
 
 class ServerConfig;
 class LocationConfig {
-public:
+ public:
   LocationConfig(const ServerConfig &src);
   LocationConfig(const LocationConfig &src);
   LocationConfig &operator=(const LocationConfig &rhs);
@@ -41,7 +41,7 @@ public:
   const std::map<std::string, std::string>::iterator beginCgiPrograms();
   const std::map<std::string, std::string>::iterator endCgiPrograms();
 
-private:
+ private:
   int limitClientBodySize_;
   bool autoIndex_;
   int redirectionStatusCode_;

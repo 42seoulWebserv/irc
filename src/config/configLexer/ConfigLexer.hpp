@@ -8,10 +8,10 @@
 #include "ParseResult.hpp"
 
 class ConfigLexer {
-public:
+ public:
   static const Directive run(const std::string rawContent);
 
-private:
+ private:
   static const Directive parseResultToDirective(const ParseResult &res);
 };
 
