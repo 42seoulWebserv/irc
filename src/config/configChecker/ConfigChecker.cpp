@@ -132,13 +132,15 @@ static void checkServerName(std::string str) {
 
 static void checkServerLocationDuplicate(std::string locationUri,
                                          std::set<std::string> &locationPaths) {
-  if (locationUri.at(0) != '/') {
-    throw std::invalid_argument("location path must be in absolute path form");
+  if (locationUri.at(0) != '/' || locationUri.back() != '/') {
+    throw std::invalid_argument('"' + locationUri + '"' +
+                                " location path must be in absolute path form");
   }
   if (locationPaths.find(locationUri) == locationPaths.end()) {
     locationPaths.insert(locationUri);
   } else {
-    throw std::invalid_argument("location path cannot be duplicated");
+    throw std::invalid_argument('"' + locationUri + '"' +
+                                " location path cannot be duplicated");
   }
 }
 
