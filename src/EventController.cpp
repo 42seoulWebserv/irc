@@ -2,8 +2,6 @@
 
 EventController::EventController() {}
 
-EventController::EventController(const EventController &src) {}
-
 EventController::~EventController() {}
 
 void EventController::addServerConfig(ServerConfig *serverConfig) {

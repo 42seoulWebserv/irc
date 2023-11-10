@@ -4,7 +4,7 @@ const std::string &ResponseVO::getVersion() const { return version_; }
 
 void ResponseVO::setVersion(const std::string &version) { version_ = version; }
 
-const int ResponseVO::getStatusCode() const { return statusCode_; }
+int ResponseVO::getStatusCode() const { return statusCode_; }
 
 void ResponseVO::setStatusCode(const int statusCode) {
   statusCode_ = statusCode;

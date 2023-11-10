@@ -28,7 +28,7 @@ ServerEventController::ServerEventController(int kq, int port)
   }
 
   addr.sin_family = AF_INET;                 // IPv4 인터넷 프로토롤
-  addr.sin_port = htons(port);               // 사용할 port 번호는 port
+  addr.sin_port = htons(port_);              // 사용할 port 번호는 port
   addr.sin_addr.s_addr = htonl(INADDR_ANY);  // 32bit IPV4 주소
 
   if (bind(this->socket_, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
@@ -42,14 +42,6 @@ ServerEventController::ServerEventController(int kq, int port)
 
   EV_SET(&event, this->socket_, EVFILT_READ, EV_ADD, 0, 0, this);
   kevent(kq, &event, 1, NULL, 0, 0);
-}
-
-ServerEventController::ServerEventController(const ServerEventController &src) {
-}
-
-ServerEventController &ServerEventController::operator=(
-    const ServerEventController &rhs) {
-  return *this;
 }
 
 ServerEventController::~ServerEventController() {}

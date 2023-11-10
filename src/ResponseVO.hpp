@@ -8,7 +8,7 @@ class ResponseVO {
  public:
   const std::string &getVersion() const;
   void setVersion(const std::string &version);
-  const int getStatusCode() const;
+  int getStatusCode() const;
   void setStatusCode(const int statusCode);
   const std::string &getBody() const;
   void setBody(const std::string &body);
