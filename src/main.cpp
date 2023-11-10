@@ -10,9 +10,37 @@
 
 #include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"
+#include "FileReadEventController.hpp"
+#include "FileWriteEventController.hpp"
+#include "IObserver.hpp"
 #include "RootConfig.hpp"
 #include "ServerConfig.hpp"
 #include "ServerEventController.hpp"
+
+class TestObserver : public IObserver<FileReadEventController::Event>,
+                     public IObserver<FileWriteEventController::Event> {
+  void onEvent(const FileReadEventController::Event &event) {
+    if (event.type_ == FileReadEventController::SUCCESS)
+      std::cout << "SUCCESS" << std::endl;
+    if (event.type_ == FileReadEventController::NOT_ACCESS)
+      std::cout << "NOT_ACCESS" << std::endl;
+    if (event.type_ == FileReadEventController::FAIL)
+      std::cout << "FAIL" << std::endl;
+    if (event.type_ == FileReadEventController::NOT_FOUND)
+      std::cout << "NOT_FOUND" << std::endl;
+    std::cout << event.content_ << std::endl;
+    std::cout << " --- read --- " << std::endl;
+  }
+  void onEvent(const FileWriteEventController::Event &event) {
+    if (event.type_ == FileWriteEventController::SUCCESS)
+      std::cout << "SUCCESS" << std::endl;
+    if (event.type_ == FileWriteEventController::NOT_ACCESS)
+      std::cout << "NOT_ACCESS" << std::endl;
+    if (event.type_ == FileWriteEventController::FAIL)
+      std::cout << "FAIL" << std::endl;
+    std::cout << " --- write --- " << std::endl;
+  }
+};
 
 int run(RootConfig &config) {
   int kq = kqueue();
@@ -40,6 +68,10 @@ int run(RootConfig &config) {
       }
     }
   }
+
+  TestObserver ob;
+  // FileReadEventController::addEventController(kq, "Makefile", &ob);
+  // FileWriteEventController::addEventController(kq, "new", "message", &ob);
 
   while (1) {
     struct kevent eventList[5];
