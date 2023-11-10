@@ -6,10 +6,16 @@
 #include <string>
 
 #include "EventController.hpp"
+#include "IObserver.hpp"
+#include "IRequestProcessor.hpp"
+#include "RequestProcessorFactory.hpp"
+#include "RequestVO.hpp"
+#include "ResponseVO.hpp"
 
 #define BUFF_SIZE 4
 /* server(port) 또는 client가 보낸 요청을 수행하는 클래스 */
-class ClientEventController : public EventController {
+class ClientEventController : public EventController,
+                              public IObserver<ResponseVO> {
  public:
   enum READ_STATUS { START_LINE, HEADER, BODY };
 
@@ -20,20 +26,22 @@ class ClientEventController : public EventController {
 
   enum EventController::returnType handleEvent(const struct kevent &event);
 
-private:
+  void onEvent(const ResponseVO &p);
+
+ private:
   enum READ_STATUS readStatus_;
   int kq_;
   int statusCode_;
   int clientSocket_;
   size_t contentLength_;
-  std::string method_;
-  std::string uri_;
-  std::string version_;
-  std::map<std::string, std::string> headers_;
-  std::string body_;
   std::string headerBuffer_;
   std::string bodyBuffer_;
   const LocationConfig *config_;
+
+  RequestVO request_;
+  ResponseVO response_;
+
+  IRequestProcessor *processor_;
 
   enum EventController::returnType clientRead(const struct kevent &event);
   enum EventController::returnType clientWrite(const struct kevent &event);
@@ -45,6 +53,7 @@ private:
   void parseHeader();
   void parseBody();
   void evSet(int filter, int action);
+  void beginProcess(int statusCode);
 };
 /*
 // 우선 key에 공백 있으면 안됨.

@@ -9,6 +9,7 @@ INC_DIR := \
 	-I./src/config/configChecker \
 	-I./src/config/configLexer \
 	-I./src/config/configMaker \
+	-I./src/processor \
 
 SRC_DIR := ./src
 BUILD_DIR := ./build
@@ -27,6 +28,10 @@ MAIN_NAME := \
 	ClientEventControllerRead.cpp \
 	ClientEventControllerWrite.cpp \
 	ClientEventControllerTime.cpp \
+	FileReadEventController.cpp \
+	FileWriteEventController.cpp \
+	RequestVO.cpp \
+	ResponseVO.cpp \
 
 CONFIG_DIR := ./src/config/
 CONFIG_NAME := \
@@ -57,13 +62,24 @@ PASER_LEXER_NAME := \
 	PatternSequence.cpp \
 	PatternWord.cpp \
 
+PROCESSOR_DIR := ./src/processor/
+PROCESSOR_NAME := \
+	RequestProcessorFactory.cpp \
+	CgiProcessor.cpp \
+	MethodDeleteProcessor.cpp \
+	MethodGetProcessor.cpp \
+	MethodPostProcessor.cpp \
+	MethodPutProcessor.cpp \
+	UnsupportedMethodProcessor.cpp \
+
 SRCS := \
 	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \
 	$(addprefix $(CONFIG_DIR), $(CONFIG_NAME)) \
 	$(addprefix $(CONFIGCHECKER_DIR), $(CONFIGCHECKER_NAME)) \
 	$(addprefix $(CONFIGLEXER_DIR), $(CONFIGLEXER_NAME)) \
 	$(addprefix $(CONFIGMAKER_DIR), $(CONFIGMAKER_NAME)) \
-	$(addprefix $(PASER_LEXER_DIR), $(PASER_LEXER_NAME))
+	$(addprefix $(PASER_LEXER_DIR), $(PASER_LEXER_NAME)) \
+	$(addprefix $(PROCESSOR_DIR), $(PROCESSOR_NAME)) \
 
 SRCS_DIR := \
 	$(MAIN_DIR) \
@@ -71,7 +87,8 @@ SRCS_DIR := \
 	$(CONFIGCHECKER_DIR) \
 	$(CONFIGLEXER_DIR) \
 	$(CONFIGMAKER_DIR) \
-	$(PASER_LEXER_DIR)
+	$(PASER_LEXER_DIR) \
+	$(PROCESSOR_DIR) \
 
 vpath %.cpp $(SRCS_DIR)
 
