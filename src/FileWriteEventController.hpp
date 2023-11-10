@@ -8,13 +8,17 @@
 
 class FileWriteEventController : public EventController {
  public:
-  enum EventType { SUCCESS, FAIL };
+  enum EventType { SUCCESS, FAIL, NOT_ACCESS };
   class Event {
    public:
     Event(enum EventType type);
     enum EventType type_;
   };
-
+  class FileWriteException : public std::exception {
+   public:
+    FileWriteException(EventType type);
+    enum EventType type_;
+  };
   static void addEventController(int kq, const std::string &filepath,
                                  const std::string &content,
                                  IObserver<Event> *observer);

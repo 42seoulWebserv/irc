@@ -2,6 +2,8 @@
 
 #include <fcntl.h>
 #include <sys/event.h>  // kevent
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <exception>
@@ -15,9 +17,14 @@ FileWriteEventController::FileWriteEventController(int kq,
       content_(content),
       offset_(0),
       observer_(observer) {
+  const char *file = filepath.c_str();
+  struct stat statbuf;
+  if (stat(file, &statbuf) == 0 && access(file, W_OK)) {
+    throw FileWriteException(FileWriteEventController::NOT_ACCESS);
+  }
   fd_ = open(filepath_.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
   if (fd_ == -1) {
-    throw std::invalid_argument("file open error");
+    throw FileWriteException(FileWriteEventController::FAIL);
   }
   fcntl(fd_, F_SETFL, O_NONBLOCK);
   fcntl(fd_, F_SETFD, FD_CLOEXEC);
@@ -32,10 +39,13 @@ void FileWriteEventController::addEventController(int kq,
                                                   IObserver<Event> *observer) {
   try {
     new FileWriteEventController(kq, filepath, content, observer);
-  } catch (...) {
-    if (observer) {
-      observer->onEvent(Event(FileWriteEventController::FAIL));
+  } catch (const FileWriteException &e) {
+    if (observer == NULL) {
+      return;
     }
+    observer->onEvent(Event(e.type_));
+  } catch (...) {
+    observer->onEvent(Event(FileWriteEventController::FAIL));
   }
 }
 
@@ -63,3 +73,6 @@ EventController::returnType FileWriteEventController::handleEvent(
 }
 
 FileWriteEventController::Event::Event(EventType type) : type_(type) {}
+
+FileWriteEventController::FileWriteException::FileWriteException(EventType type)
+    : type_(type) {}
