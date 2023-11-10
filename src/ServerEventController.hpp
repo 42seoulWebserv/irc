@@ -1,22 +1,20 @@
 #ifndef SERVEREVENTCONTROLLER_HPP_
 #define SERVEREVENTCONTROLLER_HPP_
 
-#include "EventController.hpp"
 #include "ClientEventController.hpp"
+#include "EventController.hpp"
 
-class ServerEventController : public EventController
-{
-public:
-	ServerEventController(int kq);
-	ServerEventController(const ServerEventController &src);
-	ServerEventController &operator=(const ServerEventController &rhs);
-	~ServerEventController();
+class ServerEventController : public EventController {
+ public:
+  ServerEventController(int kq, int port);
+  ~ServerEventController();
 
-	enum EventController::returnType handleEvent(const struct kevent &event);
+  enum EventController::returnType handleEvent(const struct kevent &event);
 
-	int kq_;
-	int socket_;
-private:
+ private:
+  int kq_;
+  int socket_;
+  int port_;
 };
 
 #endif

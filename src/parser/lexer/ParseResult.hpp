@@ -5,7 +5,7 @@
 #include <vector>
 
 class ParseResult {
-public:
+ public:
   ParseResult();
   ParseResult(const std::string &name);
   ParseResult(const std::string &name, int depth);
@@ -25,7 +25,7 @@ public:
   const std::string toString() const;
   const ParseResult trim() const;
 
-private:
+ private:
   static void insertFlatValues(std::vector<std::string> &values,
                                const ParseResult &target);
 

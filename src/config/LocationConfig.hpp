@@ -5,15 +5,18 @@
 #include <map>
 #include <vector>
 
+class ServerConfig;
 class LocationConfig {
-public:
-  LocationConfig();
+ public:
+  LocationConfig(const ServerConfig &src);
   LocationConfig(const LocationConfig &src);
   LocationConfig &operator=(const LocationConfig &rhs);
   ~LocationConfig();
 
   void printLocationConfig(void);
 
+  int getLimitClientBodySize() const;
+  void setLimitClientBodySize(const int &limitClientBodySize);
   bool getAutoIndex() const;
   void setAutoIndex(const bool &autoIndex);
   int getRedirectionStatusCode() const;
@@ -38,8 +41,9 @@ public:
   const std::map<std::string, std::string>::iterator beginCgiPrograms();
   const std::map<std::string, std::string>::iterator endCgiPrograms();
 
-private:
-  bool autoIndex_; // default false
+ private:
+  int limitClientBodySize_;
+  bool autoIndex_;
   int redirectionStatusCode_;
   std::string uri_;
   std::string rootPath_;

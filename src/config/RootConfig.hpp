@@ -8,7 +8,7 @@
 #include "ServerConfig.hpp"
 
 class RootConfig {
-public:
+ public:
   RootConfig();
   RootConfig(const RootConfig &src);
   RootConfig &operator=(const RootConfig &rhs);
@@ -16,13 +16,19 @@ public:
 
   void printRootConfig();
 
-  std::vector<ServerConfig> getServerConfigs() const;
+  std::string getRootPath() const;
+  void setRootPath(const std::string &rootPath);
+  int getLimitClientBodySize() const;
+  void setLimitClientBodySize(const int &limitClientBodySize);
+  std::vector<ServerConfig> &getServerConfigs();
   void setServerConfigs(const std::vector<ServerConfig> &serverConfigs);
   void addServerConfigs(const ServerConfig &serverConfigs);
   const std::vector<ServerConfig>::iterator beginServerConfigs();
   const std::vector<ServerConfig>::iterator endServerConfigs();
 
-private:
+ private:
+  std::string rootPath_;
+  int limitClientBodySize_;
   std::vector<ServerConfig> serverConfigs_;
 };
 

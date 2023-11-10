@@ -1,31 +1,50 @@
-#include <stdexcept>
-
 #include "ParseResult.hpp"
 
+#include <stdexcept>
+
 ParseResult::ParseResult()
-    : name_(), values_(), children_(), depth_(0), isFlat_(false),
+    : name_(),
+      values_(),
+      children_(),
+      depth_(0),
+      isFlat_(false),
       isIgnore_(false) {}
 
 ParseResult::ParseResult(const std::string &name)
-    : name_(name), values_(), children_(), depth_(0), isFlat_(false),
+    : name_(name),
+      values_(),
+      children_(),
+      depth_(0),
+      isFlat_(false),
       isIgnore_(false) {}
 
 ParseResult::ParseResult(const std::string &name, int depth)
-    : name_(name), values_(), children_(), depth_(depth), isFlat_(false),
+    : name_(name),
+      values_(),
+      children_(),
+      depth_(depth),
+      isFlat_(false),
       isIgnore_(false) {}
 
 ParseResult::ParseResult(const std::string &name, int depth, bool isFlat,
                          bool isIgnore)
-    : name_(name), values_(), children_(), depth_(depth), isFlat_(isFlat),
+    : name_(name),
+      values_(),
+      children_(),
+      depth_(depth),
+      isFlat_(isFlat),
       isIgnore_(isIgnore) {}
 
 ParseResult::ParseResult(const ParseResult &rhs)
-    : name_(rhs.name_), values_(rhs.values_), children_(rhs.children_),
-      depth_(rhs.depth_), isFlat_(rhs.isFlat_), isIgnore_(rhs.isIgnore_) {}
+    : name_(rhs.name_),
+      values_(rhs.values_),
+      children_(rhs.children_),
+      depth_(rhs.depth_),
+      isFlat_(rhs.isFlat_),
+      isIgnore_(rhs.isIgnore_) {}
 
 ParseResult &ParseResult::operator=(const ParseResult &rhs) {
-  if (this == &rhs)
-    return *this;
+  if (this == &rhs) return *this;
   name_ = rhs.name_;
   values_ = rhs.values_;
   children_ = rhs.children_;
@@ -56,8 +75,7 @@ int ParseResult::getDepth() const { return depth_; }
 void ParseResult::push(const ParseResult &child) { children_.push_back(child); }
 
 ParseResult ParseResult::pop() {
-  if (children_.size() == 0)
-    throw std::out_of_range("out of range");
+  if (children_.size() == 0) throw std::out_of_range("out of range");
   ParseResult result = children_[children_.size() - 1];
   children_.pop_back();
   return result;
@@ -100,8 +118,7 @@ const ParseResult ParseResult::trim() const {
   }
   result.values_.insert(result.values_.end(), values_.begin(), values_.end());
   for (size_t i = 0; i < children_.size(); i++) {
-    if (children_[i].isIgnore_ == false)
-      result.push(children_[i].trim());
+    if (children_[i].isIgnore_ == false) result.push(children_[i].trim());
   }
   return result;
 }

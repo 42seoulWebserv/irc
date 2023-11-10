@@ -1,14 +1,15 @@
 #include "RootConfig.hpp"
 
-RootConfig::RootConfig() {}
-
-// RootConfig::RootConfig(Directive Directive) {}
+RootConfig::RootConfig() : limitClientBodySize_(2) {}
 
 RootConfig::RootConfig(const RootConfig &src) { *this = src; }
 
 RootConfig &RootConfig::operator=(const RootConfig &rhs) {
-  if (this == &rhs)
+  if (this == &rhs) {
     return *this;
+  }
+  this->rootPath_ = rhs.rootPath_;
+  this->limitClientBodySize_ = rhs.limitClientBodySize_;
   this->serverConfigs_ = rhs.serverConfigs_;
   return *this;
 }
@@ -17,13 +18,31 @@ RootConfig::~RootConfig() {}
 
 void RootConfig::printRootConfig() {
   std::vector<ServerConfig>::iterator server;
+  std::cout << "root: " << this->rootPath_ << '\n';
+  std::cout << "client_max_body_size: " << this->limitClientBodySize_ << '\n';
   for (server = this->serverConfigs_.begin();
        server != this->serverConfigs_.end(); server++) {
     server->printServerConfig();
   }
 }
 
-std::vector<ServerConfig> RootConfig::getServerConfigs() const {
+std::string RootConfig::getRootPath() const {
+  return rootPath_;
+}
+
+void RootConfig::setRootPath(const std::string &rootPath) {
+  rootPath_ = rootPath;
+}
+
+int RootConfig::getLimitClientBodySize() const {
+  return limitClientBodySize_;
+}
+
+void RootConfig::setLimitClientBodySize(const int &limitClientBodySize) {
+  limitClientBodySize_ = limitClientBodySize;
+}
+
+std::vector<ServerConfig> &RootConfig::getServerConfigs() {
   return serverConfigs_;
 }
 

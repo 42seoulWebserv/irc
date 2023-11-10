@@ -6,7 +6,7 @@
 #include <vector>
 
 class Directive {
-public:
+ public:
   Directive();
   Directive(const std::string &value);
   Directive(const Directive &src);
@@ -28,7 +28,7 @@ public:
   const std::vector<Directive>::iterator beginChildren();
   const std::vector<Directive>::iterator endChildren();
 
-private:
+ private:
   std::string key_;
   std::vector<std::string> values_;
   std::vector<Directive> children_;

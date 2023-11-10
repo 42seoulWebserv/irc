@@ -1,19 +1,26 @@
 #include "LocationConfig.hpp"
+#include "ServerConfig.hpp"
 
-LocationConfig::LocationConfig(void) {}
+LocationConfig::LocationConfig(const ServerConfig &src)
+    : limitClientBodySize_(0), autoIndex_(false), redirectionStatusCode_(0) {
+  this->rootPath_ = src.getRootPath();
+  this->limitClientBodySize_ = src.getLimitClientBodySize();
+}
 
 LocationConfig::LocationConfig(const LocationConfig &src) { *this = src; }
 
 LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
-  if (this == &rhs)
+  if (this == &rhs) {
     return *this;
-  this->uri_ = rhs.uri_;
-  this->acceptMethods_ = rhs.acceptMethods_;
-  this->rootPath_ = rhs.rootPath_;
-  this->redirectionStatusCode_ = rhs.redirectionStatusCode_;
-  this->redirectionPath_ = rhs.redirectionPath_;
+  }
+  this->limitClientBodySize_ = rhs.limitClientBodySize_;
   this->autoIndex_ = rhs.autoIndex_;
+  this->redirectionStatusCode_ = rhs.redirectionStatusCode_;
+  this->uri_ = rhs.uri_;
+  this->rootPath_ = rhs.rootPath_;
   this->indexPath_ = rhs.indexPath_;
+  this->redirectionPath_ = rhs.redirectionPath_;
+  this->acceptMethods_ = rhs.acceptMethods_;
   this->cgiPrograms_ = rhs.cgiPrograms_;
   return *this;
 }
@@ -21,10 +28,12 @@ LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
 LocationConfig::~LocationConfig(void) {}
 
 void LocationConfig::printLocationConfig(void) {
-  std::cout << "location " << this->uri_ << " {" << '\n';
-  std::cout << "  return " << this->redirectionStatusCode_ << ' '
+  std::cout << "  location " << this->uri_ << " {" << '\n';
+  std::cout << "    root: " << this->rootPath_ << '\n';
+  std::cout << "    client_max_body_size: " << this->limitClientBodySize_ << '\n';
+  std::cout << "    return " << this->redirectionStatusCode_ << ' '
             << this->redirectionPath_ << '\n';
-  std::cout << "  accept_methods ";
+  std::cout << "    accept_methods ";
   std::vector<std::string>::iterator method;
   for (method = this->acceptMethods_.begin();
        method != this->acceptMethods_.end(); method++) {
@@ -34,9 +43,17 @@ void LocationConfig::printLocationConfig(void) {
   std::map<std::string, std::string>::iterator cgi;
   for (cgi = this->cgiPrograms_.begin(); cgi != this->cgiPrograms_.end();
        cgi++) {
-    std::cout << "  cgi_extension " << cgi->first << ' ' << cgi->second << '\n';
+    std::cout << "    cgi_extension " << cgi->first << ' ' << cgi->second << '\n';
   }
-  std::cout << '}' << '\n';
+  std::cout << "  }" << '\n';
+}
+
+int LocationConfig::getLimitClientBodySize() const {
+  return limitClientBodySize_;
+}
+
+void LocationConfig::setLimitClientBodySize(const int &limitClientBodySize) {
+  limitClientBodySize_ = limitClientBodySize;
 }
 
 bool LocationConfig::getAutoIndex() const { return autoIndex_; }

@@ -1,14 +1,14 @@
 #include "ConfigLexer.hpp"
+
 #include <exception>
 #include <vector>
 
+#include "ParseResult.hpp"
+#include "Parser.hpp"
 #include "PatternLetters.hpp"
 #include "PatternOptional.hpp"
 #include "PatternSequence.hpp"
 #include "PatternWord.hpp"
-
-#include "ParseResult.hpp"
-#include "Parser.hpp"
 
 const Directive ConfigLexer::run(const std::string raw) {
   if (raw.empty()) {
@@ -53,7 +53,7 @@ const Directive ConfigLexer::run(const std::string raw) {
           .add(PatternWord("http", "http").setAlias("key"))
           .add(PatternWord("server", "server").setAlias("key"))
           .add(PatternWord("location", "location").setAlias("key"))
-          .add(PatternWord("clientMaxContentSize", "client_max_content_size")
+          .add(PatternWord("clientMaxContentSize", "client_max_body_size")
                    .setAlias("key"))
           .add(PatternWord("root", "root").setAlias("key"))
           .add(PatternWord("serverName", "server_name").setAlias("key"))
@@ -122,6 +122,7 @@ const Directive ConfigLexer::run(const std::string raw) {
                    .setAlias("block"))
           .add(PatternOptional("httpBody")
                    .add("rootPattern")
+                   .add("clientMaxContentSizePattern")
                    .add("serverBlock")
                    .setAlias("body"))
           .add(PatternSequence("serverBlock")
@@ -144,6 +145,8 @@ const Directive ConfigLexer::run(const std::string raw) {
                    .add("blockEnd")
                    .setAlias("block"))
           .add(PatternOptional("locationBody")
+                   .add("rootPattern")
+                   .add("clientMaxContentSizePattern")
                    .add("returnPattern")
                    .add("indexPattern")
                    .add("acceptMethodsPattern")

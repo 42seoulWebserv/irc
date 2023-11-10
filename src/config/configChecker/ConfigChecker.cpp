@@ -1,3 +1,5 @@
+#include "ConfigChecker.hpp"
+
 #include <cctype>
 #include <cmath>
 #include <cstdlib>
@@ -8,7 +10,6 @@
 #include <sstream>
 #include <vector>
 
-#include "ConfigChecker.hpp"
 #include "Directive.hpp"
 
 // asset
@@ -73,6 +74,26 @@ static void checkValidIndex(std::string str) {
 
 // checkServer -> location
 
+static void checkRootDirective(Directive root) {
+  if (root.getElementAtIndexValues(0).at(0) != '/') {
+    throw std::invalid_argument("invalid root path");
+  }
+  return;
+}
+
+static void checkServerClientMaxContentSize(std::string str) {
+  std::string errMsg = "client_max_body_size error";
+  for (std::string::iterator i = str.begin(); i != str.end(); i++) {
+    if (i < str.end() - 1 && !std::isdigit(*i)) {
+      throw std::invalid_argument(errMsg);
+    }
+    if (i == str.end() - 1 && *i != 'm') {
+      throw std::invalid_argument(errMsg);
+    }
+  }
+  return;
+}
+
 static void checkServerLocation(Directive location) {
   std::vector<Directive>::iterator element;
   for (element = location.beginChildren(); element != location.endChildren();
@@ -88,8 +109,13 @@ static void checkServerLocation(Directive location) {
       checkValidCgiExtension(element->getValues());
     } else if (element->getKey() == "index") {
       checkValidIndex(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "root") {
+      checkRootDirective(*element);
+    } else if (element->getKey() == "client_max_body_size") {
+      checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
     } else {
-      throw std::invalid_argument("invalid server location directive");
+      throw std::invalid_argument('"' + element->getKey() + '"' +
+                                  " is invalid server location directive");
     }
   }
   return;
@@ -104,21 +130,11 @@ static void checkServerName(std::string str) {
   return;
 }
 
-static void checkServerClientMaxContentSize(std::string str) {
-  std::string errMsg = "client_max_content_size error";
-  for (std::string::iterator i = str.begin(); i != str.end(); i++) {
-    if (i < str.end() - 1 && !std::isdigit(*i)) {
-      throw std::invalid_argument(errMsg);
-    }
-    if (i == str.end() - 1 && *i != 'm') {
-      throw std::invalid_argument(errMsg);
-    }
-  }
-  return;
-}
-
 static void checkServerLocationDuplicate(std::string locationUri,
                                          std::set<std::string> &locationPaths) {
+  if (locationUri.at(0) != '/') {
+    throw std::invalid_argument("location path must be in absolute path form");
+  }
   if (locationPaths.find(locationUri) == locationPaths.end()) {
     locationPaths.insert(locationUri);
   } else {
@@ -145,18 +161,13 @@ static void checkServerDirective(Directive server) {
       }
       isServerNameExist = true;
       checkServerName(element->getElementAtIndexValues(0));
-    } else if (element->getKey() == "client_max_content_size") {
+    } else if (element->getKey() == "client_max_body_size") {
       checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "root") {
+      checkRootDirective(*element);
     } else {
       throw std::invalid_argument("invalid server directive");
     }
-  }
-  return;
-}
-
-static void checkRootDirective(Directive root) {
-  if (root.getElementAtIndexValues(0).at(0) != '/') {
-    throw std::invalid_argument("invalid root path");
   }
   return;
 }
@@ -168,6 +179,11 @@ static void checkDirectiveChildren(Directive directive) {
       checkServerDirective(*it);
     } else if (it->getKey() == "root") {
       checkRootDirective(*it);
+    } else if (it->getKey() == "client_max_body_size") {
+      checkServerClientMaxContentSize(it->getElementAtIndexValues(0));
+    } else {
+      throw std::invalid_argument('"' + it->getKey() + '"' +
+                                  " is invalid config directive");
     }
   }
 }
