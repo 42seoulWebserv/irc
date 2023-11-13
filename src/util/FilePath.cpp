@@ -24,27 +24,27 @@ void FilePath::appendPath(const std::string& path) {
 }
 
 bool FilePath::isExist() const {
-  struct stat stat_;
-  if (stat(c_str(), &stat_)) {
+  struct stat statData;
+  if (stat(c_str(), &statData)) {
     return false;
   }
   return true;
 }
 
 bool FilePath::isDirectory() const {
-  struct stat stat_;
-  if (stat(c_str(), &stat_)) {
+  struct stat statData;
+  if (stat(c_str(), &statData)) {
     return false;
   }
-  return S_ISDIR(stat_.st_mode);
+  return S_ISDIR(statData.st_mode);
 }
 
 bool FilePath::isFile() const {
-  struct stat stat_;
-  if (stat(c_str(), &stat_)) {
+  struct stat statData;
+  if (stat(c_str(), &statData)) {
     return false;
   }
-  return S_ISREG(stat_.st_mode);
+  return S_ISREG(statData.st_mode);
 }
 
 bool FilePath::isAccessible(accessType type) const {
@@ -58,6 +58,14 @@ bool FilePath::isAccessible(accessType type) const {
     return access(c_str(), X_OK) == 0;
   }
   return false;
+}
+
+long FilePath::getFileSize() const {
+  struct stat statData;
+  if (stat(c_str(), &statData)) {
+    return -1;
+  }
+  return statData.st_size;
 }
 
 std::string FilePath::getExtension(const std::string& path) {

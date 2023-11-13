@@ -17,6 +17,7 @@ class FilePath : public std::string {
   bool isDirectory() const;
   bool isFile() const;
   bool isAccessible(enum accessType type) const;
+  long getFileSize() const;
   std::string toDirectoryPath();
   std::string toFilePath();
 
