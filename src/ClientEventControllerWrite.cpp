@@ -9,16 +9,14 @@
 
 enum EventController::returnType ClientEventController::clientWrite(
     const struct kevent &event) {
-  write(event.ident, "HTTP/1.1 200 OK\r\n", 17);
-  write(event.ident, "Host: localhost:420\r\n", 21);
-  write(event.ident, "Content-Length: ", 16);
-  std::stringstream ss;
-  ss << response_.getBody().size();
-  write(event.ident, ss.str().c_str(), ss.str().size());
-  write(event.ident, "\r\n", 2);
-  write(event.ident, "Content-Type: text/html\r\n", 25);
-  write(event.ident, "\r\n", 2);
-  write(event.ident, response_.getBody().c_str(), response_.getBody().size());
-  evSet(EVFILT_WRITE, EV_DELETE);  // write 이벤트를 안 받는다
+  if (response_.hasHeader("Host") == false) {
+    response_.setHeader("Host", request_.getHeader("Host"));
+  }
+  if (response_.getVersion().empty()) {
+    response_.setVersion(request_.getVersion());
+  }
+  const std::string str = response_.toString();
+  write(event.ident, str.c_str(), str.size());
+  evSet(EVFILT_WRITE, EV_DELETE);
   return PENDING;
 }

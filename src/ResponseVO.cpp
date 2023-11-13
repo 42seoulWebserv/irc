@@ -1,5 +1,7 @@
 #include "ResponseVO.hpp"
 
+#include <sstream>
+
 const std::string &ResponseVO::getVersion() const { return version_; }
 
 void ResponseVO::setVersion(const std::string &version) { version_ = version; }
@@ -44,4 +46,18 @@ bool ResponseVO::hasHeader(const std::string &key) const {
 
 const std::string &ResponseVO::getHeader(const std::string &key) const {
   return headers_.at(key);
+}
+
+std::string ResponseVO::toString() const {
+  std::stringstream ss;
+  ss << version_ << " " << statusCode_ << " "
+     << "!!!OK!!!"
+     << "\r\n";
+  std::map<std::string, std::string>::const_iterator iter;
+  for (iter = headers_.begin(); iter != headers_.end(); iter++) {
+    ss << iter->first << ": " << iter->second << "\r\n";
+  }
+  ss << "\r\n";
+  ss << body_;
+  return ss.str();
 }

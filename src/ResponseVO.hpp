@@ -18,6 +18,7 @@ class ResponseVO {
   void setHeader(const std::string &key, const std::string &value);
   bool hasHeader(const std::string &key) const;
   const std::string &getHeader(const std::string &key) const;
+  std::string toString() const;
 
  private:
   std::string version_;
