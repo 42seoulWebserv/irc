@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-class FilePath {
+class FilePath : public std::string {
  public:
   FilePath();
   FilePath(const std::string &path);
@@ -20,17 +20,9 @@ class FilePath {
   std::string toDirectoryPath();
   std::string toFilePath();
 
-  static std::string getExtension(const FilePath &path);
   static std::string getExtension(const std::string &path);
-  static std::string getFileName(const FilePath &path);
   static std::string getFileName(const std::string &path);
-  static std::string getDirectory(const FilePath &path);
   static std::string getDirectory(const std::string &path);
-
- private:
-  std::string path_;
 };
-
-std::ostream &operator<<(std::ostream &os, const FilePath &path);
 
 #endif
