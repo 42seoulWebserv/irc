@@ -6,7 +6,7 @@
 template <typename T>
 class Shared {
  public:
-  Shared(T *value) : value(value), counter(new int(1)){};
+  explicit Shared(T *value) : value(value), counter(new int(1)){};
   Shared(const Shared<T> &rhs) : value(rhs.value), counter(rhs.counter) {
     (*counter)++;
   };
