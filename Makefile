@@ -10,6 +10,7 @@ INC_DIR := \
 	-I./src/config/configLexer \
 	-I./src/config/configMaker \
 	-I./src/processor \
+	-I./src/util \
 
 SRC_DIR := ./src
 BUILD_DIR := ./build
@@ -72,6 +73,10 @@ PROCESSOR_NAME := \
 	MethodPutProcessor.cpp \
 	UnsupportedMethodProcessor.cpp \
 
+UTIL_DIR := ./src/util/
+UTIL_NAME := \
+	FilePath.cpp \
+
 SRCS := \
 	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \
 	$(addprefix $(CONFIG_DIR), $(CONFIG_NAME)) \
@@ -80,6 +85,7 @@ SRCS := \
 	$(addprefix $(CONFIGMAKER_DIR), $(CONFIGMAKER_NAME)) \
 	$(addprefix $(PASER_LEXER_DIR), $(PASER_LEXER_NAME)) \
 	$(addprefix $(PROCESSOR_DIR), $(PROCESSOR_NAME)) \
+	$(addprefix $(UTIL_DIR), $(UTIL_NAME)) \
 
 SRCS_DIR := \
 	$(MAIN_DIR) \
@@ -89,6 +95,7 @@ SRCS_DIR := \
 	$(CONFIGMAKER_DIR) \
 	$(PASER_LEXER_DIR) \
 	$(PROCESSOR_DIR) \
+	$(UTIL_DIR) \
 
 vpath %.cpp $(SRCS_DIR)
 
