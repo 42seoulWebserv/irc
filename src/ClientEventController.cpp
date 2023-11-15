@@ -12,6 +12,7 @@ ClientEventController::ClientEventController(int kq, int clientSocket)
       kq_(kq),
       statusCode_(0),
       clientSocket_(clientSocket),
+      config_(NULL),
       processor_(NULL) {}
 
 ClientEventController::ClientEventController(const ClientEventController &src)
@@ -19,6 +20,7 @@ ClientEventController::ClientEventController(const ClientEventController &src)
       kq_(src.kq_),
       statusCode_(src.statusCode_),
       clientSocket_(src.clientSocket_),
+      config_(NULL),
       processor_(NULL) {}
 
 ClientEventController &ClientEventController::operator=(
@@ -27,6 +29,7 @@ ClientEventController &ClientEventController::operator=(
   this->statusCode_ = rhs.statusCode_;
   this->readStatus_ = rhs.readStatus_;
   this->clientSocket_ = rhs.clientSocket_;
+  this->config_ = rhs.config_;
   return *this;
 }
 
