@@ -45,5 +45,9 @@ bool RequestVO::hasHeader(const std::string &key) const {
 }
 
 const std::string &RequestVO::getHeader(const std::string &key) const {
+  if (!hasHeader(key)) {
+    throw std::invalid_argument("invalid key value");
+    return NULL;
+  }
   return headers_.at(key);
 }

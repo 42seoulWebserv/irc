@@ -57,6 +57,9 @@ void ClientEventController::parseHeaderLineByLine(std::string str) {
     throw std::invalid_argument('"' + str + '"' + "key has sapce");
   }
   std::string value = strTrim(str.substr(i + 2, std::string::npos));
+  if (!request_.hasHeader("Content-Type")) {
+    request_.setHeader("Content-Type", "text/html");
+  }
   request_.setHeader(key, value);
 }
 
@@ -109,8 +112,9 @@ void ClientEventController::parseBody() {
   }
 }
 
-static ServerConfig *selectServerConfig(
-    RequestVO request, std::vector<ServerConfig *> serverConfigs) {
+static ServerConfig *
+selectServerConfig(RequestVO request,
+                   std::vector<ServerConfig *> serverConfigs) {
   if (request.hasHeader("Host") == false) {
     return NULL;
   }
@@ -164,8 +168,9 @@ static bool isParentPath(const std::string &parent, const std::string &child) {
   return true;
 }
 
-static const LocationConfig *selectLocationConfig(
-    const std::vector<LocationConfig> &locations, const std::string &uri) {
+static const LocationConfig *
+selectLocationConfig(const std::vector<LocationConfig> &locations,
+                     const std::string &uri) {
   const LocationConfig *res = NULL;
   size_t maxLocationLen = 0;
   for (size_t i = 0; i < locations.size(); i++) {
@@ -220,9 +225,9 @@ void ClientEventController::beginProcess(int statusCode) {
 /* body는 필요한 순간에 읽는다, 여기선 header 내용만 검사한다. */
 /* 하나의 요청이 여러 개로 찢어져서 들어온 건지, 다 들어왔는지도 확인. */
 /* 주: cheseo 부: yonshin 검: junmkang */
-enum EventController::returnType ClientEventController::clientRead(
-    const struct kevent &event) {
-  if (event.flags & EV_EOF) {  // closed socket
+enum EventController::returnType
+ClientEventController::clientRead(const struct kevent &event) {
+  if (event.flags & EV_EOF) { // closed socket
     close(clientSocket_);
     return SUCCESS;
   }
@@ -243,11 +248,11 @@ enum EventController::returnType ClientEventController::clientRead(
       int idx = headerBuffer_.find("\r\n\r\n");
       bodyBuffer_ += headerBuffer_.substr(idx + 4, std::string::npos);
       headerBuffer_.erase(idx, std::string::npos);
-      std::cout << headerBuffer_ << "$" << std::endl;
+      // std::cout << headerBuffer_ << "$" << std::endl;
       try {
         parseHeader();
       } catch (std::exception &e) {
-        std::cout << "Error: " << e.what() << std::endl;  // debug
+        std::cout << "Error: " << e.what() << std::endl; // debug
         beginProcess(401);
         return PENDING;
       }
@@ -263,8 +268,9 @@ enum EventController::returnType ClientEventController::clientRead(
         }
         contentLength_ = static_cast<size_t>(contentLen);
       }
+      // bodyBuffer_ += tmpStr;
       parseBody();
-      printParseResult();
+      // printParseResult();
       beginProcess(0);
     }
     return PENDING;
@@ -273,7 +279,7 @@ enum EventController::returnType ClientEventController::clientRead(
       bodyBuffer_ += tmpStr;
       parseBody();
     } catch (std::exception &e) {
-      std::cout << "Error: " << e.what() << std::endl;  // debug
+      std::cout << "Error: " << e.what() << std::endl; // debug
       beginProcess(401);
       return PENDING;
     }
