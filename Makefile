@@ -76,7 +76,7 @@ PROCESSOR_NAME := \
 UTIL_DIR := ./src/util/
 UTIL_NAME := \
 	FilePath.cpp \
-	BodyStream.cpp \
+	ResponseStream.cpp \
 
 SRCS := \
 	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \

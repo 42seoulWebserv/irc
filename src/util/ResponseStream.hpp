@@ -8,14 +8,14 @@
 #define CHUNK_LIST_SIZE 4
 #define DELAYED_FILE_READ -2
 
-class BodyStream {
+class ResponseStream {
  public:
-  BodyStream();
-  ~BodyStream();
-  int readFrom(int fd);
-  int writeTo(int fd);
-  int getTotalFileRead() const;
-  int getTotalFileWrite() const;
+  ResponseStream();
+  ~ResponseStream();
+  int readFromFile(int fd);
+  int writeToClient(int fd);
+  int getTotalRead() const;
+  int getTotalWrite() const;
   bool isEOF() const;
 
  private:

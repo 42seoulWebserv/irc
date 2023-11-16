@@ -1,18 +1,18 @@
-#include "BodyStream.hpp"
+#include "ResponseStream.hpp"
 
 #include <unistd.h>
 
-BodyStream::BodyStream()
+ResponseStream::ResponseStream()
     : seq_(0), totalFileRead_(0), totalFileWrite_(0), isReadEOF_(false) {}
-BodyStream::~BodyStream() {
+ResponseStream::~ResponseStream() {
   std::list<Chunk *>::iterator it;
   for (it = list_.begin(); it != list_.end(); it++) {
     delete *it;
   }
 }
-BodyStream::Chunk::Chunk(int seq) : seq_(seq), size_(0), offset_(0) {}
+ResponseStream::Chunk::Chunk(int seq) : seq_(seq), size_(0), offset_(0) {}
 
-int BodyStream::readFrom(int fd) {
+int ResponseStream::readFromFile(int fd) {
   if (list_.size() == CHUNK_LIST_SIZE) {
     return DELAYED_FILE_READ;
   }
@@ -29,7 +29,7 @@ int BodyStream::readFrom(int fd) {
   return size;
 }
 
-int BodyStream::writeTo(int fd) {
+int ResponseStream::writeToClient(int fd) {
   if (list_.size() == 0) {
     return 0;
   }
@@ -48,8 +48,8 @@ int BodyStream::writeTo(int fd) {
   return size;
 }
 
-int BodyStream::getTotalFileRead() const { return totalFileRead_; }
+int ResponseStream::getTotalRead() const { return totalFileRead_; }
 
-int BodyStream::getTotalFileWrite() const { return totalFileWrite_; }
+int ResponseStream::getTotalWrite() const { return totalFileWrite_; }
 
-bool BodyStream::isEOF() const { return list_.size() == 0 && isReadEOF_; }
+bool ResponseStream::isEOF() const { return list_.size() == 0 && isReadEOF_; }
