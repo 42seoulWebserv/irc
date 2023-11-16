@@ -12,26 +12,23 @@ class Shared {
   };
   Shared &operator=(const Shared<T> &rhs) {
     if (this == &rhs) return *this;
-    (*counter)--;
-    if (*counter == 0) {
-      delete value;
-      delete counter;
-    }
+    decreaseCounter();
     value = rhs.value;
     counter = rhs.counter;
     (*counter)++;
     return *this;
   };
-  ~Shared() {
+  ~Shared() { decreaseCounter(); };
+  T *ptr() { return value; };
+
+ private:
+  void decreaseCounter() {
     (*counter)--;
     if (*counter == 0) {
       delete value;
       delete counter;
     }
   };
-  T *ptr() { return value; };
-
- private:
   T *value;
   int *counter;
 };
