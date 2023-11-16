@@ -20,6 +20,7 @@ class Shared {
   };
   ~Shared() { decreaseCounter(); };
   T *ptr() { return value; };
+  const T *ptr() const { return value; }
 
  private:
   void decreaseCounter() {
