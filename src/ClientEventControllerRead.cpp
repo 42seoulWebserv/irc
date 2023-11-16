@@ -110,6 +110,7 @@ void ClientEventController::parseBody() {
   if (bodyBuffer_.size() > contentLength_) {
     throw std::invalid_argument("Content-Length size error");
   }
+  request_.setBody(bodyBuffer_);
 }
 
 static ServerConfig *
@@ -268,7 +269,6 @@ ClientEventController::clientRead(const struct kevent &event) {
         }
         contentLength_ = static_cast<size_t>(contentLen);
       }
-      // bodyBuffer_ += tmpStr;
       parseBody();
       // printParseResult();
       beginProcess(0);
@@ -284,7 +284,7 @@ ClientEventController::clientRead(const struct kevent &event) {
       return PENDING;
     }
   }
-  printParseResult();
+  // printParseResult();
   beginProcess(0);
   return PENDING;
 }
