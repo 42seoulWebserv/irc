@@ -12,11 +12,13 @@ class ResponseStream {
  public:
   ResponseStream();
   ~ResponseStream();
-  int readFromFile(int fd);
+  int readStr(const std::string &str);
+  int readFile(int fd);
   int writeToClient(int fd);
   int getTotalRead() const;
   int getTotalWrite() const;
   bool isEOF() const;
+  void setEof(bool eof);
 
  private:
   class Chunk {
@@ -28,9 +30,9 @@ class ResponseStream {
     char buffer_[BODY_CHUNK_SIZE];
   };
   int seq_;
-  int totalFileRead_;
-  int totalFileWrite_;
-  bool isReadEOF_;
+  int totalRead_;
+  int totalWrite_;
+  bool isEOF_;
   std::list<Chunk *> list_;
 };
 
