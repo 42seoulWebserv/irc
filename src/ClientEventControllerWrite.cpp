@@ -9,6 +9,12 @@
 
 enum EventController::returnType ClientEventController::clientWrite(
     const struct kevent &event) {
+  if (stream_.isEOF() == false) {
+    stream_.writeToClient(clientSocket_);
+    if (stream_.isEOF()) {
+      return PENDING;
+    }
+  }
   if (response_.hasHeader("Connection") &&
       response_.getHeader("Connection") == "keep-alive") {
     ClientEventController::addEventController(kq_, clientSocket_,

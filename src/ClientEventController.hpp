@@ -10,6 +10,7 @@
 #include "IRequestProcessor.hpp"
 #include "RequestProcessorFactory.hpp"
 #include "RequestVO.hpp"
+#include "ResponseStream.hpp"
 #include "ResponseVO.hpp"
 
 #define BUFF_SIZE 4
@@ -41,6 +42,7 @@ class ClientEventController : public EventController,
 
   RequestVO request_;
   ResponseVO response_;
+  ResponseStream stream_;
 
   IRequestProcessor *processor_;
 
