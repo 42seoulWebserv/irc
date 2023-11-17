@@ -18,6 +18,5 @@ void MethodGetProcessor::onEvent(const FileReadEventController::Event& event) {
   if (event.type_ == FileReadEventController::SUCCESS) {
     response.setStatusCode(200);
   }
-  response.setBody(event.content_);
   ob_->onEvent(response);
 }

@@ -12,12 +12,6 @@ void ResponseVO::setStatusCode(const int statusCode) {
   statusCode_ = statusCode;
 }
 
-const std::string &ResponseVO::getBody() const { return body_; }
-
-void ResponseVO::setBody(const std::string &body) { body_ = body; }
-
-void ResponseVO::appendBody(const std::string &body) { body_ += body; }
-
 const std::map<std::string, std::string> &ResponseVO::getHeaders() const {
   return headers_;
 }
@@ -58,6 +52,5 @@ std::string ResponseVO::toString() const {
     ss << iter->first << ": " << iter->second << "\r\n";
   }
   ss << "\r\n";
-  ss << body_;
   return ss.str();
 }
