@@ -7,6 +7,7 @@
 #include "ResponseVO.hpp"
 
 static void requestPrint(const RequestVO &request) {
+  std::cout << "================= request =================" << std::endl;
   std::cout << "uri_: " << request.getUri() << std::endl;
   std::cout << "method_: " << request.getMethod() << std::endl;
   std::cout << "version_: " << request.getVersion() << std::endl;
@@ -14,9 +15,11 @@ static void requestPrint(const RequestVO &request) {
   // std::cout << "headers_: " << request.hasHeader("Content-Type") <<
   // std::endl; std::cout << "headers_: " << request.getHeader("Content-Type")
   // << std::endl; std::endl; std::map<std::string, std::string> headers_;
+  std::cout << "================= ======= =================" << std::endl;
 }
 
 static void configPrint(const LocationConfig *config) {
+  std::cout << "================= config =================" << std::endl;
   std::cout << "limitClientBodySize_: " << config->getLimitClientBodySize()
             << std::endl;
   std::cout << "autoIndex_: " << config->getAutoIndex() << std::endl;
@@ -29,6 +32,7 @@ static void configPrint(const LocationConfig *config) {
             << std::endl;
   // std::vector<std::string> acceptMethods_;
   // std::map<std::string, std::string> cgiPrograms_;
+  std::cout << "================= ====== =================" << std::endl;
 }
 
 static std::string removeSubstring(std::string &str,
@@ -61,30 +65,22 @@ static void writePostFile(FilePath fileName, std::string &body) {
   outputFile.close();
 }
 
+// 해당 디렉토리 구조가 존재하고, accept_methods가 허용하는 경우에만 POST 동작
 MethodPostProcessor::MethodPostProcessor(const RequestVO &request,
                                          const LocationConfig *config, int kq,
                                          IObserver<ResponseVO> *ob)
     : ob_(ob) {
   FilePath fileName = config->getRootPath();
-  fileName.append(config->getUri());
+  fileName.append(request.getUri());
   fileName.append(config->getIndexPath());
 
   std::string contentType = request.getHeader("Content-Type");
   std::string body = request.getBody();
   std::string content;
 
-  configPrint(config);
-  if (contentType.find("application/x-www-form-urlencoded") !=
-      std::string::npos) {
-    writePostFile(fileName, body);
-  } else if (contentType.find("multipart/form-data;") != std::string::npos) {
-    // 지원하지않는 contentType
-    throw std::invalid_argument("wrong content type");
-  } else {
-    // 잘못된 contentType
-    throw std::invalid_argument("wrong content type");
-  }
+  // configPrint(config);
   // requestPrint(request);
+  writePostFile(fileName, body);
   FileWriteEventController::addEventController(kq, fileName, content, this);
   (void)ob;
 }
