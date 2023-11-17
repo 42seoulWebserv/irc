@@ -59,14 +59,7 @@ enum EventController::returnType ServerEventController::handleEvent(
     std::cout << "accept error" << std::endl;
     return PENDING;
   }
-  struct kevent clientEvent;
-  struct timespec timeout = {10, 0};  // 10 seconds
-
-  ClientEventController *clientEventController =
-      new ClientEventController(this->kq_, clientSocket);
-  clientEventController->setServerConfigs(this->getServerConfigs());
-  EV_SET(&clientEvent, clientSocket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0,
-         clientEventController);
-  kevent(this->kq_, &clientEvent, 1, NULL, 0, &timeout);
+  ClientEventController::addEventController(kq_, clientSocket,
+                                            getServerConfigs());
   return PENDING;
 }

@@ -9,14 +9,12 @@
 
 enum EventController::returnType ClientEventController::clientWrite(
     const struct kevent &event) {
-  if (response_.hasHeader("Host") == false) {
-    response_.setHeader("Host", request_.getHeader("Host"));
+  if (response_.hasHeader("Connection") &&
+      response_.getHeader("Connection") == "keep-alive") {
+    ClientEventController::addEventController(kq_, clientSocket_,
+                                              getServerConfigs());
+    evSet(EVFILT_WRITE, EV_DELETE);
+    return SUCCESS;
   }
-  if (response_.getVersion().empty()) {
-    response_.setVersion(request_.getVersion());
-  }
-  const std::string str = response_.toString();
-  write(event.ident, str.c_str(), str.size());
-  evSet(EVFILT_WRITE, EV_DELETE);
-  return PENDING;
+  return SUCCESS;
 }

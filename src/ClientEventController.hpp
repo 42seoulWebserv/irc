@@ -19,10 +19,11 @@ class ClientEventController : public EventController,
  public:
   enum READ_STATUS { START_LINE, HEADER, BODY };
 
-  ClientEventController(int kq, int clientSocket);
   ClientEventController(const ClientEventController &src);
   ClientEventController &operator=(const ClientEventController &rhs);
   virtual ~ClientEventController();
+  static void addEventController(int kq, int socket,
+                                 const std::vector<ServerConfig *> &configs);
 
   enum EventController::returnType handleEvent(const struct kevent &event);
 
@@ -47,6 +48,7 @@ class ClientEventController : public EventController,
   enum EventController::returnType clientWrite(const struct kevent &event);
   enum EventController::returnType clientTimeout(const struct kevent &event);
 
+  ClientEventController(int kq, int clientSocket);
   void parseHeaderLineByLine(std::string str);
   void parseStartLine(std::string str);
   void printParseResult();

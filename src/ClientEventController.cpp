@@ -39,6 +39,19 @@ ClientEventController::~ClientEventController() {
   }
 }
 
+void ClientEventController::addEventController(
+    int kq, int socket, const std::vector<ServerConfig *> &configs) {
+  struct kevent clientEvent;
+  struct timespec timeout = {10, 0};  // 10 seconds
+
+  ClientEventController *clientEventController =
+      new ClientEventController(kq, socket);
+  clientEventController->setServerConfigs(configs);
+  EV_SET(&clientEvent, socket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0,
+         clientEventController);
+  kevent(kq, &clientEvent, 1, NULL, 0, &timeout);
+}
+
 enum EventController::returnType ClientEventController::handleEvent(
     const struct kevent &event) {
   if (event.filter == EVFILT_READ) {
