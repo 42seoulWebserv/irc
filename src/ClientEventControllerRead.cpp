@@ -243,7 +243,7 @@ ClientEventController::clientRead(const struct kevent &event) {
   std::string tmpStr(recvBuff);
   if (readStatus_ != BODY) {
     headerBuffer_ += tmpStr;
-    std::cout << headerBuffer_ << std::endl;
+    // std::cout << headerBuffer_ << std::endl;
     if (headerBuffer_.find("\r\n\r\n") != std::string::npos) {
       readStatus_ = BODY;
       int idx = headerBuffer_.find("\r\n\r\n");
@@ -268,6 +268,9 @@ ClientEventController::clientRead(const struct kevent &event) {
           throw std::invalid_argument("wrong Content-Length format");
         }
         contentLength_ = static_cast<size_t>(contentLen);
+      }
+      if (contentLength_ > bodyBuffer_.size()) {
+        return PENDING;
       }
       parseBody();
       // printParseResult();

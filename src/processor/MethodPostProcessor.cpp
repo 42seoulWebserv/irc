@@ -1,7 +1,9 @@
-#include "MethodPostProcessor.hpp"
+#include <fstream>
+#include <iostream>
 
 #include "FilePath.hpp"
 #include "FileWriteEventController.hpp"
+#include "MethodPostProcessor.hpp"
 #include "ResponseVO.hpp"
 
 static void requestPrint(const RequestVO &request) {
@@ -29,25 +31,34 @@ static void configPrint(const LocationConfig *config) {
   // std::map<std::string, std::string> cgiPrograms_;
 }
 
-// curl -X POST -d "key1=value1&key2=value2" http://localhost:8080/test/
-// key1=value1&key2=value2
-static void applicationContentType() {
-  std::cout << "in application/x-www-form-urlencoded" << std::endl;
+static std::string removeSubstring(std::string &str,
+                                   const std::string &substr) {
+  std::string result = str;
+  size_t pos = str.find(substr);
+  if (pos != std::string::npos) {
+    result.erase(pos, result.length());
+  }
+  return result;
 }
 
-// curl -X POST -F "key1=value1" -F "key2=value2"
-// http://localhost:8080/test/
-/*--------------------------5048a8abd04b6aab
-  Content-Disposition: form-data; name="key1"
+// curl -X POST -d "key1=value1&key2=value2" http://localhost:8080/test/
+// key1=value1&key2=value2
+// <root>/<filename>.txt
+static void writePostFile(FilePath fileName, std::string &body) {
+  std::cout << "in application/x-www-form-urlencoded" << std::endl;
+  std::cout << "fileName: " << fileName << std::endl;
+  std::cout << "body: " << body << std::endl;
 
-  value1
-  --------------------------5048a8abd04b6aab
-  Content-Disposition: form-data; name="key2"
-
-  value2
-  --------------------------5048a8abd04b6aab--*/
-static void multipartContentType() {
-  std::cout << "in multipart/form-data" << std::endl;
+  std::string result = removeSubstring(fileName, ".html");
+  result.erase(0, 1);
+  result.append(".txt");
+  std::cout << "result: " << result << std::endl;
+  std::ofstream outputFile(result);
+  if (!outputFile.is_open()) {
+    std::cerr << "Error: POST: std::ofstream" << std::endl;
+  }
+  outputFile << body;
+  outputFile.close();
 }
 
 MethodPostProcessor::MethodPostProcessor(const RequestVO &request,
@@ -57,20 +68,23 @@ MethodPostProcessor::MethodPostProcessor(const RequestVO &request,
   FilePath fileName = config->getRootPath();
   fileName.append(config->getUri());
   fileName.append(config->getIndexPath());
-  std::cout << "fileName: " << fileName << std::endl;
 
-  std::string content;
   std::string contentType = request.getHeader("Content-Type");
-  std::cout << "!!!contentType: " << contentType << std::endl;
+  std::string body = request.getBody();
+  std::string content;
 
-  if (contentType.find("application/x-www-form-urlencoded")) {
-    applicationContentType();
-  } else if (contentType.find("multipart/form-data;")) {
-    multipartContentType();
+  configPrint(config);
+  if (contentType.find("application/x-www-form-urlencoded") !=
+      std::string::npos) {
+    writePostFile(fileName, body);
+  } else if (contentType.find("multipart/form-data;") != std::string::npos) {
+    // 지원하지않는 contentType
+    throw std::invalid_argument("wrong content type");
+  } else {
+    // 잘못된 contentType
+    throw std::invalid_argument("wrong content type");
   }
-  content = request.getBody();
-  // configPrint(config);
-  requestPrint(request);
+  // requestPrint(request);
   FileWriteEventController::addEventController(kq, fileName, content, this);
   (void)ob;
 }
