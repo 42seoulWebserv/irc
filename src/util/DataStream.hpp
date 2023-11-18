@@ -8,10 +8,10 @@
 #define CHUNK_LIST_SIZE 4
 #define DELAYED_FILE_READ -2
 
-class ResponseStream {
+class DataStream {
  public:
-  ResponseStream();
-  ~ResponseStream();
+  DataStream();
+  ~DataStream();
   int readStr(const std::string &str);
   int readFile(int fd);
   int writeToClient(int fd);

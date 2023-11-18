@@ -1,30 +1,30 @@
-#include "ResponseStream.hpp"
+#include "DataStream.hpp"
 
 #include <unistd.h>
 
-ResponseStream::ResponseStream()
+DataStream::DataStream()
     : seq_(0), totalRead_(0), totalWrite_(0), isEOF_(false) {}
-ResponseStream::~ResponseStream() {
+DataStream::~DataStream() {
   std::list<Chunk *>::iterator it;
   for (it = list_.begin(); it != list_.end(); it++) {
     delete *it;
   }
 }
-ResponseStream::Chunk::Chunk(int seq, int size)
+DataStream::Chunk::Chunk(int seq, int size)
     : seq_(seq), size_(size), offset_(0) {
   buffer_ = new char[size];
 }
 
-ResponseStream::Chunk::~Chunk() { delete buffer_; }
+DataStream::Chunk::~Chunk() { delete buffer_; }
 
-int ResponseStream::readStr(const std::string &str) {
+int DataStream::readStr(const std::string &str) {
   Chunk *chunk = new Chunk(seq_++, str.size());
   memcpy(chunk->buffer_, str.c_str(), str.size());
   list_.push_back(chunk);
   return str.size();
 }
 
-int ResponseStream::readFile(int fd) {
+int DataStream::readFile(int fd) {
   if (isEOF_) {
     return 0;
   }
@@ -44,7 +44,7 @@ int ResponseStream::readFile(int fd) {
   return size;
 }
 
-int ResponseStream::writeToClient(int fd) {
+int DataStream::writeToClient(int fd) {
   if (list_.size() == 0) {
     return 0;
   }
@@ -63,10 +63,10 @@ int ResponseStream::writeToClient(int fd) {
   return size;
 }
 
-int ResponseStream::getTotalRead() const { return totalRead_; }
+int DataStream::getTotalRead() const { return totalRead_; }
 
-int ResponseStream::getTotalWrite() const { return totalWrite_; }
+int DataStream::getTotalWrite() const { return totalWrite_; }
 
-bool ResponseStream::isEOF() const { return list_.size() == 0 && isEOF_; }
+bool DataStream::isEOF() const { return list_.size() == 0 && isEOF_; }
 
-void ResponseStream::setEof(bool eof) { isEOF_ = eof; }
+void DataStream::setEof(bool eof) { isEOF_ = eof; }

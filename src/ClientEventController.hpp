@@ -11,7 +11,7 @@
 #include "KqueueMultiplexer.hpp"
 #include "RequestProcessorDispatcher.hpp"
 #include "Request.hpp"
-#include "ResponseStream.hpp"
+#include "DataStream.hpp"
 #include "Response.hpp"
 
 #define BUFF_SIZE 4
@@ -40,7 +40,7 @@ class ClientEventController : public EventController,
 
   Request request_;
   Response response_;
-  ResponseStream stream_;
+  DataStream stream_;
 
   IRequestProcessor *processor_;
 

@@ -76,7 +76,7 @@ PROCESSOR_NAME := \
 UTIL_DIR := ./src/util/
 UTIL_NAME := \
 	FilePath.cpp \
-	ResponseStream.cpp \
+	DataStream.cpp \
 
 MULTIPLEXER_DIR := ./src/multiplexer/
 MULTIPLEXER_NAME := \
