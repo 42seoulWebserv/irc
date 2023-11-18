@@ -10,10 +10,17 @@ ResponseStream::~ResponseStream() {
     delete *it;
   }
 }
-ResponseStream::Chunk::Chunk(int seq) : seq_(seq), size_(0), offset_(0) {}
+ResponseStream::Chunk::Chunk(int seq, int size)
+    : seq_(seq), size_(size), offset_(0) {
+  buffer_ = new char[size];
+}
+
+ResponseStream::Chunk::~Chunk() { delete buffer_; }
 
 int ResponseStream::readStr(const std::string &str) {
-  Chunk *chunk = new Chunk(seq_++);
+  Chunk *chunk = new Chunk(seq_++, str.size());
+  memcpy(chunk->buffer_, str.c_str(), str.size());
+  list_.push_back(chunk);
   return str.size();
 }
 
@@ -24,9 +31,9 @@ int ResponseStream::readFile(int fd) {
   if (list_.size() == CHUNK_LIST_SIZE) {
     return DELAYED_FILE_READ;
   }
-  Chunk *chunk = new Chunk(seq_++);
-  int size = read(fd, chunk->buffer_, BODY_CHUNK_SIZE);
-  isEOF_ = size == 0 || (size > 0 && size < BODY_CHUNK_SIZE);
+  Chunk *chunk = new Chunk(seq_++, BODY_CHUNK_DEFAULT_SIZE);
+  int size = read(fd, chunk->buffer_, BODY_CHUNK_DEFAULT_SIZE);
+  isEOF_ = size == 0 || (size > 0 && size < BODY_CHUNK_DEFAULT_SIZE);
   if (size <= 0) {
     delete chunk;
     return size;

@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 
-#define BODY_CHUNK_SIZE 65536
+#define BODY_CHUNK_DEFAULT_SIZE 65536
 #define CHUNK_LIST_SIZE 4
 #define DELAYED_FILE_READ -2
 
@@ -23,11 +23,16 @@ class ResponseStream {
  private:
   class Chunk {
    public:
-    Chunk(int seq);
+    Chunk(int seq, int size);
+    ~Chunk();
     int seq_;
     int size_;
     int offset_;
-    char buffer_[BODY_CHUNK_SIZE];
+    char *buffer_;
+
+   private:
+    Chunk(const Chunk &chunk);
+    Chunk &operator=(const Chunk &chunk);
   };
   int seq_;
   int totalRead_;
