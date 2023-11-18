@@ -4,16 +4,16 @@
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
 #include "LocationConfig.hpp"
-#include "RequestVO.hpp"
-#include "ResponseVO.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
 
 class MethodPostProcessor : public IRequestProcessor {
  public:
-  MethodPostProcessor(const RequestVO &request, const LocationConfig *config,
-                      IObserver<ResponseVO> *ob);
+  MethodPostProcessor(const Request &request, const LocationConfig *config,
+                      IObserver<Response> *ob);
 
  private:
-  IObserver<ResponseVO> *ob_;
+  IObserver<Response> *ob_;
 };
 
 #endif

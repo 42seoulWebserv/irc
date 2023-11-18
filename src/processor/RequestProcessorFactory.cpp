@@ -6,8 +6,8 @@
 #include "UnsupportedMethodProcessor.hpp"
 
 IRequestProcessor* RequestProcessorFactory::createRequestProcessor(
-    const RequestVO& request, const LocationConfig* config,
-    IObserver<ResponseVO>* ob) {
+    const Request& request, const LocationConfig* config,
+    IObserver<Response>* ob) {
   const std::vector<std::string>& accepts = config->getAcceptMethods();
   const std::string& method = request.getMethod();
   if (std::find(accepts.begin(), accepts.end(), method) == accepts.end()) {

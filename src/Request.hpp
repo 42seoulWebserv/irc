@@ -1,10 +1,10 @@
-#ifndef RequestVO_HPP_
-#define RequestVO_HPP_
+#ifndef Request_HPP_
+#define Request_HPP_
 
 #include <map>
 #include <string>
 
-class RequestVO {
+class Request {
  public:
   const std::string &getUri() const;
   void setUri(const std::string &uri);

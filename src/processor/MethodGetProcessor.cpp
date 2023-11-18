@@ -1,8 +1,8 @@
 #include "MethodGetProcessor.hpp"
 
-MethodGetProcessor::MethodGetProcessor(const RequestVO& request,
+MethodGetProcessor::MethodGetProcessor(const Request& request,
                                        const LocationConfig* config,
-                                       IObserver<ResponseVO>* ob)
+                                       IObserver<Response>* ob)
     : ob_(ob) {
   FileReadEventController::addEventController("default.conf", this);
   (void)request;
@@ -11,7 +11,7 @@ MethodGetProcessor::MethodGetProcessor(const RequestVO& request,
 }
 
 void MethodGetProcessor::onEvent(const FileReadEventController::Event& event) {
-  ResponseVO response;
+  Response response;
   if (event.type_ == FileReadEventController::FAIL) {
     response.setStatusCode(404);
   }

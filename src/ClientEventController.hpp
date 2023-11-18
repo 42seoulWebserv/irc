@@ -10,14 +10,14 @@
 #include "IRequestProcessor.hpp"
 #include "KqueueMultiplexer.hpp"
 #include "RequestProcessorFactory.hpp"
-#include "RequestVO.hpp"
+#include "Request.hpp"
 #include "ResponseStream.hpp"
-#include "ResponseVO.hpp"
+#include "Response.hpp"
 
 #define BUFF_SIZE 4
 /* server(port) 또는 client가 보낸 요청을 수행하는 클래스 */
 class ClientEventController : public EventController,
-                              public IObserver<ResponseVO> {
+                              public IObserver<Response> {
  public:
   enum READ_STATUS { START_LINE, HEADER, BODY };
 
@@ -27,7 +27,7 @@ class ClientEventController : public EventController,
 
   enum EventController::returnType handleEvent(const struct kevent &event);
 
-  void onEvent(const ResponseVO &p);
+  void onEvent(const Response &p);
 
  private:
   enum READ_STATUS readStatus_;
@@ -38,8 +38,8 @@ class ClientEventController : public EventController,
   std::string bodyBuffer_;
   const LocationConfig *config_;
 
-  RequestVO request_;
-  ResponseVO response_;
+  Request request_;
+  Response response_;
   ResponseStream stream_;
 
   IRequestProcessor *processor_;

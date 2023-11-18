@@ -5,18 +5,18 @@
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
 #include "LocationConfig.hpp"
-#include "RequestVO.hpp"
-#include "ResponseVO.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
 
 class MethodGetProcessor : public IRequestProcessor,
                            IObserver<FileReadEventController::Event> {
  public:
-  MethodGetProcessor(const RequestVO &request, const LocationConfig *config,
-                     IObserver<ResponseVO> *ob);
+  MethodGetProcessor(const Request &request, const LocationConfig *config,
+                     IObserver<Response> *ob);
   void onEvent(const FileReadEventController::Event &event);
 
  private:
-  IObserver<ResponseVO> *ob_;
+  IObserver<Response> *ob_;
 };
 
 #endif

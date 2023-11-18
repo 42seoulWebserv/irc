@@ -68,7 +68,7 @@ std::ostream &operator<<(std::ostream &o,
   return o;
 }
 
-void ClientEventController::onEvent(const ResponseVO &p) {
+void ClientEventController::onEvent(const Response &p) {
   // TODO: 버전 체크, 필요하다면 헤더 추가 등의 작업 가능
   response_ = p;
   KqueueMultiplexer::getInstance().addWriteEvent(clientSocket_, this);

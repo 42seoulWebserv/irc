@@ -1,8 +1,8 @@
 #include "MethodDeleteProcessor.hpp"
 
-MethodDeleteProcessor::MethodDeleteProcessor(const RequestVO& request,
+MethodDeleteProcessor::MethodDeleteProcessor(const Request& request,
                                              const LocationConfig* config,
-                                             IObserver<ResponseVO>* ob)
+                                             IObserver<Response>* ob)
     : ob_(ob) {
   (void)request;
   (void)config;

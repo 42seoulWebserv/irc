@@ -32,8 +32,8 @@ MAIN_NAME := \
 	ClientEventControllerTime.cpp \
 	FileReadEventController.cpp \
 	FileWriteEventController.cpp \
-	RequestVO.cpp \
-	ResponseVO.cpp \
+	Request.cpp \
+	Response.cpp \
 
 CONFIG_DIR := ./src/config/
 CONFIG_NAME := \

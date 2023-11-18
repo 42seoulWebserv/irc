@@ -110,7 +110,7 @@ void ClientEventController::parseBody() {
 }
 
 static ServerConfig *selectServerConfig(
-    RequestVO request, std::vector<ServerConfig *> serverConfigs) {
+    Request request, std::vector<ServerConfig *> serverConfigs) {
   if (request.hasHeader("Host") == false) {
     return NULL;
   }

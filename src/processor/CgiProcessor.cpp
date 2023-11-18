@@ -1,8 +1,8 @@
 #include "CgiProcessor.hpp"
 
-CgiProcessor::CgiProcessor(const RequestVO& request,
+CgiProcessor::CgiProcessor(const Request& request,
                            const LocationConfig* config,
-                           IObserver<ResponseVO>* ob)
+                           IObserver<Response>* ob)
     : ob_(ob) {
   (void)request;
   (void)config;

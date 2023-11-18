@@ -1,8 +1,8 @@
 #include "MethodPostProcessor.hpp"
 
-MethodPostProcessor::MethodPostProcessor(const RequestVO& request,
+MethodPostProcessor::MethodPostProcessor(const Request& request,
                                          const LocationConfig* config,
-                                         IObserver<ResponseVO>* ob)
+                                         IObserver<Response>* ob)
     : ob_(ob) {
   (void)request;
   (void)config;

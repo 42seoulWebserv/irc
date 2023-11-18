@@ -1,26 +1,26 @@
-#include "ResponseVO.hpp"
+#include "Response.hpp"
 
 #include <sstream>
 
-const std::string &ResponseVO::getVersion() const { return version_; }
+const std::string &Response::getVersion() const { return version_; }
 
-void ResponseVO::setVersion(const std::string &version) { version_ = version; }
+void Response::setVersion(const std::string &version) { version_ = version; }
 
-int ResponseVO::getStatusCode() const { return statusCode_; }
+int Response::getStatusCode() const { return statusCode_; }
 
-void ResponseVO::setStatusCode(const int statusCode) {
+void Response::setStatusCode(const int statusCode) {
   statusCode_ = statusCode;
 }
 
-const std::map<std::string, std::string> &ResponseVO::getHeaders() const {
+const std::map<std::string, std::string> &Response::getHeaders() const {
   return headers_;
 }
 
-void ResponseVO::setHeaders(const std::map<std::string, std::string> &headers) {
+void Response::setHeaders(const std::map<std::string, std::string> &headers) {
   headers_ = headers;
 }
 
-void ResponseVO::setHeader(const std::string &key, const std::string &value) {
+void Response::setHeader(const std::string &key, const std::string &value) {
   bool upper = true;
   std::string keyCopy = key;
   for (size_t i = 0; i < keyCopy.size(); i++) {
@@ -34,15 +34,15 @@ void ResponseVO::setHeader(const std::string &key, const std::string &value) {
   headers_[keyCopy] = value;
 }
 
-bool ResponseVO::hasHeader(const std::string &key) const {
+bool Response::hasHeader(const std::string &key) const {
   return headers_.find(key) != headers_.end();
 }
 
-const std::string &ResponseVO::getHeader(const std::string &key) const {
+const std::string &Response::getHeader(const std::string &key) const {
   return headers_.at(key);
 }
 
-std::string ResponseVO::toString() const {
+std::string Response::toString() const {
   std::stringstream ss;
   ss << version_ << " " << statusCode_ << " "
      << "!!!OK!!!"

@@ -4,14 +4,14 @@
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
 #include "LocationConfig.hpp"
-#include "RequestVO.hpp"
-#include "ResponseVO.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
 
 class RequestProcessorFactory {
  public:
-  static IRequestProcessor *createRequestProcessor(const RequestVO &request,
+  static IRequestProcessor *createRequestProcessor(const Request &request,
                                                    const LocationConfig *config,
-                                                   IObserver<ResponseVO> *ob);
+                                                   IObserver<Response> *ob);
 };
 
 #endif

@@ -1,10 +1,10 @@
-#ifndef ResponseVO_HPP_
-#define ResponseVO_HPP_
+#ifndef Response_HPP_
+#define Response_HPP_
 
 #include <map>
 #include <string>
 
-class ResponseVO {
+class Response {
  public:
   const std::string &getVersion() const;
   void setVersion(const std::string &version);
