@@ -40,11 +40,9 @@ void ClientEventController::addEventController(
     int socket, const std::vector<ServerConfig *> &configs) {
   struct timespec timeout = {10, 0};  // 10 seconds
 
-  ClientEventController *clientEventController =
-      new ClientEventController(socket);
-  clientEventController->setServerConfigs(configs);
-  KqueueMultiplexer::getInstance().addReadEventWithClearFlag(
-      socket, clientEventController);
+  ClientEventController *client = new ClientEventController(socket);
+  client->setServerConfigs(configs);
+  KqueueMultiplexer::getInstance().addReadEventWithClearFlag(socket, client);
 }
 
 enum EventController::returnType ClientEventController::handleEvent(
