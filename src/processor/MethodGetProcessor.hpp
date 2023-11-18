@@ -12,7 +12,7 @@ class MethodGetProcessor : public IRequestProcessor,
                            IObserver<FileReadEventController::Event> {
  public:
   MethodGetProcessor(const RequestVO &request, const LocationConfig *config,
-                     int kq, IObserver<ResponseVO> *ob);
+                     IObserver<ResponseVO> *ob);
   void onEvent(const FileReadEventController::Event &event);
 
  private:

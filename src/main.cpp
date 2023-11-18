@@ -10,47 +10,44 @@
 
 #include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"
+#include "KqueueMultiplexer.hpp"
 #include "RootConfig.hpp"
 #include "ServerConfig.hpp"
 #include "ServerEventController.hpp"
 
 int run(RootConfig &config) {
-  int kq = kqueue();
+  KqueueMultiplexer &kq = KqueueMultiplexer::getInstance();
 
   std::vector<ServerConfig> &serverConfigs = config.getServerConfigs();
-  std::map<int, ServerEventController *> serverEventControllers;
+  std::map<int, ServerEventController *> servers;
   for (size_t i = 0; i < serverConfigs.size(); i++) {
-    if (serverEventControllers.find(serverConfigs[i].getPort()) ==
-        serverEventControllers.end()) {
+    if (servers.find(serverConfigs[i].getPort()) == servers.end()) {
       int port = serverConfigs[i].getPort();
-      ServerEventController *serverEventController =
-          new ServerEventController(kq, port);
-      serverEventControllers.insert(
-          std::make_pair(serverConfigs[i].getPort(), serverEventController));
+      ServerEventController *server = new ServerEventController(port);
+      servers.insert(std::make_pair(serverConfigs[i].getPort(), server));
     }
   }
 
   std::map<int, ServerEventController *>::iterator iter;
-  for (iter = serverEventControllers.begin();
-       iter != serverEventControllers.end(); iter++) {
+  for (iter = servers.begin(); iter != servers.end(); iter++) {
     for (size_t i = 0; i < serverConfigs.size(); i++) {
       if (serverConfigs[i].getPort() == iter->first) {
-        ServerEventController *serverEventController = iter->second;
-        serverEventController->addServerConfig(&(serverConfigs[i]));
+        ServerEventController *server = iter->second;
+        server->addServerConfig(&(serverConfigs[i]));
       }
     }
   }
 
   while (1) {
     struct kevent eventList[5];
-    int number = kevent(kq, 0, 0, eventList, 5, NULL);
+    int number = kevent(kq.getKq(), 0, 0, eventList, 5, NULL);
     std::vector<EventController *> deleteList;
     for (int i = 0; i < number; i++) {
-      EventController *connector =
+      EventController *controller =
           reinterpret_cast<EventController *>(eventList[i].udata);
-      EventController::returnType type = connector->handleEvent(eventList[i]);
+      EventController::returnType type = controller->handleEvent(eventList[i]);
       if (type == EventController::SUCCESS || type == EventController::FAIL) {
-        deleteList.push_back(connector);
+        deleteList.push_back(controller);
       }
     }
     for (size_t i = 0; i < deleteList.size(); i++) {

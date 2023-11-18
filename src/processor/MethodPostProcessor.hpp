@@ -10,7 +10,7 @@
 class MethodPostProcessor : public IRequestProcessor {
  public:
   MethodPostProcessor(const RequestVO &request, const LocationConfig *config,
-                      int kq, IObserver<ResponseVO> *ob);
+                      IObserver<ResponseVO> *ob);
 
  private:
   IObserver<ResponseVO> *ob_;

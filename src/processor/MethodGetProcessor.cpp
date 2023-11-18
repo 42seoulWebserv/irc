@@ -1,10 +1,10 @@
 #include "MethodGetProcessor.hpp"
 
 MethodGetProcessor::MethodGetProcessor(const RequestVO& request,
-                                       const LocationConfig* config, int kq,
+                                       const LocationConfig* config,
                                        IObserver<ResponseVO>* ob)
     : ob_(ob) {
-  FileReadEventController::addEventController(kq, "default.conf", this);
+  FileReadEventController::addEventController("default.conf", this);
   (void)request;
   (void)config;
   (void)ob;

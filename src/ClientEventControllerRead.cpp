@@ -187,7 +187,7 @@ static const LocationConfig *selectLocationConfig(
 }
 
 void ClientEventController::beginProcess(int statusCode) {
-  evSet(EVFILT_READ, EV_DELETE);
+  KqueueMultiplexer::getInstance().removeReadEvent(clientSocket_, this);
   statusCode_ = statusCode;
   if (statusCode >= 200) {
     // TODO: 적절한 processor 처리 필요.
@@ -212,8 +212,8 @@ void ClientEventController::beginProcess(int statusCode) {
     std::cout << "debug - selected location path: " << config_->getUri()
               << std::endl;
   }
-  processor_ = RequestProcessorFactory::createRequestProcessor(
-      request_, config_, kq_, this);
+  processor_ =
+      RequestProcessorFactory::createRequestProcessor(request_, config_, this);
 }
 
 /* startline, header : 제대로 들어왔는지, 클라이언트가 무엇을 원하는지 확인. */
@@ -230,7 +230,7 @@ enum EventController::returnType ClientEventController::clientRead(
   char recvBuff[event.data + 1];
   int tmpInt = read(event.ident, recvBuff, event.data);
   if (tmpInt == -1) {
-    evSet(EVFILT_READ, EV_DELETE);
+    KqueueMultiplexer::getInstance().removeReadEvent(clientSocket_, this);
     return FAIL;
   }
   recvBuff[tmpInt] = '\0';

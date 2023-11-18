@@ -11,12 +11,13 @@ INC_DIR := \
 	-I./src/config/configMaker \
 	-I./src/processor \
 	-I./src/util \
+	-I./src/multiplexer \
 
 SRC_DIR := ./src
 BUILD_DIR := ./build
 
 CXX := c++
-CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 -Weffc++ $(INC_DIR)
+CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 -Weffc++ $(INC_DIR) -fsanitize=address
 
 # ===============================================
 
@@ -78,6 +79,10 @@ UTIL_NAME := \
 	FilePath.cpp \
 	ResponseStream.cpp \
 
+MULTIPLEXER_DIR := ./src/multiplexer/
+MULTIPLEXER_NAME := \
+	KqueueMultiplexer.cpp \
+
 SRCS := \
 	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \
 	$(addprefix $(CONFIG_DIR), $(CONFIG_NAME)) \
@@ -87,6 +92,7 @@ SRCS := \
 	$(addprefix $(PASER_LEXER_DIR), $(PASER_LEXER_NAME)) \
 	$(addprefix $(PROCESSOR_DIR), $(PROCESSOR_NAME)) \
 	$(addprefix $(UTIL_DIR), $(UTIL_NAME)) \
+	$(addprefix $(MULTIPLEXER_DIR), $(MULTIPLEXER_NAME)) \
 
 SRCS_DIR := \
 	$(MAIN_DIR) \
@@ -97,6 +103,7 @@ SRCS_DIR := \
 	$(PASER_LEXER_DIR) \
 	$(PROCESSOR_DIR) \
 	$(UTIL_DIR) \
+	$(MULTIPLEXER_DIR) \
 
 vpath %.cpp $(SRCS_DIR)
 

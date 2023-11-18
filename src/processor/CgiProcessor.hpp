@@ -9,7 +9,7 @@
 
 class CgiProcessor : public IRequestProcessor {
  public:
-  CgiProcessor(const RequestVO &request, const LocationConfig *config, int kq,
+  CgiProcessor(const RequestVO &request, const LocationConfig *config,
                IObserver<ResponseVO> *ob);
 
  private:

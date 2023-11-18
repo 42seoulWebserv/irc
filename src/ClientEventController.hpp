@@ -8,6 +8,7 @@
 #include "EventController.hpp"
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
+#include "KqueueMultiplexer.hpp"
 #include "RequestProcessorFactory.hpp"
 #include "RequestVO.hpp"
 #include "ResponseStream.hpp"
@@ -23,7 +24,7 @@ class ClientEventController : public EventController,
   ClientEventController(const ClientEventController &src);
   ClientEventController &operator=(const ClientEventController &rhs);
   virtual ~ClientEventController();
-  static void addEventController(int kq, int socket,
+  static void addEventController(int socket,
                                  const std::vector<ServerConfig *> &configs);
 
   enum EventController::returnType handleEvent(const struct kevent &event);
@@ -32,7 +33,6 @@ class ClientEventController : public EventController,
 
  private:
   enum READ_STATUS readStatus_;
-  int kq_;
   int statusCode_;
   int clientSocket_;
   size_t contentLength_;
@@ -50,13 +50,12 @@ class ClientEventController : public EventController,
   enum EventController::returnType clientWrite(const struct kevent &event);
   enum EventController::returnType clientTimeout(const struct kevent &event);
 
-  ClientEventController(int kq, int clientSocket);
+  ClientEventController(int clientSocket);
   void parseHeaderLineByLine(std::string str);
   void parseStartLine(std::string str);
   void printParseResult();
   void parseHeader();
   void parseBody();
-  void evSet(int filter, int action);
   void beginProcess(int statusCode);
 };
 /*

@@ -1,11 +1,10 @@
 #include "CgiProcessor.hpp"
 
 CgiProcessor::CgiProcessor(const RequestVO& request,
-                           const LocationConfig* config, int kq,
+                           const LocationConfig* config,
                            IObserver<ResponseVO>* ob)
     : ob_(ob) {
   (void)request;
   (void)config;
-  (void)kq;
   (void)ob;
 }

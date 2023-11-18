@@ -17,7 +17,7 @@ enum EventController::returnType ClientEventController::clientWrite(
   }
   if (response_.hasHeader("Connection") &&
       response_.getHeader("Connection") == "keep-alive") {
-    ClientEventController::addEventController(kq_, clientSocket_,
+    ClientEventController::addEventController(clientSocket_,
                                               getServerConfigs());
     return SUCCESS;
   }

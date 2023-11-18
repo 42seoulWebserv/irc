@@ -6,26 +6,22 @@
 
 #include <exception>
 
-FileReadEventController::FileReadEventController(int kq,
-                                                 const std::string &filepath,
+FileReadEventController::FileReadEventController(const std::string &filepath,
                                                  IObserver<Event> *observer)
-    : kq_(kq), filepath_(filepath), observer_(observer) {
+    : filepath_(filepath), observer_(observer) {
   fd_ = open(filepath_.c_str(), O_RDONLY);
   if (fd_ == -1) {
     throw std::invalid_argument("file open error");
   }
   fcntl(fd_, F_SETFL, O_NONBLOCK);
   fcntl(fd_, F_SETFD, FD_CLOEXEC);
-  struct kevent event;
-  EV_SET(&event, fd_, EVFILT_READ, EV_ADD, 0, 0, this);
-  kevent(kq_, &event, 1, NULL, 0, 0);
+  KqueueMultiplexer::getInstance().addReadEvent(fd_, this);
 }
 
-void FileReadEventController::addEventController(int kq_,
-                                                 const std::string &filepath,
+void FileReadEventController::addEventController(const std::string &filepath,
                                                  IObserver<Event> *observer) {
   try {
-    new FileReadEventController(kq_, filepath, observer);
+    new FileReadEventController(filepath, observer);
   } catch (...) {
     if (observer) {
       observer->onEvent(Event(FileReadEventController::FAIL, ""));

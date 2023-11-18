@@ -7,9 +7,8 @@
 
 #include "EventController.hpp"
 
-ClientEventController::ClientEventController(int kq, int clientSocket)
+ClientEventController::ClientEventController(int clientSocket)
     : readStatus_(START_LINE),
-      kq_(kq),
       statusCode_(0),
       clientSocket_(clientSocket),
       config_(NULL),
@@ -17,7 +16,6 @@ ClientEventController::ClientEventController(int kq, int clientSocket)
 
 ClientEventController::ClientEventController(const ClientEventController &src)
     : readStatus_(src.readStatus_),
-      kq_(src.kq_),
       statusCode_(src.statusCode_),
       clientSocket_(src.clientSocket_),
       config_(NULL),
@@ -25,7 +23,6 @@ ClientEventController::ClientEventController(const ClientEventController &src)
 
 ClientEventController &ClientEventController::operator=(
     const ClientEventController &rhs) {
-  this->kq_ = rhs.kq_;
   this->statusCode_ = rhs.statusCode_;
   this->readStatus_ = rhs.readStatus_;
   this->clientSocket_ = rhs.clientSocket_;
@@ -40,16 +37,14 @@ ClientEventController::~ClientEventController() {
 }
 
 void ClientEventController::addEventController(
-    int kq, int socket, const std::vector<ServerConfig *> &configs) {
-  struct kevent clientEvent;
+    int socket, const std::vector<ServerConfig *> &configs) {
   struct timespec timeout = {10, 0};  // 10 seconds
 
   ClientEventController *clientEventController =
-      new ClientEventController(kq, socket);
+      new ClientEventController(socket);
   clientEventController->setServerConfigs(configs);
-  EV_SET(&clientEvent, socket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0,
-         clientEventController);
-  kevent(kq, &clientEvent, 1, NULL, 0, &timeout);
+  KqueueMultiplexer::getInstance().addReadEventWithClearFlag(
+      socket, clientEventController);
 }
 
 enum EventController::returnType ClientEventController::handleEvent(
@@ -75,14 +70,8 @@ std::ostream &operator<<(std::ostream &o,
   return o;
 }
 
-void ClientEventController::evSet(int filter, int action) {
-  struct kevent clientEvent;
-  EV_SET(&clientEvent, this->clientSocket_, filter, action, 0, 0, this);
-  kevent(kq_, &clientEvent, 1, NULL, 0, 0);
-}
-
 void ClientEventController::onEvent(const ResponseVO &p) {
   // TODO: 버전 체크, 필요하다면 헤더 추가 등의 작업 가능
   response_ = p;
-  evSet(EVFILT_WRITE, EV_ADD);
+  KqueueMultiplexer::getInstance().addWriteEvent(clientSocket_, this);
 }

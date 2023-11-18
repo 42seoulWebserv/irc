@@ -11,7 +11,6 @@ class RequestProcessorFactory {
  public:
   static IRequestProcessor *createRequestProcessor(const RequestVO &request,
                                                    const LocationConfig *config,
-                                                   int kq,
                                                    IObserver<ResponseVO> *ob);
 };
 
