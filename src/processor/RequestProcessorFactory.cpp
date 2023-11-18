@@ -3,7 +3,6 @@
 #include "MethodDeleteProcessor.hpp"
 #include "MethodGetProcessor.hpp"
 #include "MethodPostProcessor.hpp"
-#include "MethodPutProcessor.hpp"
 #include "UnsupportedMethodProcessor.hpp"
 
 IRequestProcessor* RequestProcessorFactory::createRequestProcessor(
@@ -22,9 +21,6 @@ IRequestProcessor* RequestProcessorFactory::createRequestProcessor(
   }
   if (method == "DELETE") {
     return new MethodDeleteProcessor(request, config, ob);
-  }
-  if (method == "PUT") {
-    return new MethodPutProcessor(request, config, ob);
   }
   return new UnsupportedMethodProcessor(request, config, ob);
 }
