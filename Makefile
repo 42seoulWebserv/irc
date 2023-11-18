@@ -66,7 +66,7 @@ PASER_LEXER_NAME := \
 
 PROCESSOR_DIR := ./src/processor/
 PROCESSOR_NAME := \
-	RequestProcessorFactory.cpp \
+	RequestProcessorDispatcher.cpp \
 	CgiProcessor.cpp \
 	MethodDeleteProcessor.cpp \
 	MethodGetProcessor.cpp \

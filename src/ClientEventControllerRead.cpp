@@ -213,7 +213,7 @@ void ClientEventController::beginProcess(int statusCode) {
               << std::endl;
   }
   processor_ =
-      RequestProcessorFactory::createRequestProcessor(request_, config_, this);
+      RequestProcessorDispatcher::createRequestProcessor(request_, config_, this);
 }
 
 /* startline, header : 제대로 들어왔는지, 클라이언트가 무엇을 원하는지 확인. */

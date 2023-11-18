@@ -1,5 +1,5 @@
-#ifndef RequestProcessorFactory_HPP_
-#define RequestProcessorFactory_HPP_
+#ifndef RequestProcessorDispatcher_HPP_
+#define RequestProcessorDispatcher_HPP_
 
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
@@ -7,7 +7,7 @@
 #include "Request.hpp"
 #include "Response.hpp"
 
-class RequestProcessorFactory {
+class RequestProcessorDispatcher {
  public:
   static IRequestProcessor *createRequestProcessor(const Request &request,
                                                    const LocationConfig *config,

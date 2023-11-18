@@ -9,7 +9,7 @@
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
 #include "KqueueMultiplexer.hpp"
-#include "RequestProcessorFactory.hpp"
+#include "RequestProcessorDispatcher.hpp"
 #include "Request.hpp"
 #include "ResponseStream.hpp"
 #include "Response.hpp"

@@ -1,11 +1,11 @@
-#include "RequestProcessorFactory.hpp"
+#include "RequestProcessorDispatcher.hpp"
 
 #include "MethodDeleteProcessor.hpp"
 #include "MethodGetProcessor.hpp"
 #include "MethodPostProcessor.hpp"
 #include "UnsupportedMethodProcessor.hpp"
 
-IRequestProcessor* RequestProcessorFactory::createRequestProcessor(
+IRequestProcessor* RequestProcessorDispatcher::createRequestProcessor(
     const Request& request, const LocationConfig* config,
     IObserver<Response>* ob) {
   const std::vector<std::string>& accepts = config->getAcceptMethods();
