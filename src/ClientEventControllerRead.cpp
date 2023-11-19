@@ -80,7 +80,7 @@ void ClientEventController::parseStartLine(std::string str) {
   if (j == std::string::npos || j == i) {
     throw std::invalid_argument("no space");
   }
-  std::string uri = str.substr(i + 1, j - i);
+  std::string uri = str.substr(i + 1, j - i - 1);
   request_.setUri(uri);
   std::string httpVersion = strTrim(str.substr(j + 1, std::string::npos));
   httpVersion = strTrim(httpVersion);
