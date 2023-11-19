@@ -47,45 +47,40 @@ static std::string removeSubstring(std::string &str,
 
 // curl -X POST -d "key1=value1&key2=value2" http://localhost:8080/test/
 // key1=value1&key2=value2
-// <root>/<filename>.txt
-static void writePostFile(FilePath fileName, std::string &body) {
-  std::cout << "in application/x-www-form-urlencoded" << std::endl;
-  std::cout << "fileName: " << fileName << std::endl;
-  std::cout << "body: " << body << std::endl;
-
-  std::string result = removeSubstring(fileName, ".html");
-  result.erase(0, 1);
-  result.append(".txt");
-  std::cout << "result: " << result << std::endl;
-  std::ofstream outputFile(result);
+// <root>/<filepath>.txt
+static void writePostFile(FilePath &filepath, std::string &content) {
+  std::ofstream outputFile(filepath + "post.txt");
   if (!outputFile.is_open()) {
     std::cerr << "Error: POST: std::ofstream" << std::endl;
   }
-  outputFile << body;
+  outputFile << content;
   outputFile.close();
 }
 
 // 해당 디렉토리 구조가 존재하고, accept_methods가 허용하는 경우에만 POST 동작
+// 생성할 file명 : post.txt
 MethodPostProcessor::MethodPostProcessor(const RequestVO &request,
                                          const LocationConfig *config, int kq,
                                          IObserver<ResponseVO> *ob)
     : ob_(ob) {
-  FilePath fileName = config->getRootPath();
-  fileName.append(request.getUri());
-  fileName.append(config->getIndexPath());
-
-  std::string contentType = request.getHeader("Content-Type");
-  std::string body = request.getBody();
-  std::string content;
-
+  FilePath filepath = "." + config->getRootPath();
+  filepath.append(request.getUri());
+  filepath = filepath.toDirectoryPath();
+  std::string content = request.getBody();
+  if (!filepath.isExist()) {
+    std::cout << "directory exists: " << filepath << std::endl;
+  }
+  else {
+    writePostFile(filepath, content);
+  }
+  FileWriteEventController::addEventController(kq, filepath, content, this);
   // configPrint(config);
   // requestPrint(request);
-  writePostFile(fileName, body);
-  FileWriteEventController::addEventController(kq, fileName, content, this);
   (void)ob;
 }
 
 // 받은 내용들을 바탕으로 작성할 파트
+// TODO : POST위치에 이미 파일이 있거나, POST를 허용하지않는 uri인 경우
 void MethodPostProcessor::onEvent(
     const FileWriteEventController::Event &event) {
   ResponseVO response;
