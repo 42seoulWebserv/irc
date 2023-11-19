@@ -16,8 +16,8 @@ class FileReadEventController : public EventController {
     enum EventType type_;
     const std::string &content_;
   };
-  static void addEventController(const std::string &filepath,
-                                 IObserver<Event> *observer);
+  static FileReadEventController *addEventController(
+      const std::string &filepath, IObserver<Event> *observer);
   enum EventController::returnType handleEvent(const struct kevent &event);
 
  private:

@@ -27,9 +27,6 @@ MAIN_NAME := \
 	EventController.cpp \
 	ServerEventController.cpp \
 	ClientEventController.cpp \
-	ClientEventControllerRead.cpp \
-	ClientEventControllerWrite.cpp \
-	ClientEventControllerTime.cpp \
 	FileReadEventController.cpp \
 	FileWriteEventController.cpp \
 	Request.cpp \
@@ -66,7 +63,8 @@ PASER_LEXER_NAME := \
 
 PROCESSOR_DIR := ./src/processor/
 PROCESSOR_NAME := \
-	RequestProcessorDispatcher.cpp \
+	ProcessResult.cpp \
+	ParseRequestProcessor.cpp \
 	CgiProcessor.cpp \
 	MethodDeleteProcessor.cpp \
 	MethodGetProcessor.cpp \

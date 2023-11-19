@@ -11,12 +11,12 @@
 class MethodGetProcessor : public IRequestProcessor,
                            IObserver<FileReadEventController::Event> {
  public:
-  MethodGetProcessor(const Request &request, const LocationConfig *config,
-                     IObserver<Response> *ob);
-  void onEvent(const FileReadEventController::Event &event);
+  MethodGetProcessor(IClient &client);
+  ProcessResult process();
 
  private:
-  IObserver<Response> *ob_;
+  IClient &client_;
+  FileReadEventController *reader;
 };
 
 #endif

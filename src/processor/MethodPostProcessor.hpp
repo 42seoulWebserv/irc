@@ -9,11 +9,11 @@
 
 class MethodPostProcessor : public IRequestProcessor {
  public:
-  MethodPostProcessor(const Request &request, const LocationConfig *config,
-                      IObserver<Response> *ob);
+  MethodPostProcessor(IClient &client);
+  ProcessResult process();
 
  private:
-  IObserver<Response> *ob_;
+  IClient &client_;
 };
 
 #endif

@@ -5,58 +5,44 @@
 #include <ostream>
 #include <string>
 
+#include "DataStream.hpp"
 #include "EventController.hpp"
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
 #include "KqueueMultiplexer.hpp"
-#include "RequestProcessorDispatcher.hpp"
 #include "Request.hpp"
-#include "DataStream.hpp"
 #include "Response.hpp"
 
 #define BUFF_SIZE 4
 /* server(port) 또는 client가 보낸 요청을 수행하는 클래스 */
-class ClientEventController : public EventController,
-                              public IObserver<Response> {
+class ClientEventController : public EventController, public IClient {
  public:
-  enum READ_STATUS { START_LINE, HEADER, BODY };
-
   virtual ~ClientEventController();
   static void addEventController(int socket,
                                  const std::vector<ServerConfig *> &configs);
 
   enum EventController::returnType handleEvent(const struct kevent &event);
 
-  void onEvent(const Response &p);
+  const Request &getRequest() const;
+  const Response &getResponse() const;
+  DataStream &getDataStream();
+  const std::vector<char> &getRecvBuffer() const;
+  const LocationConfig *getLocationConfig();
 
  private:
-  enum READ_STATUS readStatus_;
-  int statusCode_;
   int clientSocket_;
-  size_t contentLength_;
-  std::string headerBuffer_;
-  std::string bodyBuffer_;
   const LocationConfig *config_;
 
+  std::vector<char> recvBuffer_;
   Request request_;
   Response response_;
   DataStream stream_;
 
   IRequestProcessor *processor_;
 
-  enum EventController::returnType clientRead(const struct kevent &event);
-  enum EventController::returnType clientWrite(const struct kevent &event);
-  enum EventController::returnType clientTimeout(const struct kevent &event);
-
   ClientEventController(int clientSocket);
   ClientEventController(const ClientEventController &src);
   ClientEventController &operator=(const ClientEventController &rhs);
-  void parseHeaderLineByLine(std::string str);
-  void parseStartLine(std::string str);
-  void printParseResult();
-  void parseHeader();
-  void parseBody();
-  void beginProcess(int statusCode);
 };
 /*
 // 우선 key에 공백 있으면 안됨.

@@ -9,11 +9,11 @@
 
 class CgiProcessor : public IRequestProcessor {
  public:
-  CgiProcessor(const Request &request, const LocationConfig *config,
-               IObserver<Response> *ob);
+  CgiProcessor(IClient &client);
+  ProcessResult process();
 
  private:
-  IObserver<Response> *ob_;
+  IClient &client_;
 };
 
 #endif

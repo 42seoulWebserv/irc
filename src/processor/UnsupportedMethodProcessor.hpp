@@ -9,12 +9,11 @@
 
 class UnsupportedMethodProcessor : public IRequestProcessor {
  public:
-  UnsupportedMethodProcessor(const Request &request,
-                             const LocationConfig *config,
-                             IObserver<Response> *ob);
+  UnsupportedMethodProcessor(IClient &client);
+  ProcessResult process();
 
  private:
-  IObserver<Response> *ob_;
+  IClient &client_;
 };
 
 #endif

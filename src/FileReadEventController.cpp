@@ -18,13 +18,14 @@ FileReadEventController::FileReadEventController(const std::string &filepath,
   KqueueMultiplexer::getInstance().addReadEvent(fd_, this);
 }
 
-void FileReadEventController::addEventController(const std::string &filepath,
-                                                 IObserver<Event> *observer) {
+FileReadEventController *FileReadEventController::addEventController(
+    const std::string &filepath, IObserver<Event> *observer) {
   try {
-    new FileReadEventController(filepath, observer);
+    return new FileReadEventController(filepath, observer);
   } catch (...) {
     if (observer) {
       observer->onEvent(Event(FileReadEventController::FAIL, ""));
+      return NULL;
     }
   }
 }

@@ -1,10 +1,6 @@
 #include "UnsupportedMethodProcessor.hpp"
 
-UnsupportedMethodProcessor::UnsupportedMethodProcessor(
-    const Request& request, const LocationConfig* config,
-    IObserver<Response>* ob)
-    : ob_(ob) {
-  (void)request;
-  (void)config;
-  (void)ob;
-}
+UnsupportedMethodProcessor::UnsupportedMethodProcessor(IClient &client)
+    : client_(client) {}
+
+ProcessResult UnsupportedMethodProcessor::process() { return ProcessResult(); }
