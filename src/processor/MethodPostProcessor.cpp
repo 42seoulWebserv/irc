@@ -67,10 +67,9 @@ MethodPostProcessor::MethodPostProcessor(const RequestVO &request,
   filepath.append(request.getUri());
   filepath = filepath.toDirectoryPath();
   std::string content = request.getBody();
-  if (!filepath.isExist()) {
+  if (!filepath.isExist()) { // error code
     std::cout << "directory exists: " << filepath << std::endl;
-  }
-  else {
+  } else {
     writePostFile(filepath, content);
   }
   FileWriteEventController::addEventController(kq, filepath, content, this);
@@ -80,7 +79,8 @@ MethodPostProcessor::MethodPostProcessor(const RequestVO &request,
 }
 
 // 받은 내용들을 바탕으로 작성할 파트
-// TODO : POST위치에 이미 파일이 있거나, POST를 허용하지않는 uri인 경우
+// TODO : POST위치에 이미 파일이 있거나 -> 40* error code, POST를 허용하지않는
+// uri인 경우 -> 저 까지는 X
 void MethodPostProcessor::onEvent(
     const FileWriteEventController::Event &event) {
   ResponseVO response;
