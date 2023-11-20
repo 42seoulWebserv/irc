@@ -225,7 +225,7 @@ enum EventController::returnType ClientEventController::handleEvent(
     delete processor_;
     processor_ = res.nextProcessor_;
   }
-  return SUCCESS;
+  return PENDING;
 }
 
 std::ostream &operator<<(std::ostream &o,
