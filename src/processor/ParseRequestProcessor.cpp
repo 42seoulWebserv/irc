@@ -4,6 +4,8 @@
 #include <sstream>
 #include <vector>
 
+#include "ErrorPageProcessor.hpp"
+#include "SelectMethodProcessor.hpp"
 #include "ServerConfig.hpp"
 
 ParseRequestProcessor::ParseRequestProcessor(IClient &client)
@@ -129,7 +131,8 @@ ProcessResult ParseRequestProcessor::process() {
         parseHeader();
       } catch (std::exception &e) {
         std::cout << "error: " << e.what() << std::endl;  // debug
-        return ProcessResult().setStatus(401).setNextProcessor(NULL);
+        return ProcessResult().setStatus(401).setNextProcessor(
+            new ErrorPageProcessor(client_));
       }
       std::map<std::string, std::string>::const_iterator it =
           request_.getHeaders().find("Content-Length");
@@ -139,13 +142,15 @@ ProcessResult ParseRequestProcessor::process() {
         if ((end && *end != '\0') || contentLen < 0) {
           std::cout << "error: wrong Content-Length format"
                     << std::endl;  // debug
-          return ProcessResult().setStatus(402).setNextProcessor(NULL);
+          return ProcessResult().setStatus(402).setNextProcessor(
+              new ErrorPageProcessor(client_));
         }
         contentLength_ = static_cast<size_t>(contentLen);
       }
       parseBody();
       printParseResult();  // debug
-      return ProcessResult().setRequest(&request_).setNextProcessor(NULL);
+      return ProcessResult().setRequest(&request_).setNextProcessor(
+          new SelectMethodProcessor(client_));
     }
     return ProcessResult();
   } else {
@@ -154,9 +159,11 @@ ProcessResult ParseRequestProcessor::process() {
       parseBody();
     } catch (std::exception &e) {
       std::cout << "Error: " << e.what() << std::endl;  // debug
-      return ProcessResult().setStatus(401).setNextProcessor(NULL);
+      return ProcessResult().setStatus(401).setNextProcessor(
+          new ErrorPageProcessor(client_));
     }
   }
   printParseResult();  // debug
-  return ProcessResult().setRequest(&request_).setNextProcessor(NULL);
+  return ProcessResult().setRequest(&request_).setNextProcessor(
+      new SelectMethodProcessor(client_));
 }

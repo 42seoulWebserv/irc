@@ -69,7 +69,8 @@ PROCESSOR_NAME := \
 	MethodDeleteProcessor.cpp \
 	MethodGetProcessor.cpp \
 	MethodPostProcessor.cpp \
-	UnsupportedMethodProcessor.cpp \
+	ErrorPageProcessor.cpp \
+	SelectMethodProcessor.cpp \
 
 UTIL_DIR := ./src/util/
 UTIL_NAME := \
