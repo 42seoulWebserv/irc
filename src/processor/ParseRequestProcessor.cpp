@@ -39,7 +39,6 @@ static std::string strTrim(const std::string &str) {
 }
 
 void ParseRequestProcessor::printParseResult() {
-  const Request &request_ = client_.getRequest();
   std::cout << "=====ParseResult=====\n";
   std::cout << "method: " << request_.getMethod() << std::endl;
   std::cout << "uri: " << request_.getUri() << std::endl;
@@ -146,7 +145,7 @@ ProcessResult ParseRequestProcessor::process() {
       }
       parseBody();
       printParseResult();  // debug
-      return ProcessResult().setNextProcessor(NULL);
+      return ProcessResult().setRequest(&request_).setNextProcessor(NULL);
     }
     return ProcessResult();
   } else {
@@ -159,5 +158,5 @@ ProcessResult ParseRequestProcessor::process() {
     }
   }
   printParseResult();  // debug
-  return ProcessResult().setNextProcessor(NULL);
+  return ProcessResult().setRequest(&request_).setNextProcessor(NULL);
 }
