@@ -7,10 +7,7 @@
 
 class KqueueMultiplexer {
  public:
-  static KqueueMultiplexer &getInstance() {
-    static KqueueMultiplexer instance;
-    return instance;
-  };
+  static KqueueMultiplexer &getInstance();
   void addReadEvent(int fd, void *udata);
   void addReadEventWithClearFlag(int fd, void *udata);
   void addWriteEvent(int fd, void *udata);

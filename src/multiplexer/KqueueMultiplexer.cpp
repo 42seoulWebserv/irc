@@ -3,6 +3,11 @@
 #include <unistd.h>
 KqueueMultiplexer::KqueueMultiplexer() { kq_ = kqueue(); }
 
+KqueueMultiplexer& KqueueMultiplexer::getInstance() {
+  static KqueueMultiplexer instance;
+  return instance;
+}
+
 void KqueueMultiplexer::addReadEvent(int fd, void* udata) {
   struct kevent event;
   EV_SET(&event, fd, EVFILT_READ, EV_ADD, 0, 0, udata);
