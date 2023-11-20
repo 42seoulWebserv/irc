@@ -1,11 +1,5 @@
 #include "CgiProcessor.hpp"
 
-CgiProcessor::CgiProcessor(const RequestVO& request,
-                           const LocationConfig* config, int kq,
-                           IObserver<ResponseVO>* ob)
-    : ob_(ob) {
-  (void)request;
-  (void)config;
-  (void)kq;
-  (void)ob;
-}
+CgiProcessor::CgiProcessor(IClient &client) : client_(client) {}
+
+struct ProcessResult CgiProcessor::process() { return ProcessResult(); }

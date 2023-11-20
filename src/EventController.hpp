@@ -22,7 +22,7 @@ class EventController {
 
   void addServerConfig(ServerConfig *serverConfigs);
   void setServerConfigs(const std::vector<ServerConfig *> &serverConfigs);
-  std::vector<ServerConfig *> getServerConfigs() const;
+  const std::vector<ServerConfig *> &getServerConfigs() const;
 
  private:
   std::vector<ServerConfig *> serverConfigs_;

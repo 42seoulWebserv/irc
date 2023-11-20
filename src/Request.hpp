@@ -1,15 +1,17 @@
-#ifndef ResponseVO_HPP_
-#define ResponseVO_HPP_
+#ifndef Request_HPP_
+#define Request_HPP_
 
 #include <map>
 #include <string>
 
-class ResponseVO {
+class Request {
  public:
+  const std::string &getUri() const;
+  void setUri(const std::string &uri);
+  const std::string &getMethod() const;
+  void setMethod(const std::string &method);
   const std::string &getVersion() const;
   void setVersion(const std::string &version);
-  int getStatusCode() const;
-  void setStatusCode(const int statusCode);
   const std::string &getBody() const;
   void setBody(const std::string &body);
   void appendBody(const std::string &body);
@@ -20,8 +22,9 @@ class ResponseVO {
   const std::string &getHeader(const std::string &key) const;
 
  private:
+  std::string uri_;
+  std::string method_;
   std::string version_;
-  int statusCode_;
   std::string body_;
   std::map<std::string, std::string> headers_;
 };

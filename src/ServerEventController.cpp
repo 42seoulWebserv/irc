@@ -11,8 +11,9 @@
 #include <iostream>
 #include <stdexcept>
 
-ServerEventController::ServerEventController(int kq, int port)
-    : kq_(kq), port_(port) {
+#include "KqueueMultiplexer.hpp"
+
+ServerEventController::ServerEventController(int port) : port_(port) {
   this->socket_ = socket(PF_INET, SOCK_STREAM, 0);
   if (this->socket_ == -1) {
     throw std::logic_error("bind error");
@@ -37,11 +38,7 @@ ServerEventController::ServerEventController(int kq, int port)
   if (listen(this->socket_, 5) == -1) {
     throw std::logic_error("bind error");
   }
-
-  struct kevent event;
-
-  EV_SET(&event, this->socket_, EVFILT_READ, EV_ADD, 0, 0, this);
-  kevent(kq, &event, 1, NULL, 0, 0);
+  KqueueMultiplexer::getInstance().addReadEvent(socket_, this);
 }
 
 ServerEventController::~ServerEventController() {}
@@ -59,14 +56,6 @@ enum EventController::returnType ServerEventController::handleEvent(
     std::cout << "accept error" << std::endl;
     return PENDING;
   }
-  struct kevent clientEvent;
-  struct timespec timeout = {10, 0};  // 10 seconds
-
-  ClientEventController *clientEventController =
-      new ClientEventController(this->kq_, clientSocket);
-  clientEventController->setServerConfigs(this->getServerConfigs());
-  EV_SET(&clientEvent, clientSocket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0,
-         clientEventController);
-  kevent(this->kq_, &clientEvent, 1, NULL, 0, &timeout);
+  ClientEventController::addEventController(clientSocket, getServerConfigs());
   return PENDING;
 }

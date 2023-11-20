@@ -4,16 +4,16 @@
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
 #include "LocationConfig.hpp"
-#include "RequestVO.hpp"
-#include "ResponseVO.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
 
 class CgiProcessor : public IRequestProcessor {
  public:
-  CgiProcessor(const RequestVO &request, const LocationConfig *config, int kq,
-               IObserver<ResponseVO> *ob);
+  CgiProcessor(IClient &client);
+  ProcessResult process();
 
  private:
-  IObserver<ResponseVO> *ob_;
+  IClient &client_;
 };
 
 #endif

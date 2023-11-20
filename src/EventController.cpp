@@ -13,6 +13,6 @@ void EventController::setServerConfigs(
   serverConfigs_ = serverConfigs;
 }
 
-std::vector<ServerConfig *> EventController::getServerConfigs() const {
+const std::vector<ServerConfig *> &EventController::getServerConfigs() const {
   return serverConfigs_;
 }
