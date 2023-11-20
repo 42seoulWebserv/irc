@@ -152,7 +152,7 @@ enum EventController::returnType ClientEventController::handleEvent(
     return SUCCESS;
   }
   if (event.filter == EVFILT_READ) {
-    recvBuffer_.reserve(event.data);
+    recvBuffer_.resize(event.data);
     int size = recv(clientSocket_, recvBuffer_.data(), event.data, 0);
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
@@ -164,6 +164,7 @@ enum EventController::returnType ClientEventController::handleEvent(
       close(clientSocket_);
       return SUCCESS;
     }
+    recvBuffer_.resize(size);
   }
   if (event.filter == EVFILT_WRITE) {
     stream_.writeToClient(clientSocket_);
