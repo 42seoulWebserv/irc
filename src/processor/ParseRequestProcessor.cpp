@@ -42,13 +42,13 @@ static std::string strTrim(const std::string &str) {
 
 void ParseRequestProcessor::printParseResult() {
   std::cout << "=====ParseResult=====\n";
-  std::cout << "method: " << request_.getMethod() << std::endl;
-  std::cout << "uri: " << request_.getUri() << std::endl;
-  std::cout << "version: " << request_.getVersion() << std::endl;
+  std::cout << "method: " << request_.getMethod() << "$" << std::endl;
+  std::cout << "uri: " << request_.getUri() << "$" << std::endl;
+  std::cout << "version: " << request_.getVersion() << "$" << std::endl;
   std::map<std::string, std::string>::const_iterator iter;
   for (iter = request_.getHeaders().begin();
        iter != request_.getHeaders().end(); iter++) {
-    std::cout << iter->first << ": " << iter->second << std::endl;
+    std::cout << iter->first << ": " << iter->second << "$" << std::endl;
   }
   std::cout << "======================\n";
 }
@@ -121,7 +121,6 @@ ProcessResult ParseRequestProcessor::process() {
                      client_.getRecvBuffer().end());
   if (readStatus_ != BODY) {
     headerBuffer_ += tmpStr;
-    std::cout << headerBuffer_ << std::endl;  // debug
     if (headerBuffer_.find("\r\n\r\n") != std::string::npos) {
       readStatus_ = BODY;
       int idx = headerBuffer_.find("\r\n\r\n");
