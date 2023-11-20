@@ -12,6 +12,9 @@
 ClientEventController::ClientEventController(int clientSocket)
     : clientSocket_(clientSocket), config_(NULL), processor_(NULL) {
   processor_ = new ParseRequestProcessor(*this);
+  while (nextProcessor()) {
+    // nothing
+  }
 }
 
 ClientEventController::~ClientEventController() { delete processor_; }
@@ -191,6 +194,13 @@ enum EventController::returnType ClientEventController::handleEvent(
     std::cout << "error: no processor" << std::endl;
     return FAIL;
   }
+  while (nextProcessor()) {
+    // nothing
+  }
+  return PENDING;
+}
+
+bool ClientEventController::nextProcessor() {
   ProcessResult res = processor_->process();
   if (res.readOn_) {
     KqueueMultiplexer::getInstance().addReadEvent(clientSocket_, this);
@@ -225,7 +235,7 @@ enum EventController::returnType ClientEventController::handleEvent(
     delete processor_;
     processor_ = res.nextProcessor_;
   }
-  return PENDING;
+  return res.nextProcessor_ != NULL;
 }
 
 std::ostream &operator<<(std::ostream &o,

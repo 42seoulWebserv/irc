@@ -28,6 +28,7 @@ class ClientEventController : public EventController, public IClient {
   DataStream &getDataStream();
   const std::vector<char> &getRecvBuffer() const;
   const LocationConfig *getLocationConfig();
+  bool nextProcessor();
 
  private:
   int clientSocket_;
