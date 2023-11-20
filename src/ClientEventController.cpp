@@ -168,10 +168,13 @@ enum EventController::returnType ClientEventController::handleEvent(
   }
   if (event.filter == EVFILT_WRITE) {
     stream_.writeToClient(clientSocket_);
+    if (stream_.isEOF() && response_.getHeader("Connection") == "keep-alive") {
+      const std::vector<ServerConfig *> &configs = getServerConfigs();
+      ClientEventController::addEventController(clientSocket_, configs);
+      return SUCCESS;
+    }
     if (stream_.isEOF()) {
-      if (response_.getHeader("Connection") != "keep-alive") {
-        close(clientSocket_);
-      }
+      close(clientSocket_);
       return SUCCESS;
     }
   }
