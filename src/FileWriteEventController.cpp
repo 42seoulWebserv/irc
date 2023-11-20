@@ -6,32 +6,26 @@
 
 #include <exception>
 
-FileWriteEventController::FileWriteEventController(int kq,
-                                                   const std::string &filepath,
+#include "KqueueMultiplexer.hpp"
+
+FileWriteEventController::FileWriteEventController(const std::string &filepath,
                                                    const std::string &content,
                                                    IObserver<Event> *observer)
-    : kq_(kq),
-      filepath_(filepath),
-      content_(content),
-      offset_(0),
-      observer_(observer) {
+    : filepath_(filepath), content_(content), offset_(0), observer_(observer) {
   fd_ = open(filepath_.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
   if (fd_ == -1) {
     throw std::invalid_argument("file open error");
   }
   fcntl(fd_, F_SETFL, O_NONBLOCK);
   fcntl(fd_, F_SETFD, FD_CLOEXEC);
-  struct kevent event;
-  EV_SET(&event, fd_, EVFILT_WRITE, EV_ADD, 0, 0, this);
-  kevent(kq_, &event, 1, NULL, 0, 0);
+  KqueueMultiplexer::getInstance().addReadEvent(fd_, this);
 }
 
-void FileWriteEventController::addEventController(int kq,
-                                                  const std::string &filepath,
+void FileWriteEventController::addEventController(const std::string &filepath,
                                                   const std::string &content,
                                                   IObserver<Event> *observer) {
   try {
-    new FileWriteEventController(kq, filepath, content, observer);
+    new FileWriteEventController(filepath, content, observer);
   } catch (...) {
     if (observer) {
       observer->onEvent(Event(FileWriteEventController::FAIL));
