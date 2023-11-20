@@ -13,6 +13,7 @@ class MethodGetProcessor : public IRequestProcessor,
  public:
   MethodGetProcessor(IClient &client);
   ProcessResult process();
+  void onEvent(const FileReadEventController::Event &p);
 
  private:
   IClient &client_;
