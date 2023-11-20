@@ -55,11 +55,11 @@ void ParseRequestProcessor::printParseResult() {
 void ParseRequestProcessor::parseHeaderLineByLine(std::string str) {
   size_t i = str.find(':');
   if (i == std::string::npos) {
-    throw std::invalid_argument('"' + str + '"' + "no :");
+    throw std::invalid_argument('"' + str + '"' + " no :");
   }
   std::string key = str.substr(0, i);
   if (hasSpace(key)) {
-    throw std::invalid_argument('"' + str + '"' + "key has sapce");
+    throw std::invalid_argument('"' + str + '"' + " key has space");
   }
   std::string value = strTrim(str.substr(i + 2, std::string::npos));
   request_.setHeader(key, value);
@@ -119,13 +119,13 @@ ProcessResult ParseRequestProcessor::process() {
                      client_.getRecvBuffer().end());
   if (readStatus_ != BODY) {
     headerBuffer_ += tmpStr;
-    std::cout << headerBuffer_ << std::endl;
+    std::cout << headerBuffer_ << std::endl;  // debug
     if (headerBuffer_.find("\r\n\r\n") != std::string::npos) {
       readStatus_ = BODY;
       int idx = headerBuffer_.find("\r\n\r\n");
       bodyBuffer_ += headerBuffer_.substr(idx + 4, std::string::npos);
       headerBuffer_.erase(idx, std::string::npos);
-      std::cout << headerBuffer_ << "$" << std::endl;
+      std::cout << headerBuffer_ << "$" << std::endl;  // debug
       try {
         parseHeader();
       } catch (std::exception &e) {
@@ -145,7 +145,7 @@ ProcessResult ParseRequestProcessor::process() {
         contentLength_ = static_cast<size_t>(contentLen);
       }
       parseBody();
-      printParseResult();
+      printParseResult();  // debug
       return ProcessResult().setNextProcessor(NULL);
     }
     return ProcessResult();
@@ -158,6 +158,6 @@ ProcessResult ParseRequestProcessor::process() {
       return ProcessResult().setStatus(401).setNextProcessor(NULL);
     }
   }
-  printParseResult();
+  printParseResult();  // debug
   return ProcessResult().setNextProcessor(NULL);
 }

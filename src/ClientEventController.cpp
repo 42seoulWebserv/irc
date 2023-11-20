@@ -13,7 +13,9 @@ ClientEventController::ClientEventController(int clientSocket)
     : clientSocket_(clientSocket), config_(NULL), processor_(NULL) {
   processor_ = new ParseRequestProcessor(*this);
 }
+
 ClientEventController::~ClientEventController() { delete processor_; }
+
 void ClientEventController::addEventController(
     int socket, const std::vector<ServerConfig *> &configs) {
   struct timespec timeout = {10, 0};  // 10 seconds
@@ -25,8 +27,11 @@ void ClientEventController::addEventController(
 
 // IClient
 const Request &ClientEventController::getRequest() const { return request_; }
+
 const Response &ClientEventController::getResponse() const { return response_; }
+
 DataStream &ClientEventController::getDataStream() { return stream_; }
+
 const std::vector<char> &ClientEventController::getRecvBuffer() const {
   return recvBuffer_;
 }
@@ -122,7 +127,6 @@ static const LocationConfig *selectLocationConfig(
       continue;
     }
     maxLocationLen = locationURI.size();
-
     res = &locations[i];
   }
   return res;
@@ -157,7 +161,7 @@ enum EventController::returnType ClientEventController::handleEvent(
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
       close(clientSocket_);
-      return SUCCESS;
+      return FAIL;
     }
     if (size == 0) {
       std::cout << "debug: closed socket" << std::endl;

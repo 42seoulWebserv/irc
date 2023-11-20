@@ -1,6 +1,7 @@
 #include "KqueueMultiplexer.hpp"
 
 #include <unistd.h>
+
 KqueueMultiplexer::KqueueMultiplexer() { kq_ = kqueue(); }
 
 KqueueMultiplexer& KqueueMultiplexer::getInstance() {
