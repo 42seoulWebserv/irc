@@ -18,6 +18,7 @@ class MethodGetProcessor : public IRequestProcessor,
  private:
   IClient &client_;
   FileReadEventController *reader;
+  Response response_;
 };
 
 #endif
