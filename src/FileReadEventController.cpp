@@ -32,26 +32,29 @@ FileReadEventController *FileReadEventController::addEventController(
 
 EventController::returnType FileReadEventController::handleEvent(
     const struct kevent &event) {
-  content_.reserve(event.data);
-  char buffer[FILE_READ_BUFF_SIZE];
-  intptr_t i = 0;
-  while (i < event.data) {
-    int size = read(fd_, buffer, FILE_READ_BUFF_SIZE);
-    if (size == -1) {
-      close(fd_);
-      if (observer_) {
-        observer_->onEvent(Event(FileReadEventController::FAIL, content_));
-      }
-      return EventController::FAIL;
+  char buffer[FILE_READ_BUFF_SIZE + 1];
+  int size = read(fd_, buffer, FILE_READ_BUFF_SIZE);
+  buffer[size] = '\0';
+  std::cout << "read size: " << size << std::endl;
+  if (size == -1) {
+    close(fd_);
+    if (observer_) {
+      observer_->onEvent(Event(FileReadEventController::FAIL, content_));
     }
-    content_.append(buffer, size);
-    i += size;
+    return EventController::FAIL;
   }
-  close(fd_);
+  if (size == 0) {
+    close(fd_);
+    if (observer_) {
+      observer_->onEvent(Event(FileReadEventController::SUCCESS, content_));
+    }
+    return EventController::SUCCESS;
+  }
   if (observer_) {
-    observer_->onEvent(Event(FileReadEventController::SUCCESS, content_));
+    observer_->onEvent(
+        Event(FileReadEventController::SUCCESS, std::string(buffer)));
   }
-  return EventController::SUCCESS;
+  return EventController::PENDING;
 }
 
 FileReadEventController::Event::Event(EventType type,
