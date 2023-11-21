@@ -15,9 +15,9 @@ class FileWriteEventController : public EventController {
     enum EventType type_;
   };
 
-  static void addEventController(const std::string &filepath,
-                                 const std::string &content,
-                                 IObserver<Event> *observer);
+  static FileWriteEventController *addEventController(
+      const std::string &filepath, const std::string &content,
+      IObserver<Event> *observer);
 
   enum EventController::returnType handleEvent(const struct kevent &event);
 

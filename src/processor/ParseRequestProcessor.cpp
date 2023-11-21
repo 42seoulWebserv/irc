@@ -84,6 +84,7 @@ void ParseRequestProcessor::parseStartLine(std::string str) {
     throw std::invalid_argument("no space");
   }
   std::string uri = str.substr(i + 1, j - i - 1);
+  std::cout << "uri: " << uri << std::endl;
   request_.setUri(uri);
   std::string httpVersion = strTrim(str.substr(j + 1, std::string::npos));
   httpVersion = strTrim(httpVersion);
@@ -113,6 +114,7 @@ void ParseRequestProcessor::parseBody() {
   if (bodyBuffer_.size() > contentLength_) {
     throw std::invalid_argument("Content-Length size error");
   }
+  request_.setBody(bodyBuffer_);
 }
 
 ProcessResult ParseRequestProcessor::process() {
