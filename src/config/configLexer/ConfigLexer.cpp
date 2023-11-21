@@ -175,8 +175,13 @@ const Directive ConfigLexer::parseResultToDirective(const ParseResult &res) {
     const ParseResult &key = res.getChild(0);
     dir.setKey(key.getValue(0));
     if (key.getValues().size() > 1) {
-      dir.setValues(std::vector<std::string>(key.getValues().begin() + 1,
-                                             key.getValues().end()));
+      std::vector<std::string> tmp;
+      std::vector<std::string>::const_iterator it;
+      for (it = key.getValues().begin() + 1; it != key.getValues().end();
+           it++) {
+        tmp.push_back(*it);
+      }
+      dir.setValues(tmp);
     }
     const ParseResult &body = res.getChild(1);
     const std::vector<ParseResult> &children = body.getChildren();
@@ -186,8 +191,13 @@ const Directive ConfigLexer::parseResultToDirective(const ParseResult &res) {
   } else if (res.getName() == "key") {
     dir.setKey(res.getValue(0));
     if (res.getValues().size() > 1) {
-      dir.setValues(std::vector<std::string>(res.getValues().begin() + 1,
-                                             res.getValues().end()));
+      std::vector<std::string> tmp;
+      std::vector<std::string>::const_iterator it;
+      for (it = res.getValues().begin() + 1; it != res.getValues().end();
+           it++) {
+        tmp.push_back(*it);
+      }
+      dir.setValues(tmp);
     }
   }
   return dir;
