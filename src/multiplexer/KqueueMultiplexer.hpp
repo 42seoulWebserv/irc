@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
+#define TIMEOUT 10
+
 class KqueueMultiplexer {
  public:
   static KqueueMultiplexer &getInstance();
@@ -13,6 +15,8 @@ class KqueueMultiplexer {
   void addWriteEvent(int fd, void *udata);
   void removeReadEvent(int fd, void *udata);
   void removeWriteEvent(int fd, void *udata);
+  void addTimeoutEvent(int fd, void *udata);
+  void removeTimeoutEvent(int fd, void *udata);
   int getKq();
 
  private:

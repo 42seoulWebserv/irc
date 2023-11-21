@@ -21,6 +21,13 @@ void KqueueMultiplexer::addReadEventWithClearFlag(int fd, void* udata) {
   kevent(kq_, &event, 1, NULL, 0, 0);
 }
 
+void KqueueMultiplexer::addTimeoutEvent(int fd, void* udata) {
+  struct kevent timer_event;
+  EV_SET(&timer_event, fd, EVFILT_TIMER, EV_ADD | EV_ONESHOT, 0, TIMEOUT * 1000,
+         udata);
+  kevent(kq_, &timer_event, 1, NULL, 0, 0);
+}
+
 void KqueueMultiplexer::addWriteEvent(int fd, void* udata) {
   struct kevent event;
   EV_SET(&event, fd, EVFILT_WRITE, EV_ADD, 0, 0, udata);
@@ -37,6 +44,12 @@ void KqueueMultiplexer::removeWriteEvent(int fd, void* udata) {
   struct kevent event;
   EV_SET(&event, fd, EVFILT_WRITE, EV_DELETE, 0, 0, udata);
   kevent(kq_, &event, 1, NULL, 0, 0);
+}
+
+void KqueueMultiplexer::removeTimeoutEvent(int fd, void* udata) {
+  struct kevent timer_event;
+  EV_SET(&timer_event, fd, EVFILT_TIMER, EV_DELETE, 0, 0, udata);
+  kevent(kq_, &timer_event, 1, NULL, 0, 0);
 }
 
 int KqueueMultiplexer::getKq() { return kq_; }
