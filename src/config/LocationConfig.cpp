@@ -1,10 +1,14 @@
 #include "LocationConfig.hpp"
+
+#include <sstream>
+
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
     : limitClientBodySize_(0), autoIndex_(false), redirectionStatusCode_(0) {
   this->rootPath_ = src.getRootPath();
   this->limitClientBodySize_ = src.getLimitClientBodySize();
+  this->errorPages_ = src.getErrorPages();
 }
 
 LocationConfig::LocationConfig(const LocationConfig &src) { *this = src; }
@@ -22,6 +26,7 @@ LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
   this->redirectionPath_ = rhs.redirectionPath_;
   this->acceptMethods_ = rhs.acceptMethods_;
   this->cgiPrograms_ = rhs.cgiPrograms_;
+  this->errorPages_ = rhs.errorPages_;
   return *this;
 }
 
@@ -30,7 +35,8 @@ LocationConfig::~LocationConfig(void) {}
 void LocationConfig::printLocationConfig(void) {
   std::cout << "  location " << this->uri_ << " {" << '\n';
   std::cout << "    root: " << this->rootPath_ << '\n';
-  std::cout << "    client_max_body_size: " << this->limitClientBodySize_ << '\n';
+  std::cout << "    client_max_body_size: " << this->limitClientBodySize_
+            << '\n';
   std::cout << "    return " << this->redirectionStatusCode_ << ' '
             << this->redirectionPath_ << '\n';
   std::cout << "    accept_methods ";
@@ -43,7 +49,16 @@ void LocationConfig::printLocationConfig(void) {
   std::map<std::string, std::string>::iterator cgi;
   for (cgi = this->cgiPrograms_.begin(); cgi != this->cgiPrograms_.end();
        cgi++) {
-    std::cout << "    cgi_extension " << cgi->first << ' ' << cgi->second << '\n';
+    std::cout << "    cgi_extension " << cgi->first << ' ' << cgi->second
+              << '\n';
+  }
+  std::map<int, std::string>::const_iterator errorPage;
+  for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
+       errorPage++) {
+    std::stringstream ss;
+    ss << errorPage->first;
+    std::cout << "    error_page: " << ss.str() << " " << errorPage->second
+              << '\n';
   }
   std::cout << "  }" << '\n';
 }
@@ -116,8 +131,8 @@ const std::vector<std::string>::iterator LocationConfig::endAcceptMethods() {
   return acceptMethods_.end();
 }
 
-
-const std::string LocationConfig::getElementAtIndexAcceptMethods(size_t index) const {
+const std::string LocationConfig::getElementAtIndexAcceptMethods(
+    size_t index) const {
   if (index < acceptMethods_.size()) {
     return acceptMethods_[index];
   } else {
@@ -147,4 +162,19 @@ LocationConfig::beginCgiPrograms() {
 const std::map<std::string, std::string>::iterator
 LocationConfig::endCgiPrograms() {
   return cgiPrograms_.end();
+}
+
+void LocationConfig::addErrorPage(int errorCode, const std::string &page) {
+  errorPages_.insert(std::pair<int, std::string>(errorCode, page));
+}
+
+const std::string &LocationConfig::getErrorPage(int errorCode) const {
+  if (errorPages_.find(errorCode) == errorPages_.end()) {
+    return "";
+  }
+  return errorPages_.at(errorCode);
+}
+
+const std::map<int, std::string> &LocationConfig::getErrorPages() const {
+  return errorPages_;
 }

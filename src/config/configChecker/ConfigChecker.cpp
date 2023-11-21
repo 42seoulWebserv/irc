@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "Directive.hpp"
+#include "FilePath.hpp"
 
 // asset
 
@@ -94,6 +95,21 @@ static void checkServerClientMaxContentSize(std::string str) {
   return;
 }
 
+static void checkErrorPageDirective(const std::vector<std::string> &values) {
+  for (size_t i = 0; i < values.size() - 1; i++) {
+    int statusCode = strToInt(values[i]);
+    if (statusCode < 100 || statusCode > 600) {
+      throw std::invalid_argument("status code is out of range");
+    }
+  }
+  if (values.size()) {
+    FilePath path = values.back();
+    if (path.front() != '/' || path.back() == '/') {
+      throw std::invalid_argument("invalid error page");
+    }
+  }
+}
+
 static void checkServerLocation(Directive location) {
   std::vector<Directive>::iterator element;
   for (element = location.beginChildren(); element != location.endChildren();
@@ -113,6 +129,8 @@ static void checkServerLocation(Directive location) {
       checkRootDirective(*element);
     } else if (element->getKey() == "client_max_body_size") {
       checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "error_page") {
+      checkErrorPageDirective(element->getValues());
     } else {
       throw std::invalid_argument('"' + element->getKey() + '"' +
                                   " is invalid server location directive");
@@ -167,6 +185,8 @@ static void checkServerDirective(Directive server) {
       checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "root") {
       checkRootDirective(*element);
+    } else if (element->getKey() == "error_page") {
+      checkErrorPageDirective(element->getValues());
     } else {
       throw std::invalid_argument("invalid server directive");
     }
@@ -183,6 +203,8 @@ static void checkDirectiveChildren(Directive directive) {
       checkRootDirective(*it);
     } else if (it->getKey() == "client_max_body_size") {
       checkServerClientMaxContentSize(it->getElementAtIndexValues(0));
+    } else if (it->getKey() == "error_page") {
+      checkErrorPageDirective(it->getValues());
     } else {
       throw std::invalid_argument('"' + it->getKey() + '"' +
                                   " is invalid config directive");

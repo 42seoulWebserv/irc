@@ -51,6 +51,13 @@ LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
       fillInCgiExtension(res, element->getValues());
     } else if (element->getKey() == "index") {
       res.setIndexPath(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "error_page") {
+      std::vector<std::string> values = element->getValues();
+      std::vector<std::string>::const_iterator it;
+      std::string page = values.back();
+      for (it = values.begin(); it != values.end() - 1; it++) {
+        res.addErrorPage(strToInteger(*it), page);
+      }
     }
   }
   return res;
@@ -77,6 +84,13 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
           strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "index") {
       res.setIndex(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "error_page") {
+      std::vector<std::string> values = element->getValues();
+      std::vector<std::string>::const_iterator it;
+      std::string page = values.back();
+      for (it = values.begin(); it != values.end() - 1; it++) {
+        res.addErrorPage(strToInteger(*it), page);
+      }
     }
   }
   return res;
@@ -96,6 +110,13 @@ RootConfig ConfigMaker::makeConfig(Directive directive) {
     } else if (element->getKey() == "server") {
       ServerConfig serverConf(res);
       res.addServerConfigs(makeSingleServerConfig(serverConf, *element));
+    } else if (element->getKey() == "error_page") {
+      std::vector<std::string> values = element->getValues();
+      std::vector<std::string>::const_iterator it;
+      std::string page = values.back();
+      for (it = values.begin(); it != values.end() - 1; it++) {
+        res.addErrorPage(strToInteger(*it), page);
+      }
     }
   }
   return res;
