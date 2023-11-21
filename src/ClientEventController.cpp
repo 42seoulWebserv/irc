@@ -153,8 +153,8 @@ const LocationConfig *ClientEventController::getLocationConfig() {
 enum EventController::returnType ClientEventController::handleEvent(
     const struct kevent &event) {
   if (event.filter == EVFILT_READ && event.flags & EV_EOF) {
-    std::cout << "debug: closed socket" << std::endl;
-    clear();
+    std::cout << "debug: closed socket(" << clientSocket_ << ")" << std::endl;
+    clear(true);
     return SUCCESS;
   }
   if (event.filter == EVFILT_READ) {
@@ -162,12 +162,12 @@ enum EventController::returnType ClientEventController::handleEvent(
     int size = recv(clientSocket_, recvBuffer_.data(), event.data, 0);
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
-      clear();
+      clear(true);
       return FAIL;
     }
     if (size == 0) {
-      std::cout << "debug: closed socket" << std::endl;
-      clear();
+      std::cout << "debug: closed socket(" << clientSocket_ << ")" << std::endl;
+      clear(true);
       return SUCCESS;
     }
     recvBuffer_.resize(size);
@@ -175,13 +175,13 @@ enum EventController::returnType ClientEventController::handleEvent(
   if (event.filter == EVFILT_WRITE) {
     stream_.writeToClient(clientSocket_);
     if (stream_.isEOF()) {
-      clear();
+      clear(false);
       return SUCCESS;
     }
   }
   if (event.filter == EVFILT_TIMER) {
     std::cout << "debug: timeout - close client" << std::endl;
-    clear();
+    clear(true);
     return SUCCESS;
   }
   if (processor_ == NULL) {
@@ -215,7 +215,7 @@ bool ClientEventController::nextProcessor() {
     response_ = *res.response;
   }
   if (res.error_) {
-    clear();
+    clear(false);
     return FAIL;
   }
   if (res.status_ != 0) {
@@ -232,12 +232,13 @@ bool ClientEventController::nextProcessor() {
   return res.nextProcessor_ != NULL;
 }
 
-void ClientEventController::clear() {
+void ClientEventController::clear(bool forceClose) {
   KqueueMultiplexer::getInstance().removeReadEvent(clientSocket_, this);
   KqueueMultiplexer::getInstance().removeWriteEvent(clientSocket_, this);
   KqueueMultiplexer::getInstance().removeTimeoutEvent(clientSocket_, this);
   if (response_.hasHeader("Connection") &&
-      response_.getHeader("Connection") == "keep-alive") {
+      response_.getHeader("Connection") == "keep-alive" &&
+      forceClose == false) {
     const std::vector<ServerConfig *> &configs = getServerConfigs();
     ClientEventController::addEventController(clientSocket_, configs);
   } else {
