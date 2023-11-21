@@ -31,7 +31,7 @@ Pattern *PatternSequence::clone() const { return new PatternSequence(*this); }
 bool PatternSequence::compile(std::stringstream &ss, ParseResult &res,
                               bool debug) const {
   std::streampos begin = ss.tellg();
-  if (ss.fail()) return fail(debug, "PatternSequece fail to begin");
+  if (ss.fail()) return fail(debug, "PatternSequence fail to begin");
 
   ParseResult result(getAlias(), res.getDepth() + 1, isFlatResult(),
                      isIgnoreResult());

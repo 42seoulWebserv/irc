@@ -9,7 +9,7 @@
 #include "Pattern.hpp"
 
 class Parser {
-public:
+ public:
   Parser();
   Parser(const Parser &rhs);
   Parser &operator=(const Parser &rhs);
@@ -18,7 +18,7 @@ public:
   Parser &add(const Pattern &pattern);
   const Pattern &operator[](const std::string &name);
 
-private:
+ private:
   std::map<const std::string, const Pattern *> map_;
 };
 
