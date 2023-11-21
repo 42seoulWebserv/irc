@@ -44,6 +44,7 @@ class ClientEventController : public EventController, public IClient {
   ClientEventController(int clientSocket);
   ClientEventController(const ClientEventController &src);
   ClientEventController &operator=(const ClientEventController &rhs);
+  void clear();
 };
 /*
 // 우선 key에 공백 있으면 안됨.

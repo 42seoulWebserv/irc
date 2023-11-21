@@ -21,11 +21,10 @@ ClientEventController::~ClientEventController() { delete processor_; }
 
 void ClientEventController::addEventController(
     int socket, const std::vector<ServerConfig *> &configs) {
-  struct timespec timeout = {10, 0};  // 10 seconds
-
   ClientEventController *client = new ClientEventController(socket);
   client->setServerConfigs(configs);
   KqueueMultiplexer::getInstance().addReadEventWithClearFlag(socket, client);
+  KqueueMultiplexer::getInstance().addTimeoutEvent(socket, client);
 }
 
 // IClient
@@ -155,7 +154,7 @@ enum EventController::returnType ClientEventController::handleEvent(
     const struct kevent &event) {
   if (event.filter == EVFILT_READ && event.flags & EV_EOF) {
     std::cout << "debug: closed socket" << std::endl;
-    close(clientSocket_);
+    clear();
     return SUCCESS;
   }
   if (event.filter == EVFILT_READ) {
@@ -163,31 +162,26 @@ enum EventController::returnType ClientEventController::handleEvent(
     int size = recv(clientSocket_, recvBuffer_.data(), event.data, 0);
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
-      close(clientSocket_);
+      clear();
       return FAIL;
     }
     if (size == 0) {
       std::cout << "debug: closed socket" << std::endl;
-      close(clientSocket_);
+      clear();
       return SUCCESS;
     }
     recvBuffer_.resize(size);
   }
   if (event.filter == EVFILT_WRITE) {
     stream_.writeToClient(clientSocket_);
-    if (stream_.isEOF() && response_.getHeader("Connection") == "keep-alive") {
-      const std::vector<ServerConfig *> &configs = getServerConfigs();
-      ClientEventController::addEventController(clientSocket_, configs);
-      return SUCCESS;
-    }
     if (stream_.isEOF()) {
-      close(clientSocket_);
+      clear();
       return SUCCESS;
     }
   }
   if (event.filter == EVFILT_TIMER) {
     std::cout << "debug: timeout - close client" << std::endl;
-    close(clientSocket_);
+    clear();
     return SUCCESS;
   }
   if (processor_ == NULL) {
@@ -221,7 +215,7 @@ bool ClientEventController::nextProcessor() {
     response_ = *res.response;
   }
   if (res.error_) {
-    close(clientSocket_);
+    clear();
     return FAIL;
   }
   if (res.status_ != 0) {
@@ -236,6 +230,19 @@ bool ClientEventController::nextProcessor() {
     processor_ = res.nextProcessor_;
   }
   return res.nextProcessor_ != NULL;
+}
+
+void ClientEventController::clear() {
+  KqueueMultiplexer::getInstance().removeReadEvent(clientSocket_, this);
+  KqueueMultiplexer::getInstance().removeWriteEvent(clientSocket_, this);
+  KqueueMultiplexer::getInstance().removeTimeoutEvent(clientSocket_, this);
+  if (response_.hasHeader("Connection") &&
+      response_.getHeader("Connection") == "keep-alive") {
+    const std::vector<ServerConfig *> &configs = getServerConfigs();
+    ClientEventController::addEventController(clientSocket_, configs);
+  } else {
+    close(clientSocket_);
+  }
 }
 
 std::ostream &operator<<(std::ostream &o,
