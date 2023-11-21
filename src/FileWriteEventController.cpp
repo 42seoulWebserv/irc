@@ -18,12 +18,12 @@ FileWriteEventController::FileWriteEventController(const std::string &filepath,
   }
   fcntl(fd_, F_SETFL, O_NONBLOCK);
   fcntl(fd_, F_SETFD, FD_CLOEXEC);
-  KqueueMultiplexer::getInstance().addReadEvent(fd_, this);
+  KqueueMultiplexer::getInstance().addWriteEvent(fd_, this);
 }
 
-void FileWriteEventController::addEventController(const std::string &filepath,
-                                                  const std::string &content,
-                                                  IObserver<Event> *observer) {
+FileWriteEventController *FileWriteEventController::addEventController(
+    const std::string &filepath, const std::string &content,
+    IObserver<Event> *observer) {
   try {
     new FileWriteEventController(filepath, content, observer);
   } catch (...) {

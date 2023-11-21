@@ -17,7 +17,7 @@ SRC_DIR := ./src
 BUILD_DIR := ./build
 
 CXX := c++
-CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 -Weffc++ $(INC_DIR) -fsanitize=address
+CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 -Weffc++ $(INC_DIR)
 
 # ===============================================
 
