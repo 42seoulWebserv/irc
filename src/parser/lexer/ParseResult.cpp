@@ -116,7 +116,10 @@ const ParseResult ParseResult::trim() const {
     ParseResult::insertFlatValues(result.values_, *this);
     return result;
   }
-  result.values_.insert(result.values_.end(), values_.begin(), values_.end());
+  for (std::vector<std::string>::const_iterator it = values_.begin();
+       it != values_.end(); it++) {
+    result.values_.push_back(*it);
+  }
   for (size_t i = 0; i < children_.size(); i++) {
     if (children_[i].isIgnore_ == false) result.push(children_[i].trim());
   }
@@ -125,7 +128,10 @@ const ParseResult ParseResult::trim() const {
 
 void ParseResult::insertFlatValues(std::vector<std::string> &values,
                                    const ParseResult &target) {
-  values.insert(values.end(), target.values_.begin(), target.values_.end());
+  for (std::vector<std::string>::const_iterator it = target.values_.begin();
+       it != target.values_.end(); it++) {
+    values.push_back(*it);
+  }
   for (size_t i = 0; i < target.children_.size(); i++) {
     if (target.children_[i].isIgnore_ == false)
       ParseResult::insertFlatValues(values, target.children_[i]);
