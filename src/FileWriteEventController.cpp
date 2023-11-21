@@ -12,10 +12,11 @@ FileWriteEventController::FileWriteEventController(const std::string &filepath,
                                                    const std::string &content,
                                                    IObserver<Event> *observer)
     : filepath_(filepath), content_(content), offset_(0), observer_(observer) {
-  fd_ = open(filepath_.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-  if (fd_ == -1) {
+  file_ = fopen(filepath.c_str(), "aw");
+  if (file_ == NULL) {
     throw std::invalid_argument("file open error");
   }
+  fd_ = fileno(file_);
   fcntl(fd_, F_SETFL, O_NONBLOCK);
   fcntl(fd_, F_SETFD, FD_CLOEXEC);
   KqueueMultiplexer::getInstance().addWriteEvent(fd_, this);

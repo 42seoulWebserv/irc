@@ -1,7 +1,7 @@
 #ifndef FileWriteEventController_HPP_
 #define FileWriteEventController_HPP_
 
-#define FILE_READ_BUFF_SIZE 16384
+#include <cstdlib>
 
 #include "EventController.hpp"
 #include "IObserver.hpp"
@@ -25,6 +25,7 @@ class FileWriteEventController : public EventController {
   FileWriteEventController(const std::string &filepath,
                            const std::string &content,
                            IObserver<Event> *observer);
+  FILE *file_;
   int fd_;
   std::string filepath_;
   std::string content_;
