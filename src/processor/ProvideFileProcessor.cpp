@@ -53,9 +53,9 @@ void ProvideFileProcessor::onEvent(const FileReadEventController::Event& e) {
     fatalError_ = true;
     return;
   }
-  const int totalWriteSize = client_.getDataStream().getTotalWrite();
+  const int totalReadSize = client_.getDataStream().getTotalRead();
   const int responseHeaderSize = response_.toString().size();
-  const int bodySize = totalWriteSize - responseHeaderSize;
+  const int bodySize = totalReadSize - responseHeaderSize;
   if (bodySize != fileSize_) {
     fatalError_ = true;
     return;
