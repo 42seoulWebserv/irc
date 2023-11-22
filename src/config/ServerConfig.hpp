@@ -17,6 +17,8 @@ class ServerConfig {
 
   void printServerConfig();
 
+  void setAutoindex(const std::string &autoindex);
+  bool getAutoindex() const;
   int getPort() const;
   void setPort(const int &port);
   int getLimitClientBodySize() const;
@@ -39,6 +41,7 @@ class ServerConfig {
   const std::map<int, std::string> &getErrorPages() const;
 
  private:
+  bool autoindex_;
   int port_;
   int limitClientBodySize_;
   std::string rootPath_;

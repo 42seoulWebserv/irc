@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-RootConfig::RootConfig() : limitClientBodySize_(2) {}
+RootConfig::RootConfig() : limitClientBodySize_(2), autoindex_(false) {}
 
 RootConfig::RootConfig(const RootConfig &src) { *this = src; }
 
@@ -12,6 +12,7 @@ RootConfig &RootConfig::operator=(const RootConfig &rhs) {
   }
   this->rootPath_ = rhs.rootPath_;
   this->limitClientBodySize_ = rhs.limitClientBodySize_;
+  this->autoindex_ = rhs.autoindex_;
   this->serverConfigs_ = rhs.serverConfigs_;
   this->errorPages_ = rhs.errorPages_;
   return *this;
@@ -23,6 +24,7 @@ void RootConfig::printRootConfig() {
   std::vector<ServerConfig>::iterator server;
   std::cout << "root: " << this->rootPath_ << '\n';
   std::cout << "client_max_body_size: " << this->limitClientBodySize_ << '\n';
+  std::cout << "autoindex: " << std::boolalpha << autoindex_ << '\n';
   std::map<int, std::string>::const_iterator errorPage;
   for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
        errorPage++) {
@@ -47,6 +49,14 @@ int RootConfig::getLimitClientBodySize() const { return limitClientBodySize_; }
 void RootConfig::setLimitClientBodySize(const int &limitClientBodySize) {
   limitClientBodySize_ = limitClientBodySize;
 }
+
+void RootConfig::setAutoindex(const std::string &autoindex) {
+  if (autoindex == "on") {
+    autoindex_ = true;
+  }
+}
+
+bool RootConfig::getAutoindex() const { return autoindex_; }
 
 std::vector<ServerConfig> &RootConfig::getServerConfigs() {
   return serverConfigs_;

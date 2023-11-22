@@ -5,7 +5,7 @@
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
-    : limitClientBodySize_(0), autoIndex_(false), redirectionStatusCode_(0) {
+    : limitClientBodySize_(0), autoindex_(false), redirectionStatusCode_(0) {
   this->rootPath_ = src.getRootPath();
   this->limitClientBodySize_ = src.getLimitClientBodySize();
   this->errorPages_ = src.getErrorPages();
@@ -18,7 +18,7 @@ LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
     return *this;
   }
   this->limitClientBodySize_ = rhs.limitClientBodySize_;
-  this->autoIndex_ = rhs.autoIndex_;
+  this->autoindex_ = rhs.autoindex_;
   this->redirectionStatusCode_ = rhs.redirectionStatusCode_;
   this->uri_ = rhs.uri_;
   this->rootPath_ = rhs.rootPath_;
@@ -33,16 +33,17 @@ LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
 LocationConfig::~LocationConfig(void) {}
 
 void LocationConfig::printLocationConfig(void) {
-  std::cout << "  location " << this->uri_ << " {" << '\n';
-  std::cout << "    root: " << this->rootPath_ << '\n';
-  std::cout << "    client_max_body_size: " << this->limitClientBodySize_
-            << '\n';
-  std::cout << "    return " << this->redirectionStatusCode_ << ' '
-            << this->redirectionPath_ << '\n';
+  std::cout << "  location " << uri_ << " {" << '\n';
+  std::cout << "    root: " << rootPath_ << '\n';
+  std::cout << "    client_max_body_size: " << limitClientBodySize_ << '\n';
+  std::cout << "    return " << redirectionStatusCode_ << ' '
+            << redirectionPath_ << '\n';
+  std::cout << "    index " << indexPath_ << '\n';
+  std::cout << "    autoindex: " << std::boolalpha << autoindex_ << '\n';
   std::cout << "    accept_methods ";
   std::vector<std::string>::iterator method;
-  for (method = this->acceptMethods_.begin();
-       method != this->acceptMethods_.end(); method++) {
+  for (method = acceptMethods_.begin(); method != acceptMethods_.end();
+       method++) {
     std::cout << *method << ' ';
   }
   std::cout << '\n';
@@ -71,10 +72,12 @@ void LocationConfig::setLimitClientBodySize(const int &limitClientBodySize) {
   limitClientBodySize_ = limitClientBodySize;
 }
 
-bool LocationConfig::getAutoIndex() const { return autoIndex_; }
+bool LocationConfig::getAutoindex() const { return autoindex_; }
 
-void LocationConfig::setAutoIndex(const bool &autoIndex) {
-  autoIndex_ = autoIndex;
+void LocationConfig::setAutoindex(const std::string &autoindex) {
+  if (autoindex == "on") {
+    autoindex_ = true;
+  }
 }
 
 int LocationConfig::getRedirectionStatusCode() const {

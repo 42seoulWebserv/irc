@@ -13,7 +13,8 @@ int strToInteger(const std::string &s) {
   return n;
 }
 
-void fillInAcceptMethods(LocationConfig &res, std::vector<std::string> values) {
+static void fillInAcceptMethods(LocationConfig &res,
+                                std::vector<std::string> values) {
   std::vector<std::string>::iterator value;
   for (value = values.begin(); value != values.end(); value++) {
     res.addAcceptMethods(*value);
@@ -21,7 +22,8 @@ void fillInAcceptMethods(LocationConfig &res, std::vector<std::string> values) {
   return;
 }
 
-void fillInCgiExtension(LocationConfig &res, std::vector<std::string> values) {
+static void fillInCgiExtension(LocationConfig &res,
+                               std::vector<std::string> values) {
   res.addCgiPrograms(std::make_pair(values[0], values[1]));
   // res.cgiPrograms_.insert(std::make_pair(values[0], values[1]));
   return;
@@ -58,6 +60,8 @@ LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
       for (it = values.begin(); it != values.end() - 1; it++) {
         res.addErrorPage(strToInteger(*it), page);
       }
+    } else if (element->getKey() == "autoindex") {
+      res.setAutoindex(element->getElementAtIndexValues(0));
     }
   }
   return res;
@@ -91,6 +95,8 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
       for (it = values.begin(); it != values.end() - 1; it++) {
         res.addErrorPage(strToInteger(*it), page);
       }
+    } else if (element->getKey() == "autoindex") {
+      res.setAutoindex(element->getElementAtIndexValues(0));
     }
   }
   return res;
@@ -107,6 +113,8 @@ RootConfig ConfigMaker::makeConfig(Directive directive) {
     } else if (element->getKey() == "client_max_body_size") {
       res.setLimitClientBodySize(
           strToInteger(element->getElementAtIndexValues(0)));
+    } else if (element->getKey() == "autoindex") {
+      res.setAutoindex(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "server") {
       ServerConfig serverConf(res);
       res.addServerConfigs(makeSingleServerConfig(serverConf, *element));
