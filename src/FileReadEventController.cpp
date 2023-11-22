@@ -9,6 +9,7 @@ FileReadEventController::FileReadEventController(const std::string &filepath,
                                                  IObserver<Event> *observer,
                                                  DataStream *stream)
     : filepath_(filepath),
+      totalReadSize_(0),
       observer_(observer),
       dataStream_(stream),
       isCanceled_(false) {
@@ -42,6 +43,7 @@ EventController::returnType FileReadEventController::handleEvent(
     return EventController::FAIL;
   }
   int size = dataStream_->readFile(fd_);
+  totalReadSize_ += size;
   if (size == DELAYED_FILE_READ) {
     return PENDING;
   }
@@ -59,8 +61,18 @@ EventController::returnType FileReadEventController::handleEvent(
     }
     return EventController::SUCCESS;
   }
-  if (observer_) {
-    observer_->onEvent(Event(FileReadEventController::SUCCESS));
+  int filesize = filepath_.getFileSize();
+  if (filesize == -1) {
+    if (observer_) {
+      observer_->onEvent(Event(FileReadEventController::FAIL));
+    }
+    return EventController::FAIL;
+  }
+  if (totalReadSize_ >= filesize) {
+    if (observer_) {
+      observer_->onEvent(Event(FileReadEventController::SUCCESS));
+    }
+    return EventController::SUCCESS;
   }
   return EventController::PENDING;
 }

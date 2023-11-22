@@ -7,6 +7,7 @@
 
 #include "DataStream.hpp"
 #include "EventController.hpp"
+#include "FilePath.hpp"
 #include "ICancelible.hpp"
 #include "IObserver.hpp"
 #include "KqueueMultiplexer.hpp"
@@ -30,8 +31,8 @@ class FileReadEventController : public EventController, public ICancelible {
                           IObserver<Event> *observer, DataStream *stream);
   FILE *file_;
   int fd_;
-  std::string filepath_;
-  std::string content_;
+  FilePath filepath_;
+  int totalReadSize_;
   IObserver<Event> *observer_;
   DataStream *dataStream_;
   bool isCanceled_;
