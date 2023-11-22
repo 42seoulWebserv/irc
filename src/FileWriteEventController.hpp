@@ -4,9 +4,10 @@
 #include <cstdlib>
 
 #include "EventController.hpp"
+#include "ICancelible.hpp"
 #include "IObserver.hpp"
 
-class FileWriteEventController : public EventController {
+class FileWriteEventController : public EventController, public ICancelible {
  public:
   enum EventType { SUCCESS, FAIL };
   class Event {
@@ -20,6 +21,7 @@ class FileWriteEventController : public EventController {
       IObserver<Event> *observer);
 
   enum EventController::returnType handleEvent(const struct kevent &event);
+  void cancel();
 
  private:
   FileWriteEventController(const std::string &filepath,
@@ -31,6 +33,7 @@ class FileWriteEventController : public EventController {
   std::string content_;
   size_t offset_;
   IObserver<Event> *observer_;
+  bool isCanceled_;
 };
 
 #endif

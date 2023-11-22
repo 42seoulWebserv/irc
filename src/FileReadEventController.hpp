@@ -7,10 +7,11 @@
 
 #include "DataStream.hpp"
 #include "EventController.hpp"
+#include "ICancelible.hpp"
 #include "IObserver.hpp"
 #include "KqueueMultiplexer.hpp"
 
-class FileReadEventController : public EventController {
+class FileReadEventController : public EventController, public ICancelible {
  public:
   enum EventType { SUCCESS, FAIL };
   class Event {
@@ -22,6 +23,7 @@ class FileReadEventController : public EventController {
       const std::string &filepath, IObserver<Event> *observer,
       DataStream *stream);
   enum EventController::returnType handleEvent(const struct kevent &event);
+  void cancel();
 
  private:
   FileReadEventController(const std::string &filepath,
@@ -32,6 +34,7 @@ class FileReadEventController : public EventController {
   std::string content_;
   IObserver<Event> *observer_;
   DataStream *dataStream_;
+  bool isCanceled_;
 };
 
 #endif

@@ -8,7 +8,10 @@
 FileReadEventController::FileReadEventController(const std::string &filepath,
                                                  IObserver<Event> *observer,
                                                  DataStream *stream)
-    : filepath_(filepath), observer_(observer), dataStream_(stream) {
+    : filepath_(filepath),
+      observer_(observer),
+      dataStream_(stream),
+      isCanceled_(false) {
   file_ = fopen(filepath_.c_str(), "r");
   if (file_ == NULL) {
     throw std::invalid_argument("file open error");
@@ -34,6 +37,9 @@ FileReadEventController *FileReadEventController::addEventController(
 
 EventController::returnType FileReadEventController::handleEvent(
     const struct kevent &event) {
+  if (isCanceled_) {
+    return EventController::FAIL;
+  }
   int size = dataStream_->readFile(fd_);
   if (size == DELAYED_FILE_READ) {
     return PENDING;
@@ -57,5 +63,7 @@ EventController::returnType FileReadEventController::handleEvent(
   }
   return EventController::PENDING;
 }
+
+void FileReadEventController::cancel() { isCanceled_ = true; }
 
 FileReadEventController::Event::Event(EventType type) : type_(type) {}

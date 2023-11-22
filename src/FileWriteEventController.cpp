@@ -11,7 +11,11 @@
 FileWriteEventController::FileWriteEventController(const std::string &filepath,
                                                    const std::string &content,
                                                    IObserver<Event> *observer)
-    : filepath_(filepath), content_(content), offset_(0), observer_(observer) {
+    : filepath_(filepath),
+      content_(content),
+      offset_(0),
+      observer_(observer),
+      isCanceled_(false) {
   file_ = fopen(filepath.c_str(), "aw");
   if (file_ == NULL) {
     throw std::invalid_argument("file open error");
@@ -36,6 +40,9 @@ FileWriteEventController *FileWriteEventController::addEventController(
 
 EventController::returnType FileWriteEventController::handleEvent(
     const struct kevent &event) {
+  if (isCanceled_) {
+    return EventController::FAIL;
+  }
   if (event.filter != EVFILT_WRITE) {
     std::cout << "unexpected event" << std::endl;
     close(fd_);
@@ -58,3 +65,4 @@ EventController::returnType FileWriteEventController::handleEvent(
 }
 
 FileWriteEventController::Event::Event(EventType type) : type_(type) {}
+void FileWriteEventController::cancel() { isCanceled_ = true; }
