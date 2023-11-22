@@ -23,7 +23,7 @@ ProcessResult ProvideFileProcessor::process() {
   if (reader_ != NULL) {
     return ProcessResult();
   }
-  if (path_.isFile() == false) {
+  if (path_.isFile() == false && path_.isAccessible(FilePath::READ)) {
     ErrorPageProcessor* errorPage = new ErrorPageProcessor(client_);
     errorPage->forceProvideDefaultPage();
     return ProcessResult().setStatus(404).setNextProcessor(errorPage);
