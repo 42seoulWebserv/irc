@@ -3,86 +3,79 @@
 #include <dirent.h>
 
 #include <exception>
+#include <sstream>
 
 #include "ErrorPageProcessor.hpp"
 #include "FilePath.hpp"
+#include "ProvideFileProcessor.hpp"
 
-void MethodGetProcessor::createAutoindex(FilePath filename) {
-  std::string htmlHeader =
-      "<!DOCTYPE html>< html lang =\"en\"><head><meta charset ="
-      "\"UTF-8\"><meta name = \"viewport\" content=\"width=device-width, "
-      "initial-scale=1.0\"><title>Document</title></head><body>";
-  client_.getDataStream().readStr(htmlHeader);
-  std::string header = "<header>Index" + filename + "</header>";
-  client_.getDataStream().readStr(header);
-  DIR* dir = opendir(filename.c_str());
+MethodGetProcessor::MethodGetProcessor(IClient& client)
+    : client_(client), response_(client_.getResponse()) {}
+
+ProcessResult MethodGetProcessor::process() {
+  FilePath path = "." + client_.getLocationConfig()->getRootPath();
+  path.append(client_.getRequest().getUri());
+  if (!path.isExist()) {
+    return ProcessResult().setStatus(404).setNextProcessor(
+        new ErrorPageProcessor(client_));
+  }
+  if (!path.isFile() && path.isAccessible(FilePath::READ)) {
+    path = FilePath(path.toDirectoryPath());
+    FilePath indexPath = path + client_.getLocationConfig()->getIndexPath();
+    if (!indexPath.isAccessible(FilePath::READ) &&
+        client_.getLocationConfig()->getAutoindex()) {
+      createAutoindex(path);
+      return ProcessResult().setResponse(&response_).setWriteOn(true);
+    } else {
+      path = indexPath;
+    }
+  }
+  if (!path.isAccessible(FilePath::READ)) {
+    return ProcessResult().setStatus(403).setNextProcessor(
+        new ErrorPageProcessor(client_));
+  }
+  response_.setStatusCode(200);
+  return ProcessResult()
+      .setResponse(&response_)
+      .setNextProcessor(new ProvideFileProcessor(client_, path, response_));
+}
+
+void MethodGetProcessor::createAutoindex(FilePath path) {
+  DIR* dir = opendir(path.c_str());
   try {
     if (dir == NULL) {
-      throw std::invalid_argument("wrong filename");
+      throw std::invalid_argument("wrong path");
     }
   } catch (const std::exception& e) {
     std::cout << "Error: GET: " << e.what() << '\n';
     return;
   }
+  std::string html =
+      "<!DOCTYPE html><html lang =\"en\"><head><meta charset="
+      "\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, "
+      "initial-scale=1.0\"><title>Document</title></head><body>";
+  html += "<header><h1>Index" + path + "</h1></header>";
   dirent* entry;
   do {
     entry = readdir(dir);
     if (entry == NULL) {
       closedir(dir);
-      return;
+      break;
     }
-    std::string path =
-        "<a href=\"" + filename + entry->d_name + '>' + entry->d_name + "</a>";
-    // std::cout << "filename: " << path << std::endl;
-    client_.getDataStream().readStr(path);
+    FilePath filename(entry->d_name);
+    if (entry->d_type == DT_DIR) {
+      filename.toDirectoryPath();
+    }
+    std::string fullPath =
+        "<a href=\"" + filename + "\">" + filename + "</a><br>";
+    html += fullPath;
   } while (entry != NULL);
-  closedir(dir);
-  std::string htmlFooter = "</body></html>";
-  client_.getDataStream().readStr(htmlFooter);
+  html += "</body></html>";
+  std::stringstream ss;
+  ss << html.size();
+  response_.setStatusCode(200);
+  response_.setHeader("Content-Length", ss.str());
+  client_.getDataStream().readStr(response_.toString());
+  client_.getDataStream().readStr(html);
   client_.getDataStream().setEof(true);
-}
-
-MethodGetProcessor::MethodGetProcessor(IClient& client)
-    : client_(client),
-      reader(NULL),
-      response_(client_.getResponse()),
-      complete_(false) {}
-
-ProcessResult MethodGetProcessor::process() {
-  if (complete_ || reader) {
-    DataStream& data = client_.getDataStream();
-    (void)data;
-    return ProcessResult();
-  }
-  FilePath filename = "." + client_.getLocationConfig()->getRootPath();
-  filename.append(client_.getRequest().getUri());
-  if (!filename.isExist()) {
-    std::cout << "file not exist" << std::endl;
-    return ProcessResult().setStatus(404).setNextProcessor(
-        new ErrorPageProcessor(client_));
-  }
-  if (!filename.isFile()) {
-    filename = FilePath(filename.toDirectoryPath());
-    if (client_.getLocationConfig()->getIndexPath() != "") {
-      createAutoindex(filename);
-      complete_ = true;
-      return ProcessResult().setResponse(&response_).setWriteOn(true);
-      // client_.getDataStream().readFile(1);
-      // return ProcessResult().setWriteOn(true);
-    } else {
-      filename.append(client_.getLocationConfig()->getIndexPath());
-    }
-  }
-  if (!filename.isAccessible(FilePath::READ)) {
-    std::cout << "file not accessible" << std::endl;
-    return ProcessResult().setStatus(403).setNextProcessor(
-        new ErrorPageProcessor(client_));
-  }
-  reader = FileReadEventController::addEventController(
-      filename, this, &(client_.getDataStream()));
-  return ProcessResult().setResponse(&response_);
-}
-
-void MethodGetProcessor::onEvent(const FileReadEventController::Event& p) {
-  (void)p;
 }

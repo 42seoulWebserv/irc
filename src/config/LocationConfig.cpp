@@ -5,7 +5,10 @@
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
-    : limitClientBodySize_(0), autoindex_(false), redirectionStatusCode_(0) {
+    : limitClientBodySize_(0),
+      autoindex_(false),
+      redirectionStatusCode_(0),
+      indexPath_("index.html") {
   this->rootPath_ = src.getRootPath();
   this->limitClientBodySize_ = src.getLimitClientBodySize();
   this->errorPages_ = src.getErrorPages();
@@ -38,7 +41,7 @@ void LocationConfig::printLocationConfig(void) {
   std::cout << "    client_max_body_size: " << limitClientBodySize_ << '\n';
   std::cout << "    return " << redirectionStatusCode_ << ' '
             << redirectionPath_ << '\n';
-  std::cout << "    index " << indexPath_ << '\n';
+  std::cout << "    index: " << indexPath_ << '\n';
   std::cout << "    autoindex: " << std::boolalpha << autoindex_ << '\n';
   std::cout << "    accept_methods ";
   std::vector<std::string>::iterator method;
