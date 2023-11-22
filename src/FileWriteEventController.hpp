@@ -4,10 +4,10 @@
 #include <cstdlib>
 
 #include "EventController.hpp"
-#include "ICancelible.hpp"
+#include "ICancelable.hpp"
 #include "IObserver.hpp"
 
-class FileWriteEventController : public EventController, public ICancelible {
+class FileWriteEventController : public EventController, public ICancelable {
  public:
   enum EventType { SUCCESS, FAIL };
   class Event {

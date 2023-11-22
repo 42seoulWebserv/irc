@@ -8,11 +8,11 @@
 #include "DataStream.hpp"
 #include "EventController.hpp"
 #include "FilePath.hpp"
-#include "ICancelible.hpp"
+#include "ICancelable.hpp"
 #include "IObserver.hpp"
 #include "KqueueMultiplexer.hpp"
 
-class FileReadEventController : public EventController, public ICancelible {
+class FileReadEventController : public EventController, public ICancelable {
  public:
   enum EventType { SUCCESS, FAIL };
   class Event {
