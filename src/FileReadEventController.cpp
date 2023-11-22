@@ -38,6 +38,7 @@ FileReadEventController *FileReadEventController::addEventController(
 EventController::returnType FileReadEventController::handleEvent(
     const struct kevent &event) {
   if (isCanceled_) {
+    fclose(file_);
     return EventController::FAIL;
   }
   int size = dataStream_->readFile(fd_);

@@ -41,6 +41,7 @@ FileWriteEventController *FileWriteEventController::addEventController(
 EventController::returnType FileWriteEventController::handleEvent(
     const struct kevent &event) {
   if (isCanceled_) {
+    fclose(file_);
     return EventController::FAIL;
   }
   if (event.filter != EVFILT_WRITE) {
