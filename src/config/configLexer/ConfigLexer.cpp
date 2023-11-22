@@ -62,6 +62,7 @@ const Directive ConfigLexer::run(const std::string raw) {
           .add(PatternWord("index", "index").setAlias("key"))
           .add(PatternWord("acceptMethods", "accept_methods").setAlias("key"))
           .add(PatternWord("cgiExtension", "cgi_extension").setAlias("key"))
+          .add(PatternWord("errorPage", "error_page").setAlias("key"))
 
           // simple directive patterns
           .add(PatternSequence("clientMaxContentSizePattern")
@@ -112,6 +113,12 @@ const Directive ConfigLexer::run(const std::string raw) {
                    .add("simpleEnd")
                    .setAlias("key")
                    .flatResult())
+          .add(PatternSequence("errorPagePattern")
+                   .add("errorPage")
+                   .add("words2~")
+                   .add("simpleEnd")
+                   .setAlias("key")
+                   .flatResult())
 
           // block directive patterns
           .add(PatternSequence("httpBlock")
@@ -122,6 +129,7 @@ const Directive ConfigLexer::run(const std::string raw) {
                    .setAlias("block"))
           .add(PatternOptional("httpBody")
                    .add("rootPattern")
+                   .add("errorPagePattern")
                    .add("clientMaxContentSizePattern")
                    .add("serverBlock")
                    .setAlias("body"))
@@ -133,6 +141,7 @@ const Directive ConfigLexer::run(const std::string raw) {
                    .setAlias("block"))
           .add(PatternOptional("serverBody")
                    .add("rootPattern")
+                   .add("errorPagePattern")
                    .add("clientMaxContentSizePattern")
                    .add("listenPattern")
                    .add("serverNamePattern")
@@ -146,6 +155,7 @@ const Directive ConfigLexer::run(const std::string raw) {
                    .setAlias("block"))
           .add(PatternOptional("locationBody")
                    .add("rootPattern")
+                   .add("errorPagePattern")
                    .add("clientMaxContentSizePattern")
                    .add("returnPattern")
                    .add("indexPattern")

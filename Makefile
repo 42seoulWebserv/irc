@@ -72,6 +72,8 @@ PROCESSOR_NAME := \
 	MethodPostProcessor.cpp \
 	ErrorPageProcessor.cpp \
 	SelectMethodProcessor.cpp \
+	ProvideFileProcessor.cpp \
+	WaitProcessor.cpp \
 
 UTIL_DIR := ./src/util/
 UTIL_NAME := \

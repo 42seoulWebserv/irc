@@ -2,29 +2,35 @@
 
 #include <fcntl.h>
 #include <sys/event.h>  // kevent
-#include <unistd.h>
 
 #include <exception>
 
 FileReadEventController::FileReadEventController(const std::string &filepath,
-                                                 IObserver<Event> *observer)
-    : filepath_(filepath), observer_(observer) {
-  fd_ = open(filepath_.c_str(), O_RDONLY);
-  if (fd_ == -1) {
+                                                 IObserver<Event> *observer,
+                                                 DataStream *stream)
+    : filepath_(filepath),
+      totalReadSize_(0),
+      observer_(observer),
+      dataStream_(stream),
+      isCanceled_(false) {
+  file_ = fopen(filepath_.c_str(), "r");
+  if (file_ == NULL) {
     throw std::invalid_argument("file open error");
   }
+  fd_ = fileno(file_);
   fcntl(fd_, F_SETFL, O_NONBLOCK);
   fcntl(fd_, F_SETFD, FD_CLOEXEC);
   KqueueMultiplexer::getInstance().addReadEvent(fd_, this);
 }
 
 FileReadEventController *FileReadEventController::addEventController(
-    const std::string &filepath, IObserver<Event> *observer) {
+    const std::string &filepath, IObserver<Event> *observer,
+    DataStream *stream) {
   try {
-    return new FileReadEventController(filepath, observer);
+    return new FileReadEventController(filepath, observer, stream);
   } catch (...) {
     if (observer) {
-      observer->onEvent(Event(FileReadEventController::FAIL, ""));
+      observer->onEvent(Event(FileReadEventController::FAIL));
       return NULL;
     }
   }
@@ -32,31 +38,45 @@ FileReadEventController *FileReadEventController::addEventController(
 
 EventController::returnType FileReadEventController::handleEvent(
     const struct kevent &event) {
-  char buffer[FILE_READ_BUFF_SIZE + 1];
-  int size = read(fd_, buffer, FILE_READ_BUFF_SIZE);
-  buffer[size] = '\0';
-  std::cout << "read size: " << size << std::endl;
+  if (isCanceled_) {
+    fclose(file_);
+    return EventController::FAIL;
+  }
+  int size = dataStream_->readFile(fd_);
+  totalReadSize_ += size;
+  if (size == DELAYED_FILE_READ) {
+    return PENDING;
+  }
   if (size == -1) {
-    close(fd_);
+    fclose(file_);
     if (observer_) {
-      observer_->onEvent(Event(FileReadEventController::FAIL, content_));
+      observer_->onEvent(Event(FileReadEventController::FAIL));
     }
     return EventController::FAIL;
   }
   if (size == 0) {
-    close(fd_);
+    fclose(file_);
     if (observer_) {
-      observer_->onEvent(Event(FileReadEventController::SUCCESS, content_));
+      observer_->onEvent(Event(FileReadEventController::SUCCESS));
     }
     return EventController::SUCCESS;
   }
-  if (observer_) {
-    observer_->onEvent(
-        Event(FileReadEventController::SUCCESS, std::string(buffer)));
+  int filesize = filepath_.getFileSize();
+  if (filesize == -1) {
+    if (observer_) {
+      observer_->onEvent(Event(FileReadEventController::FAIL));
+    }
+    return EventController::FAIL;
+  }
+  if (totalReadSize_ >= filesize) {
+    if (observer_) {
+      observer_->onEvent(Event(FileReadEventController::SUCCESS));
+    }
+    return EventController::SUCCESS;
   }
   return EventController::PENDING;
 }
 
-FileReadEventController::Event::Event(EventType type,
-                                      const std::string &content)
-    : type_(type), content_(content) {}
+void FileReadEventController::cancel() { isCanceled_ = true; }
+
+FileReadEventController::Event::Event(EventType type) : type_(type) {}

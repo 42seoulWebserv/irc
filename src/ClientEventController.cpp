@@ -12,8 +12,14 @@
 ClientEventController::ClientEventController(int clientSocket)
     : clientSocket_(clientSocket), config_(NULL), processor_(NULL) {
   processor_ = new StartProcessor(*this);
-  while (nextProcessor()) {
-    // nothing
+  ProcessResult processResult = nextProcessor();
+  while (processResult.nextProcessor_) {
+    processResult = nextProcessor();
+  }
+  if (processResult.error_) {
+    std::cout << "error: fatal close";
+    clear(true);
+    throw std::logic_error("fatal error");
   }
 }
 
@@ -188,13 +194,19 @@ enum EventController::returnType ClientEventController::handleEvent(
     std::cout << "error: no processor" << std::endl;
     return FAIL;
   }
-  while (nextProcessor()) {
-    // nothing
+  ProcessResult processResult = nextProcessor();
+  while (processResult.nextProcessor_) {
+    processResult = nextProcessor();
+  }
+  if (processResult.error_) {
+    std::cout << "error: fatal close";
+    clear(true);
+    return FAIL;
   }
   return PENDING;
 }
 
-bool ClientEventController::nextProcessor() {
+ProcessResult ClientEventController::nextProcessor() {
   ProcessResult res = processor_->process();
   if (res.readOn_) {
     KqueueMultiplexer::getInstance().addReadEvent(clientSocket_, this);
@@ -215,8 +227,7 @@ bool ClientEventController::nextProcessor() {
     response_ = *res.response;
   }
   if (res.error_) {
-    clear(false);
-    return FAIL;
+    return res;
   }
   if (res.status_ != 0) {
     response_.setStatusCode(res.status_);
@@ -229,7 +240,7 @@ bool ClientEventController::nextProcessor() {
     delete processor_;
     processor_ = res.nextProcessor_;
   }
-  return res.nextProcessor_ != NULL;
+  return res;
 }
 
 void ClientEventController::clear(bool forceClose) {

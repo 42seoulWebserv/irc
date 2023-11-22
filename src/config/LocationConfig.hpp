@@ -40,6 +40,9 @@ class LocationConfig {
   void addCgiPrograms(const std::pair<std::string, std::string> &cgiPrograms);
   const std::map<std::string, std::string>::iterator beginCgiPrograms();
   const std::map<std::string, std::string>::iterator endCgiPrograms();
+  void addErrorPage(int errorCode, const std::string &page);
+  const std::string getErrorPage(int errorCode) const;
+  const std::map<int, std::string> &getErrorPages() const;
 
  private:
   int limitClientBodySize_;
@@ -51,6 +54,7 @@ class LocationConfig {
   std::string redirectionPath_;
   std::vector<std::string> acceptMethods_;
   std::map<std::string, std::string> cgiPrograms_;
+  std::map<int, std::string> errorPages_;
 };
 
 #endif

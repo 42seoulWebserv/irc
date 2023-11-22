@@ -27,7 +27,6 @@ class ServerConfig {
   void setServerName(const std::string &serverName);
   std::string getIndex() const;
   void setIndex(const std::string &index);
-  std::map<int, std::string> getErrorPages() const;
   void setErrorPages(const std::map<int, std::string> &errorPages);
   void addErrorPages(const std::pair<int, std::string> &errorPages);
   const std::vector<LocationConfig> &getLocationConfigs() const;
@@ -35,6 +34,9 @@ class ServerConfig {
   void addLocationConfigs(const LocationConfig &locationConfigs);
   const std::vector<LocationConfig>::iterator beginLocationConfigs();
   const std::vector<LocationConfig>::iterator endLocationConfigs();
+  void addErrorPage(int errorCode, const std::string &page);
+  const std::string getErrorPage(int errorCode) const;
+  const std::map<int, std::string> &getErrorPages() const;
 
  private:
   int port_;
@@ -42,8 +44,8 @@ class ServerConfig {
   std::string rootPath_;
   std::string serverName_;
   std::string index_;
-  std::map<int, std::string> errorPages_;
   std::vector<LocationConfig> locationConfigs_;
+  std::map<int, std::string> errorPages_;
 };
 
 #endif

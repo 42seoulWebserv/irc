@@ -4,10 +4,11 @@ MethodGetProcessor::MethodGetProcessor(IClient& client)
     : client_(client), reader(NULL) {}
 
 ProcessResult MethodGetProcessor::process() {
-  reader = FileReadEventController::addEventController("default.conf", this);
+  reader = FileReadEventController::addEventController(
+      "default.conf", this, &(client_.getDataStream()));
   return ProcessResult();
 }
 
 void MethodGetProcessor::onEvent(const FileReadEventController::Event& p) {
-  std::cout << p.content_ << std::endl;
+  (void)p;
 }
