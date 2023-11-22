@@ -6,12 +6,12 @@
 #include <iostream>
 
 #include "EventController.hpp"
-#include "ParseRequestProcessor.hpp"
+#include "StartProcessor.hpp"
 
 // constructor / destructor
 ClientEventController::ClientEventController(int clientSocket)
     : clientSocket_(clientSocket), config_(NULL), processor_(NULL) {
-  processor_ = new ParseRequestProcessor(*this);
+  processor_ = new StartProcessor(*this);
   while (nextProcessor()) {
     // nothing
   }

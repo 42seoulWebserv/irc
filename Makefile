@@ -64,6 +64,7 @@ PASER_LEXER_NAME := \
 PROCESSOR_DIR := ./src/processor/
 PROCESSOR_NAME := \
 	ProcessResult.cpp \
+	StartProcessor.cpp \
 	ParseRequestProcessor.cpp \
 	CgiProcessor.cpp \
 	MethodDeleteProcessor.cpp \

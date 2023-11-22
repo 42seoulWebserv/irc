@@ -2,6 +2,8 @@
 #define SelectMethodProcessor_HPP_
 
 #include "IRequestProcessor.hpp"
+#include "Response.hpp"
+
 class SelectMethodProcessor : public IRequestProcessor {
  public:
   SelectMethodProcessor(IClient &client);
@@ -9,6 +11,7 @@ class SelectMethodProcessor : public IRequestProcessor {
 
  private:
   IClient &client_;
+  Response response_;
 };
 
 #endif
