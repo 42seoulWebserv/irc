@@ -18,6 +18,9 @@ BUILD_DIR := ./build
 
 CXX := c++
 CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 -Weffc++ $(INC_DIR)
+ifdef DEBUG
+CXXFLAGS += -fsanitize=address
+endif
 
 # ===============================================
 
@@ -140,4 +143,8 @@ re:
 	$(MAKE) fclean
 	$(MAKE) all
 
-.PHONY: all clean fclean re
+debug:
+	$(MAKE) fclean
+	$(MAKE) -j DEBUG=1
+
+.PHONY: all clean fclean re debug
