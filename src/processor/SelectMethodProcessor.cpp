@@ -5,6 +5,7 @@
 #include "MethodDeleteProcessor.hpp"
 #include "MethodGetProcessor.hpp"
 #include "MethodPostProcessor.hpp"
+#include "RedirectionProcessor.hpp"
 
 SelectMethodProcessor::SelectMethodProcessor(IClient& client)
     : client_(client), response_(client.getResponse()) {}
@@ -21,6 +22,12 @@ ProcessResult SelectMethodProcessor::process() {
   }
   if (client_.getRequest().getVersion() != "HTTP/1.1") {
     return res.setStatus(505).setNextProcessor(new ErrorPageProcessor(client_));
+  }
+  if (client_.getLocationConfig()->getRedirectionStatusCode() != 0 &&
+      client_.getLocationConfig()->getRedirectionPath().empty() == false) {
+    return res
+        .setStatus(client_.getLocationConfig()->getRedirectionStatusCode())
+        .setNextProcessor(new RedirectionProcessor(client_));
   }
   if (std::find(accepts.begin(), accepts.end(), method) == accepts.end()) {
     return res.setStatus(405).setNextProcessor(new ErrorPageProcessor(client_));
