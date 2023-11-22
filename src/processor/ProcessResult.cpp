@@ -13,22 +13,22 @@ ProcessResult::ProcessResult()
       response(nullptr) {}
 
 ProcessResult& ProcessResult::setWriteOn(bool b) {
-  writeOn_ = b;
+  this->writeOn_ = b;
   return *this;
 }
 
 ProcessResult& ProcessResult::setWriteOff(bool b) {
-  writeOff_ = b;
+  this->writeOff_ = b;
   return *this;
 }
 
 ProcessResult& ProcessResult::setReadOn(bool b) {
-  readOn_ = b;
+  this->readOn_ = b;
   return *this;
 }
 
 ProcessResult& ProcessResult::setReadOff(bool b) {
-  readOff_ = b;
+  this->readOff_ = b;
   return *this;
 }
 
