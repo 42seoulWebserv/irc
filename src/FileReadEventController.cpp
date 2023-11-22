@@ -63,12 +63,14 @@ EventController::returnType FileReadEventController::handleEvent(
   }
   int filesize = filepath_.getFileSize();
   if (filesize == -1) {
+    fclose(file_);
     if (observer_) {
       observer_->onEvent(Event(FileReadEventController::FAIL));
     }
     return EventController::FAIL;
   }
   if (totalReadSize_ >= filesize) {
+    fclose(file_);
     if (observer_) {
       observer_->onEvent(Event(FileReadEventController::SUCCESS));
     }
