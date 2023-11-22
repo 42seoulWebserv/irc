@@ -1,6 +1,49 @@
 #include "MethodDeleteProcessor.hpp"
 
-MethodDeleteProcessor::MethodDeleteProcessor(IClient &client)
-    : client_(client) {}
+#include <cstdio>
 
-ProcessResult MethodDeleteProcessor::process() { return ProcessResult(); }
+#include "ErrorPageProcessor.hpp"
+#include "FilePath.hpp"
+
+MethodDeleteProcessor::MethodDeleteProcessor(IClient &client)
+    : client_(client), response_(client_.getResponse()) {}
+
+static void deleteFile(FilePath &filepath) {
+  std::cout << "filepath: " << filepath << std::endl;
+  int code = remove(filepath.c_str());
+  if (code != 0) {
+    throw std::invalid_argument("file remove error");
+  }
+  std::cout << "success " << filepath << std::endl;
+}
+
+ProcessResult MethodDeleteProcessor::process() {
+  std::cout << "in delete method" << std::endl;
+  FilePath filepath = "." + client_.getLocationConfig()->getRootPath();
+  filepath.append(client_.getRequest().getUri());
+  // 들어온값이 directorty 형태라면 실패.
+  if (filepath.isDirectory()) {
+    std::cout << "error: DELETE: not allow form" << std::endl;
+    return ProcessResult().setStatus(404).setNextProcessor(
+        new ErrorPageProcessor(client_));
+  }
+  FilePath directortyPath = FilePath::getDirectory(filepath);
+  directortyPath = directortyPath.toDirectoryPath();
+  // 들어온값이 잘못된 경로라면 실패.
+  if (!directortyPath.isExist()) {
+    std::cout << "error: DELETE: non exist path" << std::endl;
+    return ProcessResult().setStatus(404).setNextProcessor(
+        new ErrorPageProcessor(client_));
+  }
+  // 삭제할려는 파일이 존재하지않는다면 실패.
+  if (!filepath.isFile()) {
+    std::cout << "error: DELETE: non exits file" << std::endl;
+    return ProcessResult().setStatus(404).setNextProcessor(
+        new ErrorPageProcessor(client_));
+  }
+  std::cout << "filepath: " << filepath << std::endl;
+  deleteFile(filepath);
+  response_.setStatusCode(201);
+  client_.getDataStream().readStr(response_.toString());
+  return ProcessResult().setResponse(&response_).setWriteOn(true);
+}
