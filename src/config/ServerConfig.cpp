@@ -114,9 +114,9 @@ void ServerConfig::addErrorPage(int errorCode, const std::string &page) {
   errorPages_.insert(std::pair<int, std::string>(errorCode, page));
 }
 
-const std::string &ServerConfig::getErrorPage(int errorCode) const {
+const std::string ServerConfig::getErrorPage(int errorCode) const {
   if (errorPages_.find(errorCode) == errorPages_.end()) {
-    return std::string();
+    return "";
   }
   return errorPages_.at(errorCode);
 }

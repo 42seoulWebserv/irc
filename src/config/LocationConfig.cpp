@@ -168,7 +168,7 @@ void LocationConfig::addErrorPage(int errorCode, const std::string &page) {
   errorPages_.insert(std::pair<int, std::string>(errorCode, page));
 }
 
-const std::string &LocationConfig::getErrorPage(int errorCode) const {
+const std::string LocationConfig::getErrorPage(int errorCode) const {
   if (errorPages_.find(errorCode) == errorPages_.end()) {
     return "";
   }

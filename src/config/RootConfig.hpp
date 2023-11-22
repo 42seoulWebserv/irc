@@ -26,7 +26,7 @@ class RootConfig {
   const std::vector<ServerConfig>::iterator beginServerConfigs();
   const std::vector<ServerConfig>::iterator endServerConfigs();
   void addErrorPage(int errorCode, const std::string &page);
-  const std::string &getErrorPage(int errorCode) const;
+  const std::string getErrorPage(int errorCode) const;
   const std::map<int, std::string> &getErrorPages() const;
 
  private:

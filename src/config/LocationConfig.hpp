@@ -41,7 +41,7 @@ class LocationConfig {
   const std::map<std::string, std::string>::iterator beginCgiPrograms();
   const std::map<std::string, std::string>::iterator endCgiPrograms();
   void addErrorPage(int errorCode, const std::string &page);
-  const std::string &getErrorPage(int errorCode) const;
+  const std::string getErrorPage(int errorCode) const;
   const std::map<int, std::string> &getErrorPages() const;
 
  private:

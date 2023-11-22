@@ -73,7 +73,7 @@ void RootConfig::addErrorPage(int errorCode, const std::string &page) {
   errorPages_.insert(std::pair<int, std::string>(errorCode, page));
 }
 
-const std::string &RootConfig::getErrorPage(int errorCode) const {
+const std::string RootConfig::getErrorPage(int errorCode) const {
   if (errorPages_.find(errorCode) == errorPages_.end()) {
     return "";
   }
