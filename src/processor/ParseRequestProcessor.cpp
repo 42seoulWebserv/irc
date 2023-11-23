@@ -131,7 +131,8 @@ ProcessResult ParseRequestProcessor::process() {
         parseHeader();
       } catch (std::exception &e) {
         std::cout << "Error: parse: " << e.what() << std::endl;  // debug
-        return ProcessResult().setStatus(401).setReadOff(true).setNextProcessor(
+        client_.setResponseStatusCode(401);
+        return ProcessResult().setReadOff(true).setNextProcessor(
             new ErrorPageProcessor(client_));
       }
       std::map<std::string, std::string>::const_iterator it =
@@ -142,19 +143,17 @@ ProcessResult ParseRequestProcessor::process() {
         if ((end && *end != '\0') || contentLen < 0) {
           std::cout << "error: wrong Content-Length format"
                     << std::endl;  // debug
-          return ProcessResult()
-              .setStatus(402)
-              .setReadOff(true)
-              .setNextProcessor(new ErrorPageProcessor(client_));
+          client_.setResponseStatusCode(402);
+          return ProcessResult().setReadOff(true).setNextProcessor(
+              new ErrorPageProcessor(client_));
         }
         contentLength_ = static_cast<size_t>(contentLen);
       }
       parseBody();
       printParseResult();  // debug
-      return ProcessResult()
-          .setRequest(&request_)
-          .setReadOff(true)
-          .setNextProcessor(new SelectMethodProcessor(client_));
+      client_.setRequest(request_);
+      return ProcessResult().setReadOff(true).setNextProcessor(
+          new SelectMethodProcessor(client_));
     }
     return ProcessResult();
   } else {
@@ -163,13 +162,13 @@ ProcessResult ParseRequestProcessor::process() {
       parseBody();
     } catch (std::exception &e) {
       std::cout << "Error: parse: " << e.what() << std::endl;  // debug
-      return ProcessResult().setStatus(401).setReadOff(true).setNextProcessor(
+      client_.setResponseStatusCode(401);
+      return ProcessResult().setReadOff(true).setNextProcessor(
           new ErrorPageProcessor(client_));
     }
   }
   printParseResult();  // debug
-  return ProcessResult()
-      .setRequest(&request_)
-      .setReadOff(true)
-      .setNextProcessor(new SelectMethodProcessor(client_));
+  client_.setRequest(request_);
+  return ProcessResult().setReadOff(true).setNextProcessor(
+      new SelectMethodProcessor(client_));
 }

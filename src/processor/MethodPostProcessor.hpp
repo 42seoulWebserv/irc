@@ -19,7 +19,6 @@ class MethodPostProcessor : public IRequestProcessor,
  private:
   IClient &client_;
   FileWriteEventController *writer_;
-  Response response_;
 };
 
 #endif

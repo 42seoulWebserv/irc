@@ -11,7 +11,6 @@ class SelectMethodProcessor : public IRequestProcessor {
 
  private:
   IClient &client_;
-  Response response_;
 };
 
 #endif

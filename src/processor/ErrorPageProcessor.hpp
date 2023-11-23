@@ -13,7 +13,6 @@ class ErrorPageProcessor : public IRequestProcessor {
   void forceProvideDefaultPage();
 
  private:
-  Response response_;
   IClient &client_;
   bool onlyUseDefaultPage_;
 };

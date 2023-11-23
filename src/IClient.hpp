@@ -12,7 +12,12 @@ class IClient {
  public:
   virtual ~IClient(){};
   virtual const Request &getRequest() const = 0;
+  virtual void setRequest(const Request &request) = 0;
   virtual const Response &getResponse() const = 0;
+  virtual void setResponse(const Response &response) = 0;
+  virtual void setResponseStatusCode(int code) = 0;
+  virtual void setResponseHeader(const std::string &key,
+                                 const std::string &value) = 0;
   virtual DataStream &getDataStream() = 0;
   virtual const std::vector<char> &getRecvBuffer() const = 0;
   virtual const LocationConfig *getLocationConfig() = 0;

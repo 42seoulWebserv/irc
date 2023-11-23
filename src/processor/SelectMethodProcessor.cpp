@@ -8,7 +8,7 @@
 #include "RedirectionProcessor.hpp"
 
 SelectMethodProcessor::SelectMethodProcessor(IClient& client)
-    : client_(client), response_(client.getResponse()) {}
+    : client_(client) {}
 
 ProcessResult SelectMethodProcessor::process() {
   ProcessResult res;
@@ -17,19 +17,20 @@ ProcessResult SelectMethodProcessor::process() {
       client_.getLocationConfig()->getAcceptMethods();
   if (client_.getRequest().hasHeader("Connection")) {
     const std::string& conn = client_.getRequest().getHeader("Connection");
-    response_.setHeader("Connection", conn);
-    res.setResponse(&response_);
+    client_.setResponseHeader("Connection", conn);
   }
   if (client_.getRequest().getVersion() != "HTTP/1.1") {
-    return res.setStatus(505).setNextProcessor(new ErrorPageProcessor(client_));
+    client_.setResponseStatusCode(505);
+    return res.setNextProcessor(new ErrorPageProcessor(client_));
   }
   if (client_.getLocationConfig()->getRedirectionStatusCode()) {
-    return res
-        .setStatus(client_.getLocationConfig()->getRedirectionStatusCode())
-        .setNextProcessor(new RedirectionProcessor(client_));
+    int code = client_.getLocationConfig()->getRedirectionStatusCode();
+    client_.setResponseStatusCode(code);
+    return res.setNextProcessor(new RedirectionProcessor(client_));
   }
   if (std::find(accepts.begin(), accepts.end(), method) == accepts.end()) {
-    return res.setStatus(405).setNextProcessor(new ErrorPageProcessor(client_));
+    client_.setResponseStatusCode(405);
+    return res.setNextProcessor(new ErrorPageProcessor(client_));
   }
   if (method == "GET") {
     return res.setNextProcessor(new MethodGetProcessor(client_));
@@ -40,5 +41,6 @@ ProcessResult SelectMethodProcessor::process() {
   if (method == "DELETE") {
     return res.setNextProcessor(new MethodDeleteProcessor(client_));
   }
-  return res.setStatus(500).setNextProcessor(new ErrorPageProcessor(client_));
+  client_.setResponseStatusCode(500);
+  return res.setNextProcessor(new ErrorPageProcessor(client_));
 }

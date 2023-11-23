@@ -24,7 +24,11 @@ class ClientEventController : public EventController, public IClient {
   enum EventController::returnType handleEvent(const struct kevent &event);
 
   const Request &getRequest() const;
+  void setRequest(const Request &reqeust);
   const Response &getResponse() const;
+  void setResponse(const Response &response);
+  void setResponseStatusCode(int code);
+  void setResponseHeader(const std::string &key, const std::string &value);
   DataStream &getDataStream();
   const std::vector<char> &getRecvBuffer() const;
   const LocationConfig *getLocationConfig();

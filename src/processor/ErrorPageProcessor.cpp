@@ -20,10 +20,9 @@ static std::string intToString(int number) {
 }
 
 ProcessResult ErrorPageProcessor::process() {
-  response_ = client_.getResponse();
-
-  const int code = response_.getStatusCode();
-  const std::string msg = response_.getStatusMsg();
+  const Response& response = client_.getResponse();
+  const int code = response.getStatusCode();
+  const std::string msg = response.getStatusMsg();
 
   FilePath errorPagePath = client_.getLocationConfig()->getErrorPage(code);
   FilePath absolutePath = client_.getLocationConfig()->getRootPath();
@@ -31,7 +30,7 @@ ProcessResult ErrorPageProcessor::process() {
   if (onlyUseDefaultPage_ == false && errorPagePath.empty() == false &&
       absolutePath.isFile() && absolutePath.isAccessible(FilePath::READ)) {
     return ProcessResult().setNextProcessor(
-        new ProvideFileProcessor(client_, absolutePath, client_.getResponse()));
+        new ProvideFileProcessor(client_, absolutePath));
   }
   std::stringstream ss;
   ss << "<html>" << CRLF;
@@ -42,15 +41,12 @@ ProcessResult ErrorPageProcessor::process() {
   ss << "</body>" << CRLF;
   ss << "</html>" << CRLF;
   std::string body = ss.str();
-  response_.setHeader("Content-Length", intToString(body.size()));
-  response_.setHeader("Connection", "close");
-  client_.getDataStream().readStr(response_.toString() + body);
+  client_.setResponseHeader("Content-Length", intToString(body.size()));
+  client_.setResponseHeader("Connection", "close");
+  client_.getDataStream().readStr(response.toString() + body);
   client_.getDataStream().setEof(true);
 
-  return ProcessResult()
-      .setResponse(&response_)
-      .setWriteOn(true)
-      .setNextProcessor(new WaitProcessor());
+  return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }
 
 void ErrorPageProcessor::forceProvideDefaultPage() {

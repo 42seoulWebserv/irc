@@ -36,7 +36,24 @@ void ClientEventController::addEventController(
 // IClient
 const Request &ClientEventController::getRequest() const { return request_; }
 
+void ClientEventController::setRequest(const Request &request) {
+  request_ = request;
+}
+
 const Response &ClientEventController::getResponse() const { return response_; }
+
+void ClientEventController::setResponse(const Response &response) {
+  response_ = response;
+}
+
+void ClientEventController::setResponseStatusCode(int code) {
+  response_.setStatusCode(code);
+}
+
+void ClientEventController::setResponseHeader(const std::string &key,
+                                              const std::string &value) {
+  response_.setHeader(key, value);
+}
 
 DataStream &ClientEventController::getDataStream() { return stream_; }
 
@@ -212,6 +229,9 @@ enum EventController::returnType ClientEventController::handleEvent(
 
 ProcessResult ClientEventController::nextProcessor() {
   ProcessResult res = processor_->process();
+  if (res.error_) {
+    return res;
+  }
   if (res.readOn_) {
     KqueueMultiplexer::getInstance().addReadEvent(clientSocket_, this);
   }
@@ -223,18 +243,6 @@ ProcessResult ClientEventController::nextProcessor() {
   }
   if (res.writeOff_) {
     KqueueMultiplexer::getInstance().removeWriteEvent(clientSocket_, this);
-  }
-  if (res.request) {
-    request_ = *res.request;
-  }
-  if (res.response) {
-    response_ = *res.response;
-  }
-  if (res.error_) {
-    return res;
-  }
-  if (res.status_ != 0) {
-    response_.setStatusCode(res.status_);
   }
   if (res.spendReadBuffer_) {
     recvBuffer_.erase(recvBuffer_.begin(),

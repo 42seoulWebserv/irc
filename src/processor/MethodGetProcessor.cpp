@@ -10,15 +10,14 @@
 #include "ProvideFileProcessor.hpp"
 #include "WaitProcessor.hpp"
 
-MethodGetProcessor::MethodGetProcessor(IClient& client)
-    : client_(client), response_(client_.getResponse()) {}
+MethodGetProcessor::MethodGetProcessor(IClient& client) : client_(client) {}
 
 ProcessResult MethodGetProcessor::process() {
   FilePath path = client_.getLocationConfig()->getRootPath();
   path.append(client_.getRequest().getUri());
   if (!path.isExist()) {
-    return ProcessResult().setStatus(404).setNextProcessor(
-        new ErrorPageProcessor(client_));
+    client_.setResponseStatusCode(404);
+    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   if (!path.isFile() && path.isAccessible(FilePath::READ)) {
     path = FilePath(path.toDirectoryPath());
@@ -26,22 +25,19 @@ ProcessResult MethodGetProcessor::process() {
     if (!indexPath.isAccessible(FilePath::READ) &&
         client_.getLocationConfig()->getAutoindex()) {
       createAutoindex(path);
-      return ProcessResult()
-          .setResponse(&response_)
-          .setWriteOn(true)
-          .setNextProcessor(new WaitProcessor());
+      return ProcessResult().setWriteOn(true).setNextProcessor(
+          new WaitProcessor());
     } else {
       path = indexPath;
     }
   }
   if (!path.isAccessible(FilePath::READ)) {
-    return ProcessResult().setStatus(403).setNextProcessor(
-        new ErrorPageProcessor(client_));
+    client_.setResponseStatusCode(403);
+    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  response_.setStatusCode(200);
-  return ProcessResult()
-      .setResponse(&response_)
-      .setNextProcessor(new ProvideFileProcessor(client_, path, response_));
+  client_.setResponseStatusCode(200);
+  return ProcessResult().setNextProcessor(
+      new ProvideFileProcessor(client_, path));
 }
 
 void MethodGetProcessor::createAutoindex(FilePath path) {
@@ -77,9 +73,9 @@ void MethodGetProcessor::createAutoindex(FilePath path) {
   html += "</body></html>";
   std::stringstream ss;
   ss << html.size();
-  response_.setStatusCode(200);
-  response_.setHeader("Content-Length", ss.str());
-  client_.getDataStream().readStr(response_.toString());
+  client_.setResponseStatusCode(200);
+  client_.setResponseHeader("Content-Length", ss.str());
+  client_.getDataStream().readStr(client_.getResponse().toString());
   client_.getDataStream().readStr(html);
   client_.getDataStream().setEof(true);
 }
