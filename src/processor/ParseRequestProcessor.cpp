@@ -72,23 +72,23 @@ void ParseRequestProcessor::parseStartLine(std::string str) {
   }
   size_t i = str.find(' ');
   if (i == std::string::npos) {
-    throw std::invalid_argument("no space");
+    throw std::invalid_argument(str + " no space");
   }
   std::string method = str.substr(0, i);
   if (method != "GET" && method != "POST" && method != "DELETE") {
-    throw std::invalid_argument("wrong method");
+    throw std::invalid_argument(str + " wrong method");
   }
   request_.setMethod(method);
   size_t j = str.rfind(' ');
   if (j == std::string::npos || j == i) {
-    throw std::invalid_argument("no space");
+    throw std::invalid_argument(str + " no space");
   }
   std::string uri = str.substr(i + 1, j - i - 1);
   request_.setUri(uri);
   std::string httpVersion = strTrim(str.substr(j + 1, std::string::npos));
   httpVersion = strTrim(httpVersion);
   if (httpVersion != "HTTP/1.1") {
-    throw std::invalid_argument("wrong HTTP version");
+    throw std::invalid_argument(str + " wrong HTTP version");
   }
   request_.setVersion(httpVersion);
 }
@@ -130,8 +130,8 @@ ProcessResult ParseRequestProcessor::process() {
       try {
         parseHeader();
       } catch (std::exception &e) {
-        std::cout << "error: " << e.what() << std::endl;  // debug
-        return ProcessResult().setStatus(401).setNextProcessor(
+        std::cout << "Error: parse: " << e.what() << std::endl;  // debug
+        return ProcessResult().setStatus(401).setReadOff(true).setNextProcessor(
             new ErrorPageProcessor(client_));
       }
       std::map<std::string, std::string>::const_iterator it =
@@ -142,15 +142,19 @@ ProcessResult ParseRequestProcessor::process() {
         if ((end && *end != '\0') || contentLen < 0) {
           std::cout << "error: wrong Content-Length format"
                     << std::endl;  // debug
-          return ProcessResult().setStatus(402).setNextProcessor(
-              new ErrorPageProcessor(client_));
+          return ProcessResult()
+              .setStatus(402)
+              .setReadOff(true)
+              .setNextProcessor(new ErrorPageProcessor(client_));
         }
         contentLength_ = static_cast<size_t>(contentLen);
       }
       parseBody();
       printParseResult();  // debug
-      return ProcessResult().setRequest(&request_).setNextProcessor(
-          new SelectMethodProcessor(client_));
+      return ProcessResult()
+          .setRequest(&request_)
+          .setReadOff(true)
+          .setNextProcessor(new SelectMethodProcessor(client_));
     }
     return ProcessResult();
   } else {
@@ -158,12 +162,14 @@ ProcessResult ParseRequestProcessor::process() {
       bodyBuffer_ += tmpStr;
       parseBody();
     } catch (std::exception &e) {
-      std::cout << "Error: " << e.what() << std::endl;  // debug
-      return ProcessResult().setStatus(401).setNextProcessor(
+      std::cout << "Error: parse: " << e.what() << std::endl;  // debug
+      return ProcessResult().setStatus(401).setReadOff(true).setNextProcessor(
           new ErrorPageProcessor(client_));
     }
   }
   printParseResult();  // debug
-  return ProcessResult().setRequest(&request_).setNextProcessor(
-      new SelectMethodProcessor(client_));
+  return ProcessResult()
+      .setRequest(&request_)
+      .setReadOff(true)
+      .setNextProcessor(new SelectMethodProcessor(client_));
 }
