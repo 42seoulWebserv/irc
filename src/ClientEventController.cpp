@@ -179,7 +179,11 @@ enum EventController::returnType ClientEventController::handleEvent(
     recvBuffer_.resize(size);
   }
   if (event.filter == EVFILT_WRITE) {
-    stream_.writeToClient(clientSocket_);
+    int size = stream_.writeToClient(clientSocket_);
+    if (size == -1) {
+      clear(true);
+      return FAIL;
+    }
     if (stream_.isEOF()) {
       clear(false);
       return SUCCESS;
