@@ -18,7 +18,6 @@ class MethodGetProcessor : public IRequestProcessor {
   void createAutoindex(FilePath filename);
 
   IClient &client_;
-  Response response_;
 };
 
 #endif

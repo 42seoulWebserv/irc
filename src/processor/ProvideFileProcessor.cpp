@@ -7,11 +7,9 @@
 #include "WaitProcessor.hpp"
 
 ProvideFileProcessor::ProvideFileProcessor(IClient& client,
-                                           const FilePath& path,
-                                           const Response& response)
+                                           const FilePath& path)
     : client_(client),
       path_(path),
-      response_(response),
       reader_(NULL),
       fileSize_(0),
       fatalError_(false) {}
@@ -32,26 +30,26 @@ ProcessResult ProvideFileProcessor::process() {
   if (path_.isFile() == false || path_.isAccessible(FilePath::READ) == false) {
     ErrorPageProcessor* errorPage = new ErrorPageProcessor(client_);
     errorPage->forceProvideDefaultPage();
-    return ProcessResult().setStatus(404).setNextProcessor(errorPage);
+    client_.setResponseStatusCode(404);
+    return ProcessResult().setNextProcessor(errorPage);
   }
+  const Response& response = client_.getResponse();
   if (path_.getFileSize() == 0) {
     fileSize_ = 0;
-    response_.setHeader("Content-Length", "0");
-    client_.getDataStream().readStr(response_.toString());
+    client_.setResponseHeader("Content-Length", "0");
+    client_.getDataStream().readStr(response.toString());
     client_.getDataStream().setEof(true);
-    return ProcessResult()
-        .setWriteOn(true)
-        .setResponse(&response_)
-        .setNextProcessor(new WaitProcessor());
+    return ProcessResult().setWriteOn(true).setNextProcessor(
+        new WaitProcessor());
   }
   fileSize_ = path_.getFileSize();
   std::stringstream ss;
   ss << path_.getFileSize();
-  response_.setHeader("Content-Length", ss.str());
-  client_.getDataStream().readStr(response_.toString());
+  client_.setResponseHeader("Content-Length", ss.str());
+  client_.getDataStream().readStr(response.toString());
   reader_ = FileReadEventController::addEventController(
       path_, this, &(client_.getDataStream()));
-  return ProcessResult().setWriteOn(true).setResponse(&response_);
+  return ProcessResult().setWriteOn(true);
 }
 
 void ProvideFileProcessor::onEvent(const FileReadEventController::Event& e) {
@@ -61,7 +59,7 @@ void ProvideFileProcessor::onEvent(const FileReadEventController::Event& e) {
     return;
   }
   const int totalReadSize = client_.getDataStream().getTotalRead();
-  const int responseHeaderSize = response_.toString().size();
+  const int responseHeaderSize = client_.getResponse().toString().size();
   const int bodySize = totalReadSize - responseHeaderSize;
   if (bodySize != fileSize_) {
     fatalError_ = true;

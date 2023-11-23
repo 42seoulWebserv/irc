@@ -7,10 +7,7 @@ ProcessResult::ProcessResult()
       readOff_(false),
       error_(false),
       spendReadBuffer_(0),
-      status_(0),
-      nextProcessor_(nullptr),
-      request(nullptr),
-      response(nullptr) {}
+      nextProcessor_(NULL) {}
 
 ProcessResult& ProcessResult::setWriteOn(bool b) {
   this->writeOn_ = b;
@@ -42,23 +39,8 @@ ProcessResult& ProcessResult::setSpendReadBuffer(unsigned spendReadBuffer) {
   return *this;
 }
 
-ProcessResult& ProcessResult::setStatus(int status) {
-  this->status_ = status;
-  return *this;
-}
-
 ProcessResult& ProcessResult::setNextProcessor(
     IRequestProcessor* nextProcessor) {
   this->nextProcessor_ = nextProcessor;
-  return *this;
-}
-
-ProcessResult& ProcessResult::setRequest(const Request* request) {
-  this->request = request;
-  return *this;
-}
-
-ProcessResult& ProcessResult::setResponse(const Response* response) {
-  this->response = response;
   return *this;
 }
