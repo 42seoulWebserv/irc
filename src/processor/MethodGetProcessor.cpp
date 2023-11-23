@@ -8,6 +8,7 @@
 #include "ErrorPageProcessor.hpp"
 #include "FilePath.hpp"
 #include "ProvideFileProcessor.hpp"
+#include "WaitProcessor.hpp"
 
 MethodGetProcessor::MethodGetProcessor(IClient& client)
     : client_(client), response_(client_.getResponse()) {}
