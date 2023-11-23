@@ -41,17 +41,18 @@ int run(RootConfig &config) {
   while (1) {
     struct kevent eventList[5];
     int number = kevent(kq.getKq(), 0, 0, eventList, 5, NULL);
-    std::vector<EventController *> deleteList;
+    std::set<EventController *> deleteList;
     for (int i = 0; i < number; i++) {
       EventController *controller =
           reinterpret_cast<EventController *>(eventList[i].udata);
       EventController::returnType type = controller->handleEvent(eventList[i]);
       if (type == EventController::SUCCESS || type == EventController::FAIL) {
-        deleteList.push_back(controller);
+        deleteList.insert(controller);
       }
     }
-    for (size_t i = 0; i < deleteList.size(); i++) {
-      delete deleteList[i];
+    std::set<EventController *>::const_iterator it;
+    for (it = deleteList.begin(); it != deleteList.end(); it++) {
+      delete *it;
     }
 
     // sprintf(buff_snd, "%d : %s", strlen(buff_rcv), buff_rcv);
