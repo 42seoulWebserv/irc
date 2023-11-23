@@ -14,6 +14,7 @@ class MethodDeleteProcessor : public IRequestProcessor {
 
  private:
   IClient &client_;
+  Response response_;
 };
 
 #endif
