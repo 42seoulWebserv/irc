@@ -70,6 +70,5 @@ int DataStream::getTotalWrite() const { return totalWrite_; }
 
 bool DataStream::isEOF() const { return list_.size() == 0 && isEOF_; }
 
-#include <iostream>
 
 void DataStream::setEof(bool eof) { isEOF_ = eof; }
