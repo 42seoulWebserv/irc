@@ -77,6 +77,7 @@ PROCESSOR_NAME := \
 	SelectMethodProcessor.cpp \
 	ProvideFileProcessor.cpp \
 	WaitProcessor.cpp \
+	RedirectionProcessor.cpp \
 
 UTIL_DIR := ./src/util/
 UTIL_NAME := \
