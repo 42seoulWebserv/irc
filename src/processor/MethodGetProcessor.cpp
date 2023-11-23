@@ -29,7 +29,7 @@ ProcessResult MethodGetProcessor::process() {
       return ProcessResult()
           .setResponse(&response_)
           .setWriteOn(true)
-          .setNextProcessor(new WaitProcessor())
+          .setNextProcessor(new WaitProcessor());
     } else {
       path = indexPath;
     }
