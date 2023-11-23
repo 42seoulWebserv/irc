@@ -26,7 +26,10 @@ ProcessResult MethodGetProcessor::process() {
     if (!indexPath.isAccessible(FilePath::READ) &&
         client_.getLocationConfig()->getAutoindex()) {
       createAutoindex(path);
-      return ProcessResult().setResponse(&response_).setWriteOn(true);
+      return ProcessResult()
+          .setResponse(&response_)
+          .setWriteOn(true)
+          .setNextProcessor(new WaitProcessor())
     } else {
       path = indexPath;
     }
