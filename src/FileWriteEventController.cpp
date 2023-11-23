@@ -30,11 +30,12 @@ FileWriteEventController *FileWriteEventController::addEventController(
     const std::string &filepath, const std::string &content,
     IObserver<Event> *observer) {
   try {
-    new FileWriteEventController(filepath, content, observer);
+    return new FileWriteEventController(filepath, content, observer);
   } catch (...) {
     if (observer) {
       observer->onEvent(Event(FileWriteEventController::FAIL));
     }
+    return NULL;
   }
 }
 
@@ -66,4 +67,5 @@ EventController::returnType FileWriteEventController::handleEvent(
 }
 
 FileWriteEventController::Event::Event(EventType type) : type_(type) {}
+
 void FileWriteEventController::cancel() { isCanceled_ = true; }
