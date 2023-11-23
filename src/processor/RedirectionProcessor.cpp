@@ -17,5 +17,4 @@ ProcessResult RedirectionProcessor::process() {
       .setWriteOn(true)
       .setResponse(&response_)
       .setNextProcessor(new WaitProcessor());
-  // TODO : redirection을 위한 processor 만들기.
 }

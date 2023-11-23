@@ -23,8 +23,7 @@ ProcessResult SelectMethodProcessor::process() {
   if (client_.getRequest().getVersion() != "HTTP/1.1") {
     return res.setStatus(505).setNextProcessor(new ErrorPageProcessor(client_));
   }
-  if (client_.getLocationConfig()->getRedirectionStatusCode() != 0 &&
-      client_.getLocationConfig()->getRedirectionPath().empty() == false) {
+  if (client_.getLocationConfig()->getRedirectionStatusCode()) {
     return res
         .setStatus(client_.getLocationConfig()->getRedirectionStatusCode())
         .setNextProcessor(new RedirectionProcessor(client_));
