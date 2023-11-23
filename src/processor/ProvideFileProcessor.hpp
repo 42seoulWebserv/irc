@@ -12,6 +12,7 @@ class ProvideFileProcessor : public IRequestProcessor,
  public:
   ProvideFileProcessor(IClient &client, const FilePath &path,
                        const Response &response);
+  ~ProvideFileProcessor();
   ProcessResult process();
   void onEvent(const FileReadEventController::Event &e);
 

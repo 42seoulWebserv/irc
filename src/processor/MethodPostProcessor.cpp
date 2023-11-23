@@ -52,5 +52,6 @@ ProcessResult MethodPostProcessor::process() {
 }
 
 void MethodPostProcessor::onEvent(const FileWriteEventController::Event &p) {
+  writer_ = NULL;
   client_.getDataStream().setEof(true);
 }
