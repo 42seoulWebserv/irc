@@ -9,24 +9,30 @@
 MethodPostProcessor::MethodPostProcessor(IClient &client)
     : client_(client), writer_(NULL), response_(client_.getResponse()) {}
 
+MethodPostProcessor::~MethodPostProcessor() {
+  if (writer_) {
+    writer_->cancel();
+  }
+}
+
 // 들어온 경로가 디렉토리라면 실패.
 // 들어온 경로가 파일이라면 그 형태 그대로 생성.
 ProcessResult MethodPostProcessor::process() {
   if (writer_) {
     return ProcessResult();
   }
-  FilePath filepath = "." + client_.getLocationConfig()->getRootPath();
+  FilePath filepath = client_.getLocationConfig()->getRootPath();
   filepath.append(client_.getRequest().getUri());
-  // 들어온값이 directorty 형태라면 실패.
+  // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
     std::cout << "error: POST: not allow form" << std::endl;
     return ProcessResult().setStatus(404).setNextProcessor(
         new ErrorPageProcessor(client_));
   }
   // 경로 존재 X
-  FilePath directortyPath = FilePath::getDirectory(filepath);
-  directortyPath = directortyPath.toDirectoryPath();
-  if (!directortyPath.isExist()) {
+  FilePath directoryPath = FilePath::getDirectory(filepath);
+  directoryPath = directoryPath.toDirectoryPath();
+  if (!directoryPath.isExist()) {
     std::cout << "error: POST: non exist path" << std::endl;
     return ProcessResult().setStatus(404).setNextProcessor(
         new ErrorPageProcessor(client_));
@@ -46,5 +52,6 @@ ProcessResult MethodPostProcessor::process() {
 }
 
 void MethodPostProcessor::onEvent(const FileWriteEventController::Event &p) {
+  writer_ = NULL;
   client_.getDataStream().setEof(true);
 }

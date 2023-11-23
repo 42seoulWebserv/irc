@@ -31,8 +31,8 @@ FileReadEventController *FileReadEventController::addEventController(
   } catch (...) {
     if (observer) {
       observer->onEvent(Event(FileReadEventController::FAIL));
-      return NULL;
     }
+    return NULL;
   }
 }
 

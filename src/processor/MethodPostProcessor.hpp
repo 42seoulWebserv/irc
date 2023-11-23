@@ -12,6 +12,7 @@ class MethodPostProcessor : public IRequestProcessor,
                             IObserver<FileWriteEventController::Event> {
  public:
   MethodPostProcessor(IClient &client);
+  ~MethodPostProcessor();
   ProcessResult process();
   void onEvent(const FileWriteEventController::Event &p);
 

@@ -16,6 +16,12 @@ ProvideFileProcessor::ProvideFileProcessor(IClient& client,
       fileSize_(0),
       fatalError_(false) {}
 
+ProvideFileProcessor::~ProvideFileProcessor() {
+  if (reader_) {
+    reader_->cancel();
+  }
+}
+
 ProcessResult ProvideFileProcessor::process() {
   if (fatalError_) {
     return ProcessResult().setError(true);
@@ -49,6 +55,7 @@ ProcessResult ProvideFileProcessor::process() {
 }
 
 void ProvideFileProcessor::onEvent(const FileReadEventController::Event& e) {
+  reader_ = NULL;
   if (e.type_ == FileReadEventController::FAIL) {
     fatalError_ = true;
     return;
