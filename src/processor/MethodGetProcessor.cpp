@@ -14,7 +14,7 @@ MethodGetProcessor::MethodGetProcessor(IClient& client)
     : client_(client), response_(client_.getResponse()) {}
 
 ProcessResult MethodGetProcessor::process() {
-  FilePath path = "." + client_.getLocationConfig()->getRootPath();
+  FilePath path = client_.getLocationConfig()->getRootPath();
   path.append(client_.getRequest().getUri());
   if (!path.isExist()) {
     return ProcessResult().setStatus(404).setNextProcessor(
