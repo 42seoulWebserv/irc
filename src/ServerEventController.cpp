@@ -35,7 +35,7 @@ ServerEventController::ServerEventController(int port) : port_(port) {
   if (bind(this->socket_, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
     throw std::logic_error("bind error");
   }
-  if (listen(this->socket_, 5) == -1) {
+  if (listen(this->socket_, 128) == -1) {
     throw std::logic_error("bind error");
   }
   KqueueMultiplexer::getInstance().addReadEvent(socket_, this);

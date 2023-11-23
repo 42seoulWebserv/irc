@@ -110,6 +110,13 @@ static void checkErrorPageDirective(const std::vector<std::string> &values) {
   }
 }
 
+static void checkAutoindex(std::string str) {
+  if (str != "on" && str != "off") {
+    throw std::invalid_argument("autoindex value should be [on / off]");
+  }
+  return;
+}
+
 static void checkServerLocation(Directive location) {
   std::vector<Directive>::iterator element;
   for (element = location.beginChildren(); element != location.endChildren();
@@ -131,6 +138,8 @@ static void checkServerLocation(Directive location) {
       checkServerClientMaxContentSize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "error_page") {
       checkErrorPageDirective(element->getValues());
+    } else if (element->getKey() == "autoindex") {
+      checkAutoindex(element->getElementAtIndexValues(0));
     } else {
       throw std::invalid_argument('"' + element->getKey() + '"' +
                                   " is invalid server location directive");
@@ -187,6 +196,8 @@ static void checkServerDirective(Directive server) {
       checkRootDirective(*element);
     } else if (element->getKey() == "error_page") {
       checkErrorPageDirective(element->getValues());
+    } else if (element->getKey() == "autoindex") {
+      checkAutoindex(element->getElementAtIndexValues(0));
     } else {
       throw std::invalid_argument("invalid server directive");
     }
@@ -205,6 +216,8 @@ static void checkDirectiveChildren(Directive directive) {
       checkServerClientMaxContentSize(it->getElementAtIndexValues(0));
     } else if (it->getKey() == "error_page") {
       checkErrorPageDirective(it->getValues());
+    } else if (it->getKey() == "autoindex") {
+      checkAutoindex(it->getElementAtIndexValues(0));
     } else {
       throw std::invalid_argument('"' + it->getKey() + '"' +
                                   " is invalid config directive");
@@ -219,7 +232,7 @@ void ConfigChecker::checkDirective(Directive directive) {
     }
     checkDirectiveChildren(directive);
   } catch (const std::exception &e) {
-    std::cerr << "Error: Config: " << e.what() << '\n';
-    std::exit(1);
+    std::cout << "Error: Config: " << e.what() << '\n';
+    throw e;
   }
 }

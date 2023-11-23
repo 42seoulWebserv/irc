@@ -1,6 +1,7 @@
 #ifndef MethodGetProcessor_HPP_
 #define MethodGetProcessor_HPP_
 
+#include "FilePath.hpp"
 #include "FileReadEventController.hpp"
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
@@ -8,16 +9,16 @@
 #include "Request.hpp"
 #include "Response.hpp"
 
-class MethodGetProcessor : public IRequestProcessor,
-                           IObserver<FileReadEventController::Event> {
+class MethodGetProcessor : public IRequestProcessor {
  public:
   MethodGetProcessor(IClient &client);
   ProcessResult process();
-  void onEvent(const FileReadEventController::Event &p);
 
  private:
+  void createAutoindex(FilePath filename);
+
   IClient &client_;
-  FileReadEventController *reader;
+  Response response_;
 };
 
 #endif

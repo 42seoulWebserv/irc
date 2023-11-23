@@ -20,12 +20,12 @@ class ProcessResult {
   ProcessResult &setRequest(const Request *request);
   ProcessResult &setResponse(const Response *response);
 
-  unsigned writeOn_ : 1;              // suggest write on
-  unsigned writeOff_ : 1;             // suggest write off
-  unsigned readOn_ : 1;               // suggest read on
-  unsigned readOff_ : 1;              // suggest read off
-  unsigned error_ : 1;                // occur critical error (close socket)
-  unsigned spendReadBuffer_;          // spend read size from client recvBuffer
+  bool writeOn_;              // suggest write on
+  bool writeOff_;             // suggest write off
+  bool readOn_;               // suggest read on
+  bool readOff_;              // suggest read off
+  bool error_;                // occur critical error (close socket)
+  int spendReadBuffer_;          // spend read size from client recvBuffer
   int status_;                        // status code
   IRequestProcessor *nextProcessor_;  // delete this and run next processor
   const Request *request;             // cover this

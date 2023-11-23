@@ -79,11 +79,13 @@ int main(int argc, char **argv) {
   std::string configStr((std::istreambuf_iterator<char>(configFile)),
                         std::istreambuf_iterator<char>());
   configFile.close();
-
-  Directive directive = ConfigLexer::run(configStr);
-  RootConfig config = ConfigMaker::makeConfig(directive);
-  config.printRootConfig();
-
-  run(config);
+  try {
+    Directive directive = ConfigLexer::run(configStr);
+    RootConfig config = ConfigMaker::makeConfig(directive);
+    config.printRootConfig();  // debug
+    run(config);
+  } catch (...) {
+    return 1;
+  }
   return 0;
 }

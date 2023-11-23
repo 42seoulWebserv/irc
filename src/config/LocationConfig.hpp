@@ -17,8 +17,8 @@ class LocationConfig {
 
   int getLimitClientBodySize() const;
   void setLimitClientBodySize(const int &limitClientBodySize);
-  bool getAutoIndex() const;
-  void setAutoIndex(const bool &autoIndex);
+  bool getAutoindex() const;
+  void setAutoindex(const std::string &autoindex);
   int getRedirectionStatusCode() const;
   void setRedirectionStatusCode(const int &redirectionStatusCode);
   std::string getUri() const;
@@ -46,7 +46,7 @@ class LocationConfig {
 
  private:
   int limitClientBodySize_;
-  bool autoIndex_;
+  bool autoindex_;
   int redirectionStatusCode_;
   std::string uri_;
   std::string rootPath_;

@@ -20,6 +20,8 @@ class RootConfig {
   void setRootPath(const std::string &rootPath);
   int getLimitClientBodySize() const;
   void setLimitClientBodySize(const int &limitClientBodySize);
+  void setAutoindex(const std::string &autoindex);
+  bool getAutoindex() const;
   std::vector<ServerConfig> &getServerConfigs();
   void setServerConfigs(const std::vector<ServerConfig> &serverConfigs);
   void addServerConfigs(const ServerConfig &serverConfigs);
@@ -32,6 +34,7 @@ class RootConfig {
  private:
   std::string rootPath_;
   int limitClientBodySize_;
+  bool autoindex_;
   std::vector<ServerConfig> serverConfigs_;
   std::map<int, std::string> errorPages_;
 };
