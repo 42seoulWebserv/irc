@@ -36,8 +36,8 @@ LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
        element++) {
     if (element->getKey() == "root") {
       std::string rootPath = element->getElementAtIndexValues(0);
-      if (rootPath.back() == '/') {
-        rootPath.pop_back();
+      if (rootPath.at(rootPath.size() - 1) == '/') {
+        rootPath.erase(rootPath.length() - 1);
       }
       res.setRootPath(rootPath);
     } else if (element->getKey() == "client_max_body_size") {

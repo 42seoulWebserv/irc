@@ -1,9 +1,9 @@
 #include "FileWriteEventController.hpp"
 
 #include <fcntl.h>
-#include <sys/event.h>  // kevent
 #include <unistd.h>
 
+#include <cstdio>
 #include <exception>
 
 #include "Multiplexer.hpp"
@@ -40,12 +40,12 @@ FileWriteEventController *FileWriteEventController::addEventController(
 }
 
 EventController::returnType FileWriteEventController::handleEvent(
-    const Multiplexer::Event&event) {
+    const Multiplexer::Event &event) {
   if (isCanceled_) {
     fclose(file_);
     return EventController::FAIL;
   }
-  if (event.filter != EVFILT_WRITE) {
+  if (event.filter != WEB_WRITE) {
     std::cout << "unexpected event" << std::endl;
     close(fd_);
     if (observer_) {

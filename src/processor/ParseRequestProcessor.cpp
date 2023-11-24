@@ -1,5 +1,6 @@
 #include "ParseRequestProcessor.hpp"
 
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -68,7 +69,7 @@ void ParseRequestProcessor::parseHeaderLineByLine(std::string str) {
 
 void ParseRequestProcessor::parseStartLine(std::string str) {
   if (*str.end() == ' ') {
-    str.pop_back();
+    str.erase(str.length() - 1);
   }
   size_t i = str.find(' ');
   if (i == std::string::npos) {

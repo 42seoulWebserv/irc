@@ -2,6 +2,7 @@
 #define FilePath_HPP_
 
 #include <iostream>
+#include <string>
 
 class FilePath : public std::string {
  public:
@@ -20,6 +21,8 @@ class FilePath : public std::string {
   long getFileSize() const;
   std::string toDirectoryPath();
   std::string toFilePath();
+  const char &front() const;
+  const char &back() const;
 
   static std::string getExtension(const std::string &path);
   static std::string getFileName(const std::string &path);

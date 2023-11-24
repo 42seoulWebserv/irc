@@ -1,8 +1,8 @@
 #include "FileReadEventController.hpp"
 
 #include <fcntl.h>
-#include <sys/event.h>  // kevent
 
+#include <cstdio>
 #include <exception>
 
 FileReadEventController::FileReadEventController(const std::string &filepath,
@@ -13,7 +13,7 @@ FileReadEventController::FileReadEventController(const std::string &filepath,
       observer_(observer),
       dataStream_(stream),
       isCanceled_(false) {
-  file_ = fopen(filepath_.c_str(), "r");
+  file_ = std::fopen(filepath_.c_str(), "r");
   if (file_ == NULL) {
     throw std::invalid_argument("file open error");
   }

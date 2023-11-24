@@ -2,6 +2,8 @@
 
 #include <unistd.h>
 
+#include <cstring>
+
 DataStream::DataStream()
     : seq_(0), totalRead_(0), totalWrite_(0), isEOF_(false) {}
 DataStream::~DataStream() {
@@ -19,7 +21,7 @@ DataStream::Chunk::~Chunk() { delete buffer_; }
 
 int DataStream::readStr(const std::string &str) {
   Chunk *chunk = new Chunk(seq_++, str.size());
-  memcpy(chunk->buffer_, str.c_str(), str.size());
+  std::memcpy(chunk->buffer_, str.c_str(), str.size());
   totalRead_ += str.size();
   list_.push_back(chunk);
   return str.size();
@@ -69,6 +71,5 @@ int DataStream::getTotalRead() const { return totalRead_; }
 int DataStream::getTotalWrite() const { return totalWrite_; }
 
 bool DataStream::isEOF() const { return list_.size() == 0 && isEOF_; }
-
 
 void DataStream::setEof(bool eof) { isEOF_ = eof; }

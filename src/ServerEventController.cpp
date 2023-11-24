@@ -2,12 +2,12 @@
 
 #include <netdb.h>
 #include <netinet/in.h>
-#include <sys/event.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
 
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <stdexcept>
 
@@ -21,7 +21,7 @@ ServerEventController::ServerEventController(int port) : port_(port) {
 
   struct sockaddr_in addr;
 
-  memset(&addr, 0, sizeof(addr));
+  std::memset(&addr, 0, sizeof(addr));
 
   int opt = 1;
   if (setsockopt(this->socket_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int))) {

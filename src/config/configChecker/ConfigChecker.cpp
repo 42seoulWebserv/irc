@@ -159,7 +159,8 @@ static void checkServerName(std::string str) {
 
 static void checkServerLocationDuplicate(std::string locationUri,
                                          std::set<std::string> &locationPaths) {
-  if (locationUri.at(0) != '/' || locationUri.back() != '/') {
+  if (locationUri.at(0) != '/' ||
+      locationUri.at(locationUri.size() - 1) != '/') {
     throw std::invalid_argument('"' + locationUri + '"' +
                                 " location path must be in absolute path form");
   }

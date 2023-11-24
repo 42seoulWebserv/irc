@@ -90,6 +90,20 @@ std::string FilePath::toFilePath() {
   return *this;
 }
 
+const char& FilePath::front() const {
+  if (size() == 0) {
+    throw std::out_of_range("FilePath::front(): empty path");
+  }
+  return this->at(0);
+}
+
+const char& FilePath::back() const {
+  if (size() == 0) {
+    throw std::out_of_range("FilePath::back(): empty path");
+  }
+  return this->at(size() - 1);
+}
+
 std::string FilePath::getFileName(const std::string& path) {
   size_t pos = path.rfind('/');
   if (pos == std::string::npos) {
