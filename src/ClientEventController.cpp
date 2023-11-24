@@ -29,8 +29,8 @@ void ClientEventController::addEventController(
     int socket, const std::vector<ServerConfig *> &configs) {
   ClientEventController *client = new ClientEventController(socket);
   client->setServerConfigs(configs);
-  KqueueMultiplexer::getInstance().addReadEventWithClearFlag(socket, client);
-  KqueueMultiplexer::getInstance().addTimeoutEvent(socket, client);
+  Multiplexer::getInstance().addReadEventWithClearFlag(socket, client);
+  Multiplexer::getInstance().addTimeoutEvent(socket, client);
 }
 
 // IClient
@@ -233,16 +233,16 @@ ProcessResult ClientEventController::nextProcessor() {
     return res;
   }
   if (res.readOn_) {
-    KqueueMultiplexer::getInstance().addReadEvent(clientSocket_, this);
+    Multiplexer::getInstance().addReadEvent(clientSocket_, this);
   }
   if (res.readOff_) {
-    KqueueMultiplexer::getInstance().removeReadEvent(clientSocket_, this);
+    Multiplexer::getInstance().removeReadEvent(clientSocket_, this);
   }
   if (res.writeOn_) {
-    KqueueMultiplexer::getInstance().addWriteEvent(clientSocket_, this);
+    Multiplexer::getInstance().addWriteEvent(clientSocket_, this);
   }
   if (res.writeOff_) {
-    KqueueMultiplexer::getInstance().removeWriteEvent(clientSocket_, this);
+    Multiplexer::getInstance().removeWriteEvent(clientSocket_, this);
   }
   if (res.spendReadBuffer_) {
     recvBuffer_.erase(recvBuffer_.begin(),
@@ -256,9 +256,9 @@ ProcessResult ClientEventController::nextProcessor() {
 }
 
 void ClientEventController::clear(bool forceClose) {
-  KqueueMultiplexer::getInstance().removeReadEvent(clientSocket_, this);
-  KqueueMultiplexer::getInstance().removeWriteEvent(clientSocket_, this);
-  KqueueMultiplexer::getInstance().removeTimeoutEvent(clientSocket_, this);
+  Multiplexer::getInstance().removeReadEvent(clientSocket_, this);
+  Multiplexer::getInstance().removeWriteEvent(clientSocket_, this);
+  Multiplexer::getInstance().removeTimeoutEvent(clientSocket_, this);
   if (response_.hasHeader("Connection") &&
       response_.getHeader("Connection") == "keep-alive" &&
       forceClose == false) {

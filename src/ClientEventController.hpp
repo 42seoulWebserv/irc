@@ -9,7 +9,7 @@
 #include "EventController.hpp"
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
-#include "KqueueMultiplexer.hpp"
+#include "Multiplexer.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 

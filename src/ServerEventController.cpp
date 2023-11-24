@@ -11,7 +11,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "KqueueMultiplexer.hpp"
+#include "Multiplexer.hpp"
 
 ServerEventController::ServerEventController(int port) : port_(port) {
   this->socket_ = socket(PF_INET, SOCK_STREAM, 0);
@@ -38,7 +38,7 @@ ServerEventController::ServerEventController(int port) : port_(port) {
   if (listen(this->socket_, 128) == -1) {
     throw std::logic_error("bind error");
   }
-  KqueueMultiplexer::getInstance().addReadEvent(socket_, this);
+  Multiplexer::getInstance().addReadEvent(socket_, this);
 }
 
 ServerEventController::~ServerEventController() {}

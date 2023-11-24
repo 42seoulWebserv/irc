@@ -20,7 +20,7 @@ FileReadEventController::FileReadEventController(const std::string &filepath,
   fd_ = fileno(file_);
   fcntl(fd_, F_SETFL, O_NONBLOCK);
   fcntl(fd_, F_SETFD, FD_CLOEXEC);
-  KqueueMultiplexer::getInstance().addReadEvent(fd_, this);
+  Multiplexer::getInstance().addReadEvent(fd_, this);
 }
 
 FileReadEventController *FileReadEventController::addEventController(

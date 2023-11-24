@@ -10,7 +10,7 @@
 #include "FilePath.hpp"
 #include "ICancelable.hpp"
 #include "IObserver.hpp"
-#include "KqueueMultiplexer.hpp"
+#include "Multiplexer.hpp"
 
 class FileReadEventController : public EventController, public ICancelable {
  public:

@@ -10,13 +10,13 @@
 
 #include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"
-#include "KqueueMultiplexer.hpp"
+#include "Multiplexer.hpp"
 #include "RootConfig.hpp"
 #include "ServerConfig.hpp"
 #include "ServerEventController.hpp"
 
 int run(RootConfig &config) {
-  KqueueMultiplexer &kq = KqueueMultiplexer::getInstance();
+  Multiplexer &Multiplexer = Multiplexer::getInstance();
 
   std::vector<ServerConfig> &serverConfigs = config.getServerConfigs();
   std::map<int, ServerEventController *> servers;

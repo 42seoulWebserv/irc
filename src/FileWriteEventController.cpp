@@ -6,7 +6,7 @@
 
 #include <exception>
 
-#include "KqueueMultiplexer.hpp"
+#include "Multiplexer.hpp"
 
 FileWriteEventController::FileWriteEventController(const std::string &filepath,
                                                    const std::string &content,
@@ -23,7 +23,7 @@ FileWriteEventController::FileWriteEventController(const std::string &filepath,
   fd_ = fileno(file_);
   fcntl(fd_, F_SETFL, O_NONBLOCK);
   fcntl(fd_, F_SETFD, FD_CLOEXEC);
-  KqueueMultiplexer::getInstance().addWriteEvent(fd_, this);
+  Multiplexer::getInstance().addWriteEvent(fd_, this);
 }
 
 FileWriteEventController *FileWriteEventController::addEventController(
