@@ -37,7 +37,8 @@ FileReadEventController *FileReadEventController::addEventController(
 }
 
 EventController::returnType FileReadEventController::handleEvent(
-    const struct kevent &event) {
+    const Multiplexer::Event &event) {
+  (void)event;
   if (isCanceled_) {
     fclose(file_);
     return EventController::FAIL;

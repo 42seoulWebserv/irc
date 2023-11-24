@@ -59,4 +59,20 @@ std::vector<Multiplexer::Event> Multiplexer::wait(int size) {
   std::vector<Event> result;
   struct kevent eventList[size];
   int number = kevent(fd_, 0, 0, eventList, 5, NULL);
+  for (int i = 0; i < number; i++) {
+    Event event;
+    event.ident = eventList[i].ident;
+    event.udata = eventList[i].udata;
+    if (eventList[i].filter == EVFILT_READ) {
+      event.filter = WEB_READ;
+    } else if (eventList[i].filter == EVFILT_WRITE) {
+      event.filter = WEB_WRITE;
+    } else if (eventList[i].filter == EVFILT_TIMER) {
+      event.filter = WEB_TIMEOUT;
+    } else {
+      continue;
+    }
+    result.push_back(event);
+  }
+  return result;
 }

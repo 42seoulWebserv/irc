@@ -44,7 +44,7 @@ ServerEventController::ServerEventController(int port) : port_(port) {
 ServerEventController::~ServerEventController() {}
 
 enum EventController::returnType ServerEventController::handleEvent(
-    const struct kevent &event) {
+    const Multiplexer::Event &event) {
   socklen_t client_addr_size;
   sockaddr_in client_addr;
   client_addr_size = sizeof(client_addr);  // client 주소의 크기

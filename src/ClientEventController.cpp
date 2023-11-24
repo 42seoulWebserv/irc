@@ -1,6 +1,7 @@
 #include "ClientEventController.hpp"
 
 #include <sys/event.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include <iostream>
@@ -174,15 +175,10 @@ const LocationConfig *ClientEventController::getLocationConfig() {
 }
 
 enum EventController::returnType ClientEventController::handleEvent(
-    const struct kevent &event) {
-  if (event.filter == EVFILT_READ && event.flags & EV_EOF) {
-    std::cout << "debug: closed socket(" << clientSocket_ << ")" << std::endl;
-    clear(true);
-    return SUCCESS;
-  }
-  if (event.filter == EVFILT_READ) {
-    recvBuffer_.resize(event.data);
-    int size = recv(clientSocket_, recvBuffer_.data(), event.data, 0);
+    const Multiplexer::Event &event) {
+  if (event.filter == WEB_READ) {
+    recvBuffer_.resize(MAX_BUFFER_SIZE);
+    int size = recv(clientSocket_, recvBuffer_.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
       clear(true);
@@ -195,7 +191,7 @@ enum EventController::returnType ClientEventController::handleEvent(
     }
     recvBuffer_.resize(size);
   }
-  if (event.filter == EVFILT_WRITE) {
+  if (event.filter == WEB_WRITE) {
     int size = stream_.writeToClient(clientSocket_);
     if (size == -1) {
       clear(true);
@@ -206,7 +202,7 @@ enum EventController::returnType ClientEventController::handleEvent(
       return SUCCESS;
     }
   }
-  if (event.filter == EVFILT_TIMER) {
+  if (event.filter == WEB_TIMEOUT) {
     std::cout << "debug: timeout - close client" << std::endl;
     clear(true);
     return SUCCESS;

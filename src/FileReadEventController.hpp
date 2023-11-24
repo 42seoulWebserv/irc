@@ -23,7 +23,7 @@ class FileReadEventController : public EventController, public ICancelable {
   static FileReadEventController *addEventController(
       const std::string &filepath, IObserver<Event> *observer,
       DataStream *stream);
-  enum EventController::returnType handleEvent(const struct kevent &event);
+  enum EventController::returnType handleEvent(const Multiplexer::Event&event);
   void cancel();
 
  private:
