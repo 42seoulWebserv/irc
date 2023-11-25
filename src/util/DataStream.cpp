@@ -17,7 +17,7 @@ DataStream::Chunk::Chunk(int seq, int size)
   buffer_ = new char[size];
 }
 
-DataStream::Chunk::~Chunk() { delete buffer_; }
+DataStream::Chunk::~Chunk() { delete[] buffer_; }
 
 int DataStream::readStr(const std::string &str) {
   Chunk *chunk = new Chunk(seq_++, str.size());
