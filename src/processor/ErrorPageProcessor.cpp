@@ -24,13 +24,16 @@ ProcessResult ErrorPageProcessor::process() {
   const int code = response.getStatusCode();
   const std::string msg = response.getStatusMsg();
 
-  FilePath errorPagePath = client_.getLocationConfig()->getErrorPage(code);
-  FilePath absolutePath = client_.getLocationConfig()->getRootPath();
-  absolutePath.appendPath(errorPagePath);
-  if (onlyUseDefaultPage_ == false && errorPagePath.empty() == false &&
-      absolutePath.isFile() && absolutePath.isAccessible(FilePath::READ)) {
-    return ProcessResult().setNextProcessor(
-        new ProvideFileProcessor(client_, absolutePath));
+  const LocationConfig* config = client_.getLocationConfig();
+  if (config != NULL) {
+    FilePath errorPagePath = config->getErrorPage(code);
+    FilePath absolutePath = config->getRootPath();
+    absolutePath.appendPath(errorPagePath);
+    if (onlyUseDefaultPage_ == false && errorPagePath.empty() == false &&
+        absolutePath.isFile() && absolutePath.isAccessible(FilePath::READ)) {
+      return ProcessResult().setNextProcessor(
+          new ProvideFileProcessor(client_, absolutePath));
+    }
   }
   std::stringstream ss;
   ss << "<html>" << CRLF;
