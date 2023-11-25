@@ -4,6 +4,7 @@
 
 #include "ErrorPageProcessor.hpp"
 #include "FilePath.hpp"
+#include "WaitProcessor.hpp"
 
 MethodDeleteProcessor::MethodDeleteProcessor(IClient &client)
     : client_(client) {}
@@ -37,11 +38,12 @@ ProcessResult MethodDeleteProcessor::process() {
   // 삭제할려는 파일이 존재하지않는다면 실패.
   if (!filepath.isFile()) {
     std::cout << "error: DELETE: non exits file" << std::endl;
-    client_.setResponseStatusCode(404);
+    client_.setResponseStatusCode(204);  // 204 No Content
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   deleteFile(filepath);
-  client_.setResponseStatusCode(201);
+  client_.setResponseStatusCode(200);
+  client_.setResponseHeader("Content-Length", "0");
   client_.getDataStream().readStr(client_.getResponse().toString());
-  return ProcessResult().setWriteOn(true);
+  return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }
