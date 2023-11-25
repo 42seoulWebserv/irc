@@ -1,24 +1,24 @@
 #ifndef MethodPostProcessor_HPP_
 #define MethodPostProcessor_HPP_
 
-#include "FileWriteEventController.hpp"
+#include <fstream>
+
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
 #include "LocationConfig.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 
-class MethodPostProcessor : public IRequestProcessor,
-                            IObserver<FileWriteEventController::Event> {
+class MethodPostProcessor : public IRequestProcessor {
  public:
   MethodPostProcessor(IClient &client);
   ~MethodPostProcessor();
   ProcessResult process();
-  void onEvent(const FileWriteEventController::Event &p);
+  ProcessResult process(const ProcessResult &prevResult);
 
  private:
+  std::ofstream file_;
   IClient &client_;
-  FileWriteEventController *writer_;
 };
 
 #endif

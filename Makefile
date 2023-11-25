@@ -30,7 +30,6 @@ MAIN_NAME := \
 	EventController.cpp \
 	ServerEventController.cpp \
 	ClientEventController.cpp \
-	FileWriteEventController.cpp \
 	Request.cpp \
 	Response.cpp \
 

@@ -7,20 +7,17 @@
 #include "FilePath.hpp"
 
 MethodPostProcessor::MethodPostProcessor(IClient &client)
-    : client_(client), writer_(NULL) {}
+    : client_(client), file_() {}
 
 MethodPostProcessor::~MethodPostProcessor() {
-  if (writer_) {
-    writer_->cancel();
+  if (file_.is_open()) {
+    file_.close();
   }
 }
 
 // 들어온 경로가 디렉토리라면 실패.
 // 들어온 경로가 파일이라면 그 형태 그대로 생성.
 ProcessResult MethodPostProcessor::process() {
-  if (writer_) {
-    return ProcessResult();
-  }
   FilePath filepath = client_.getLocationConfig()->getRootPath();
   filepath.append(client_.getRequest().getUri());
   // 들어온값이 directory 형태라면 실패.
@@ -44,14 +41,19 @@ ProcessResult MethodPostProcessor::process() {
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   std::string content = client_.getRequest().getBody();
-  writer_ =
-      FileWriteEventController::addEventController(filepath, content, this);
+  file_.open(filepath.c_str(), std::ios::binary | std::ios::trunc);
+  if (file_.is_open() == false) {
+    client_.setResponseStatusCode(502);
+    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+  }
+  file_ << content;
+  if (file_.fail()) {
+    client_.setResponseStatusCode(502);
+    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+  }
   client_.setResponseStatusCode(201);
+  client_.setResponseHeader("Content-Length", "0");
   client_.getDataStream().readStr(client_.getResponse().toString());
-  return ProcessResult().setWriteOn(true);
-}
-
-void MethodPostProcessor::onEvent(const FileWriteEventController::Event &p) {
-  writer_ = NULL;
   client_.getDataStream().setEof(true);
+  return ProcessResult().setWriteOn(true);
 }

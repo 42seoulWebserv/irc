@@ -87,6 +87,28 @@ int DataStream::writeToClient(int fd) {
   return size;
 }
 
+int DataStream::writeToFile(std::ofstream &file) {
+  if (list_.size() == 0) {
+    return 0;
+  }
+  Chunk *chunk = list_.front();
+  int left = chunk->size_ - chunk->offset_;
+  std::streampos before = file.tellp();
+  file.write(chunk->buffer_ + chunk->offset_, left);
+  std::streampos after = file.tellp();
+  int size = after - before;
+  if (file.good() == false) {
+    return -1;
+  }
+  totalWrite_ += size;
+  chunk->offset_ += size;
+  if (chunk->size_ - chunk->offset_ == 0) {
+    list_.pop_front();
+    delete chunk;
+  }
+  return size;
+}
+
 int DataStream::getTotalRead() const { return totalRead_; }
 
 int DataStream::getTotalWrite() const { return totalWrite_; }

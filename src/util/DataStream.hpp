@@ -17,6 +17,7 @@ class DataStream {
   int readFile(int fd);
   int readFile(std::ifstream &file);
   int writeToClient(int fd);
+  int writeToFile(std::ofstream &file);
   int getTotalRead() const;
   int getTotalWrite() const;
   bool isEOF() const;
