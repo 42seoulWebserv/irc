@@ -61,8 +61,8 @@ std::vector<Multiplexer::Event> Multiplexer::wait(int size) {
   int eventCount = epoll_wait(fd_, eventList, size, -1);
   for (int i = 0; i < eventCount; i++) {
     Event event;
-    event.ident = eventList[i].data.fd;
-    event.udata = eventList[i].data.ptr;
+    event.controller =
+        reinterpret_cast<EventController*>(eventList[i].data.ptr);
     event.filter = 0;
     if (eventList[i].events & EPOLLIN) {
       event.filter = WEB_READ;

@@ -20,7 +20,7 @@ class FileWriteEventController : public EventController, public ICancelable {
       const std::string &filepath, const std::string &content,
       IObserver<Event> *observer);
 
-  enum EventController::returnType handleEvent(const Multiplexer::Event&event);
+  enum EventController::returnType handleEvent(const Multiplexer::Event &event);
   void cancel();
 
  private:
@@ -28,7 +28,6 @@ class FileWriteEventController : public EventController, public ICancelable {
                            const std::string &content,
                            IObserver<Event> *observer);
   FILE *file_;
-  int fd_;
   std::string filepath_;
   std::string content_;
   size_t offset_;

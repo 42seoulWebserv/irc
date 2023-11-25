@@ -9,10 +9,9 @@ class ServerEventController : public EventController {
   ServerEventController(int port);
   ~ServerEventController();
 
-  enum EventController::returnType handleEvent(const Multiplexer::Event&event);
+  enum EventController::returnType handleEvent(const Multiplexer::Event& event);
 
  private:
-  int socket_;
   int port_;
 };
 

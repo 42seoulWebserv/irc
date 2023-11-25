@@ -61,8 +61,7 @@ std::vector<Multiplexer::Event> Multiplexer::wait(int size) {
   int number = kevent(fd_, 0, 0, eventList, 5, NULL);
   for (int i = 0; i < number; i++) {
     Event event;
-    event.ident = eventList[i].ident;
-    event.udata = eventList[i].udata;
+    event.controller = reinterpret_cast<EventController*>(eventList[i].udata);
     if (eventList[i].filter == EVFILT_READ) {
       event.filter = WEB_READ;
     } else if (eventList[i].filter == EVFILT_WRITE) {

@@ -10,7 +10,8 @@
 
 // constructor / destructor
 ClientEventController::ClientEventController(int clientSocket)
-    : clientSocket_(clientSocket), config_(NULL), processor_(NULL) {
+    : config_(NULL), processor_(NULL) {
+  fd_ = clientSocket;
   processor_ = new StartProcessor(*this);
   ProcessResult processResult = nextProcessor();
   while (processResult.nextProcessor_) {
@@ -177,21 +178,21 @@ enum EventController::returnType ClientEventController::handleEvent(
     const Multiplexer::Event &event) {
   if (event.filter == WEB_READ) {
     recvBuffer_.resize(MAX_BUFFER_SIZE);
-    int size = recv(clientSocket_, recvBuffer_.data(), MAX_BUFFER_SIZE, 0);
+    int size = recv(fd_, recvBuffer_.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
       clear(true);
       return FAIL;
     }
     if (size == 0) {
-      std::cout << "debug: closed socket(" << clientSocket_ << ")" << std::endl;
+      std::cout << "debug: closed socket(" << fd_ << ")" << std::endl;
       clear(true);
       return SUCCESS;
     }
     recvBuffer_.resize(size);
   }
   if (event.filter == WEB_WRITE) {
-    int size = stream_.writeToClient(clientSocket_);
+    int size = stream_.writeToClient(fd_);
     if (size == -1) {
       clear(true);
       return FAIL;
@@ -228,16 +229,16 @@ ProcessResult ClientEventController::nextProcessor() {
     return res;
   }
   if (res.readOn_) {
-    Multiplexer::getInstance().addReadEvent(clientSocket_, this);
+    Multiplexer::getInstance().addReadEvent(fd_, this);
   }
   if (res.readOff_) {
-    Multiplexer::getInstance().removeReadEvent(clientSocket_, this);
+    Multiplexer::getInstance().removeReadEvent(fd_, this);
   }
   if (res.writeOn_) {
-    Multiplexer::getInstance().addWriteEvent(clientSocket_, this);
+    Multiplexer::getInstance().addWriteEvent(fd_, this);
   }
   if (res.writeOff_) {
-    Multiplexer::getInstance().removeWriteEvent(clientSocket_, this);
+    Multiplexer::getInstance().removeWriteEvent(fd_, this);
   }
   if (res.spendReadBuffer_) {
     recvBuffer_.erase(recvBuffer_.begin(),
@@ -251,16 +252,16 @@ ProcessResult ClientEventController::nextProcessor() {
 }
 
 void ClientEventController::clear(bool forceClose) {
-  Multiplexer::getInstance().removeReadEvent(clientSocket_, this);
-  Multiplexer::getInstance().removeWriteEvent(clientSocket_, this);
-  Multiplexer::getInstance().removeTimeoutEvent(clientSocket_, this);
+  Multiplexer::getInstance().removeReadEvent(fd_, this);
+  Multiplexer::getInstance().removeWriteEvent(fd_, this);
+  Multiplexer::getInstance().removeTimeoutEvent(fd_, this);
   if (response_.hasHeader("Connection") &&
       response_.getHeader("Connection") == "keep-alive" &&
       forceClose == false) {
     const std::vector<ServerConfig *> &configs = getServerConfigs();
-    ClientEventController::addEventController(clientSocket_, configs);
+    ClientEventController::addEventController(fd_, configs);
   } else {
-    close(clientSocket_);
+    close(fd_);
   }
 }
 

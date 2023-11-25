@@ -41,11 +41,10 @@ int run(RootConfig &config) {
     std::vector<Multiplexer::Event> events = Multiplexer.wait(5);
     std::set<EventController *> deleteList;
     for (size_t i = 0; i < events.size(); i++) {
-      EventController *controller =
-          reinterpret_cast<EventController *>(events[i].udata);
-      EventController::returnType type = controller->handleEvent(events[i]);
+      EventController::returnType type =
+          events[i].controller->handleEvent(events[i]);
       if (type == EventController::SUCCESS || type == EventController::FAIL) {
-        deleteList.insert(controller);
+        deleteList.insert(events[i].controller);
       }
     }
     std::set<EventController *>::const_iterator it;

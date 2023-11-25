@@ -35,7 +35,6 @@ class ClientEventController : public EventController, public IClient {
   ProcessResult nextProcessor();
 
  private:
-  int clientSocket_;
   const LocationConfig *config_;
 
   std::vector<char> recvBuffer_;

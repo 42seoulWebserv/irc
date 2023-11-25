@@ -9,22 +9,22 @@
 #define WEB_WRITE 2
 #define WEB_TIMEOUT 4
 
+class EventController;
 class Multiplexer {
  public:
   struct Event {
-    int ident;
     int filter;
-    void *udata;
+    EventController *controller;
   };
 
   static Multiplexer &getInstance();
-  void addReadEvent(int fd, void *udata);
-  void addReadEventWithClearFlag(int fd, void *udata);
-  void addWriteEvent(int fd, void *udata);
-  void removeReadEvent(int fd, void *udata);
-  void removeWriteEvent(int fd, void *udata);
-  void addTimeoutEvent(int fd, void *udata);
-  void removeTimeoutEvent(int fd, void *udata);
+  void addReadEvent(int fd, void *controller);
+  void addReadEventWithClearFlag(int fd, void *controller);
+  void addWriteEvent(int fd, void *controller);
+  void removeReadEvent(int fd, void *controller);
+  void removeWriteEvent(int fd, void *controller);
+  void addTimeoutEvent(int fd, void *controller);
+  void removeTimeoutEvent(int fd, void *controller);
   std::vector<Event> wait(int size);
 
  private:
