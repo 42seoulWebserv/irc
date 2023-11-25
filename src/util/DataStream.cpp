@@ -47,6 +47,27 @@ int DataStream::readFile(int fd) {
   return size;
 }
 
+int DataStream::readFile(std::ifstream &file) {
+  if (isEOF_) {
+    return 0;
+  }
+  if (list_.size() == CHUNK_LIST_SIZE) {
+    return DELAYED_FILE_READ;
+  }
+  Chunk *chunk = new Chunk(seq_++, BODY_CHUNK_DEFAULT_SIZE);
+  file.read(chunk->buffer_, BODY_CHUNK_DEFAULT_SIZE);
+  int size = file.gcount();
+  isEOF_ = size == 0 || (size > 0 && size < BODY_CHUNK_DEFAULT_SIZE);
+  if (size <= 0) {
+    delete chunk;
+    return size;
+  }
+  totalRead_ += size;
+  chunk->size_ = size;
+  list_.push_back(chunk);
+  return size;
+}
+
 int DataStream::writeToClient(int fd) {
   if (list_.size() == 0) {
     return 0;

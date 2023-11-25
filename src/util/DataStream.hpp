@@ -1,6 +1,7 @@
 #ifndef BodyStream_HPP_
 #define BodyStream_HPP_
 
+#include <fstream>
 #include <list>
 #include <string>
 
@@ -14,6 +15,7 @@ class DataStream {
   ~DataStream();
   int readStr(const std::string &str);
   int readFile(int fd);
+  int readFile(std::ifstream &file);
   int writeToClient(int fd);
   int getTotalRead() const;
   int getTotalWrite() const;
