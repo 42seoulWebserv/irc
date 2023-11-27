@@ -1,6 +1,6 @@
 #include "ClientEventController.hpp"
 
-#include <sys/event.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include <iostream>
@@ -10,7 +10,8 @@
 
 // constructor / destructor
 ClientEventController::ClientEventController(int clientSocket)
-    : clientSocket_(clientSocket), config_(NULL), processor_(NULL) {
+    : config_(NULL), processor_(NULL) {
+  fd_ = clientSocket;
   processor_ = new StartProcessor(*this);
   ProcessResult processResult = nextProcessor();
   while (processResult.nextProcessor_) {
@@ -29,8 +30,8 @@ void ClientEventController::addEventController(
     int socket, const std::vector<ServerConfig *> &configs) {
   ClientEventController *client = new ClientEventController(socket);
   client->setServerConfigs(configs);
-  KqueueMultiplexer::getInstance().addReadEventWithClearFlag(socket, client);
-  KqueueMultiplexer::getInstance().addTimeoutEvent(socket, client);
+  Multiplexer::getInstance().addReadEventWithClearFlag(socket, client);
+  Multiplexer::getInstance().addTimeoutEvent(socket, client);
 }
 
 // IClient
@@ -174,29 +175,24 @@ const LocationConfig *ClientEventController::getLocationConfig() {
 }
 
 enum EventController::returnType ClientEventController::handleEvent(
-    const struct kevent &event) {
-  if (event.filter == EVFILT_READ && event.flags & EV_EOF) {
-    std::cout << "debug: closed socket(" << clientSocket_ << ")" << std::endl;
-    clear(true);
-    return SUCCESS;
-  }
-  if (event.filter == EVFILT_READ) {
-    recvBuffer_.resize(event.data);
-    int size = recv(clientSocket_, recvBuffer_.data(), event.data, 0);
+    const Multiplexer::Event &event) {
+  if (event.filter == WEB_READ) {
+    recvBuffer_.resize(MAX_BUFFER_SIZE);
+    int size = recv(fd_, recvBuffer_.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
       clear(true);
       return FAIL;
     }
     if (size == 0) {
-      std::cout << "debug: closed socket(" << clientSocket_ << ")" << std::endl;
+      std::cout << "debug: closed socket(" << fd_ << ")" << std::endl;
       clear(true);
       return SUCCESS;
     }
     recvBuffer_.resize(size);
   }
-  if (event.filter == EVFILT_WRITE) {
-    int size = stream_.writeToClient(clientSocket_);
+  if (event.filter == WEB_WRITE) {
+    int size = stream_.writeToClient(fd_);
     if (size == -1) {
       clear(true);
       return FAIL;
@@ -206,7 +202,7 @@ enum EventController::returnType ClientEventController::handleEvent(
       return SUCCESS;
     }
   }
-  if (event.filter == EVFILT_TIMER) {
+  if (event.filter == WEB_TIMEOUT) {
     std::cout << "debug: timeout - close client" << std::endl;
     clear(true);
     return SUCCESS;
@@ -233,16 +229,16 @@ ProcessResult ClientEventController::nextProcessor() {
     return res;
   }
   if (res.readOn_) {
-    KqueueMultiplexer::getInstance().addReadEvent(clientSocket_, this);
+    Multiplexer::getInstance().addReadEvent(fd_, this);
   }
   if (res.readOff_) {
-    KqueueMultiplexer::getInstance().removeReadEvent(clientSocket_, this);
+    Multiplexer::getInstance().removeReadEvent(fd_, this);
   }
   if (res.writeOn_) {
-    KqueueMultiplexer::getInstance().addWriteEvent(clientSocket_, this);
+    Multiplexer::getInstance().addWriteEvent(fd_, this);
   }
   if (res.writeOff_) {
-    KqueueMultiplexer::getInstance().removeWriteEvent(clientSocket_, this);
+    Multiplexer::getInstance().removeWriteEvent(fd_, this);
   }
   if (res.spendReadBuffer_) {
     recvBuffer_.erase(recvBuffer_.begin(),
@@ -256,16 +252,16 @@ ProcessResult ClientEventController::nextProcessor() {
 }
 
 void ClientEventController::clear(bool forceClose) {
-  KqueueMultiplexer::getInstance().removeReadEvent(clientSocket_, this);
-  KqueueMultiplexer::getInstance().removeWriteEvent(clientSocket_, this);
-  KqueueMultiplexer::getInstance().removeTimeoutEvent(clientSocket_, this);
+  Multiplexer::getInstance().removeReadEvent(fd_, this);
+  Multiplexer::getInstance().removeWriteEvent(fd_, this);
+  Multiplexer::getInstance().removeTimeoutEvent(fd_, this);
   if (response_.hasHeader("Connection") &&
       response_.getHeader("Connection") == "keep-alive" &&
       forceClose == false) {
     const std::vector<ServerConfig *> &configs = getServerConfigs();
-    ClientEventController::addEventController(clientSocket_, configs);
+    ClientEventController::addEventController(fd_, configs);
   } else {
-    close(clientSocket_);
+    close(fd_);
   }
 }
 

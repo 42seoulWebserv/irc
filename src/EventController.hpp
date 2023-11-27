@@ -1,6 +1,7 @@
 #ifndef EVENTCONTROLLER_HPP_
 #define EVENTCONTROLLER_HPP_
 
+#include "Multiplexer.hpp"
 #include "RootConfig.hpp"
 
 /* event hadling
@@ -18,11 +19,15 @@ class EventController {
     PENDING,  // 계속 사용
   };
 
-  virtual enum returnType handleEvent(const struct kevent &event) = 0;
+  virtual enum returnType handleEvent(const Multiplexer::Event &event) = 0;
 
   void addServerConfig(ServerConfig *serverConfigs);
   void setServerConfigs(const std::vector<ServerConfig *> &serverConfigs);
   const std::vector<ServerConfig *> &getServerConfigs() const;
+  int getFd() const;
+
+ protected:
+  int fd_;
 
  private:
   std::vector<ServerConfig *> serverConfigs_;

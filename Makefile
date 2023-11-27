@@ -30,8 +30,6 @@ MAIN_NAME := \
 	EventController.cpp \
 	ServerEventController.cpp \
 	ClientEventController.cpp \
-	FileReadEventController.cpp \
-	FileWriteEventController.cpp \
 	Request.cpp \
 	Response.cpp \
 
@@ -84,9 +82,13 @@ UTIL_NAME := \
 	FilePath.cpp \
 	DataStream.cpp \
 
-MULTIPLEXER_DIR := ./src/multiplexer/
+ifeq ($(shell uname), Linux)
+MULTIPLEXER_DIR	= ./src/multiplexer/linux/
+else
+MULTIPLEXER_DIR	= ./src/multiplexer/mac/
+endif
 MULTIPLEXER_NAME := \
-	KqueueMultiplexer.cpp \
+	Multiplexer.cpp \
 
 SRCS := \
 	$(addprefix $(MAIN_DIR), $(MAIN_NAME)) \

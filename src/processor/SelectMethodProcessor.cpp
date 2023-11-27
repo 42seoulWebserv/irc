@@ -1,5 +1,7 @@
 #include "SelectMethodProcessor.hpp"
 
+#include <algorithm>
+
 #include "CgiProcessor.hpp"
 #include "ErrorPageProcessor.hpp"
 #include "MethodDeleteProcessor.hpp"

@@ -2,7 +2,6 @@
 #define MethodGetProcessor_HPP_
 
 #include "FilePath.hpp"
-#include "FileReadEventController.hpp"
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
 #include "LocationConfig.hpp"

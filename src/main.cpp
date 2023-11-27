@@ -1,4 +1,3 @@
-#include <sys/event.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 
@@ -10,13 +9,13 @@
 
 #include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"
-#include "KqueueMultiplexer.hpp"
+#include "Multiplexer.hpp"
 #include "RootConfig.hpp"
 #include "ServerConfig.hpp"
 #include "ServerEventController.hpp"
 
 int run(RootConfig &config) {
-  KqueueMultiplexer &kq = KqueueMultiplexer::getInstance();
+  Multiplexer &Multiplexer = Multiplexer::getInstance();
 
   std::vector<ServerConfig> &serverConfigs = config.getServerConfigs();
   std::map<int, ServerEventController *> servers;
@@ -39,15 +38,13 @@ int run(RootConfig &config) {
   }
 
   while (1) {
-    struct kevent eventList[5];
-    int number = kevent(kq.getKq(), 0, 0, eventList, 5, NULL);
+    std::vector<Multiplexer::Event> events = Multiplexer.wait(5);
     std::set<EventController *> deleteList;
-    for (int i = 0; i < number; i++) {
-      EventController *controller =
-          reinterpret_cast<EventController *>(eventList[i].udata);
-      EventController::returnType type = controller->handleEvent(eventList[i]);
+    for (size_t i = 0; i < events.size(); i++) {
+      EventController::returnType type =
+          events[i].controller->handleEvent(events[i]);
       if (type == EventController::SUCCESS || type == EventController::FAIL) {
-        deleteList.insert(controller);
+        deleteList.insert(events[i].controller);
       }
     }
     std::set<EventController *>::const_iterator it;

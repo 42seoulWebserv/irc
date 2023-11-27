@@ -9,7 +9,7 @@
 #include "EventController.hpp"
 #include "IObserver.hpp"
 #include "IRequestProcessor.hpp"
-#include "KqueueMultiplexer.hpp"
+#include "Multiplexer.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 
@@ -21,7 +21,7 @@ class ClientEventController : public EventController, public IClient {
   static void addEventController(int socket,
                                  const std::vector<ServerConfig *> &configs);
 
-  enum EventController::returnType handleEvent(const struct kevent &event);
+  enum EventController::returnType handleEvent(const Multiplexer::Event &event);
 
   const Request &getRequest() const;
   void setRequest(const Request &reqeust);
@@ -35,7 +35,6 @@ class ClientEventController : public EventController, public IClient {
   ProcessResult nextProcessor();
 
  private:
-  int clientSocket_;
   const LocationConfig *config_;
 
   std::vector<char> recvBuffer_;
