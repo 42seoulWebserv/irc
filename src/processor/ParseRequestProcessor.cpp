@@ -114,6 +114,7 @@ void ParseRequestProcessor::parseHeader() {
       parseHeaderLineByLine(split);
     }
   }
+  std::cout << "FINISH HEADER PARSING\n" << std::endl;  // debug
 }
 
 void ParseRequestProcessor::parseBody() {
