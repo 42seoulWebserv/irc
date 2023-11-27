@@ -173,7 +173,6 @@ ProcessResult ParseRequestProcessor::process() {
   }
   if (readStatus_ == DONE) {
     printParseHeaderResult();  // debug
-    // printParseBodyResult();    // debug
     client_.setRequest(request_);
     return ProcessResult().setReadOff(true).setNextProcessor(
         new SelectMethodProcessor(client_));
