@@ -114,7 +114,6 @@ void ParseRequestProcessor::parseHeader() {
       parseHeaderLineByLine(split);
     }
   }
-  std::cout << "FINISH HEADER PARSING\n" << std::endl;  // debug
 }
 
 void ParseRequestProcessor::parseBody() {
@@ -122,7 +121,6 @@ void ParseRequestProcessor::parseBody() {
     throw std::invalid_argument("Content-Length size error");
   }
   request_.setBody(bodyBuffer_);
-  std::cout << "size: " << bodyBuffer_.size() << std::endl;
   if (bodyBuffer_.size() == contentLength_) {
     readStatus_ = DONE;
   }
@@ -137,7 +135,7 @@ ProcessResult ParseRequestProcessor::process() {
       int idx = headerBuffer_.find("\r\n\r\n");
       bodyBuffer_ += headerBuffer_.substr(idx + 4, std::string::npos);
       headerBuffer_.erase(idx, std::string::npos);
-      std::cout << headerBuffer_ << "$" << std::endl;  // debug
+      // std::cout << headerBuffer_ << "$" << std::endl;  // debug
       try {
         parseHeader();
         readStatus_ = BODY;
@@ -176,7 +174,7 @@ ProcessResult ParseRequestProcessor::process() {
   }
   if (readStatus_ == DONE) {
     printParseHeaderResult();  // debug
-    printParseBodyResult();    // debug
+    // printParseBodyResult();    // debug
     client_.setRequest(request_);
     return ProcessResult().setReadOff(true).setNextProcessor(
         new SelectMethodProcessor(client_));
