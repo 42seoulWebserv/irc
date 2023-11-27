@@ -5,7 +5,7 @@
 
 class ParseRequestProcessor : public IRequestProcessor {
  public:
-  enum READ_STATUS { START_LINE, HEADER, BODY };
+  enum READ_STATUS { START_LINE, HEADER, BODY, DONE };
 
   ParseRequestProcessor(IClient &client);
   ProcessResult process();
@@ -15,9 +15,10 @@ class ParseRequestProcessor : public IRequestProcessor {
 
   void parseHeaderLineByLine(std::string str);
   void parseStartLine(std::string str);
-  void printParseResult();
   void parseHeader();
   void parseBody();
+  void printParseHeaderResult();
+  void printParseBodyResult();
 
   enum READ_STATUS readStatus_;
   size_t contentLength_;
