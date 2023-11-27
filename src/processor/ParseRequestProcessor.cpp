@@ -135,7 +135,6 @@ ProcessResult ParseRequestProcessor::process() {
       int idx = headerBuffer_.find("\r\n\r\n");
       bodyBuffer_ += headerBuffer_.substr(idx + 4, std::string::npos);
       headerBuffer_.erase(idx, std::string::npos);
-      // std::cout << headerBuffer_ << "$" << std::endl;  // debug
       try {
         parseHeader();
         readStatus_ = BODY;
