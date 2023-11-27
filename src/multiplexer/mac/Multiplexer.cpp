@@ -20,7 +20,7 @@ void Multiplexer::addReadEvent(int fd, void* udata) {
 
 void Multiplexer::addReadEventWithClearFlag(int fd, void* udata) {
   struct kevent event;
-  EV_SET(&event, fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, udata);
+  EV_SET(&event, fd, EVFILT_READ, EV_ADD, 0, 0, udata);
   kevent(fd_, &event, 1, NULL, 0, 0);
 }
 
@@ -58,7 +58,7 @@ void Multiplexer::removeTimeoutEvent(int fd, void* udata) {
 std::vector<Multiplexer::Event> Multiplexer::wait(int size) {
   std::vector<Event> result;
   struct kevent eventList[size];
-  int number = kevent(fd_, 0, 0, eventList, 5, NULL);
+  int number = kevent(fd_, 0, 0, eventList, size, NULL);
   for (int i = 0; i < number; i++) {
     Event event;
     event.controller = reinterpret_cast<EventController*>(eventList[i].udata);
