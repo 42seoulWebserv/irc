@@ -84,6 +84,7 @@ int main(int argc, char **argv) {
     Directive directive = ConfigLexer::run(configStr);
     RootConfig config = ConfigMaker::makeConfig(directive);
     config.printRootConfig();  // debug
+    signal(SIGPIPE, SIG_IGN);
     run(config);
   } catch (...) {
     return 1;

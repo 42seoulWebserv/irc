@@ -49,13 +49,13 @@ enum EventController::returnType ServerEventController::handleEvent(
   sockaddr_in client_addr;
   client_addr_size = sizeof(client_addr);  // client 주소의 크기
 
-  std::cout << "---------- client accept" << std::endl;
   int clientSocket =
       accept(event.ident, (struct sockaddr *)&client_addr, &client_addr_size);
   if (clientSocket == -1) {
     std::cout << "accept error" << std::endl;
     return PENDING;
   }
+  std::cout << "---------- client accept(" << clientSocket << ")" << std::endl;
   ClientEventController::addEventController(clientSocket, getServerConfigs());
   return PENDING;
 }
