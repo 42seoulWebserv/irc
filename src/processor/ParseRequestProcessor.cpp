@@ -10,7 +10,7 @@
 #include "ServerConfig.hpp"
 
 ParseRequestProcessor::ParseRequestProcessor(IClient &client)
-    : client_(client) {}
+    : client_(client), readStatus_(START_LINE), contentLength_(0) {}
 
 static bool hasSpace(std::string str) {
   for (size_t i = 0; i < str.length(); i++) {
@@ -41,7 +41,7 @@ static std::string strTrim(const std::string &str) {
   return str.substr(start, end - start);
 }
 
-void ParseRequestProcessor::printParseResult() {
+void ParseRequestProcessor::printParseHeaderResult() {
   std::cout << "=====ParseResult=====\n";
   std::cout << "method: " << request_.getMethod() << "$" << std::endl;
   std::cout << "uri: " << request_.getUri() << "$" << std::endl;
@@ -51,7 +51,13 @@ void ParseRequestProcessor::printParseResult() {
        iter != request_.getHeaders().end(); iter++) {
     std::cout << iter->first << ": " << iter->second << "$" << std::endl;
   }
-  std::cout << "======================\n";
+  std::cout << "=====================\n";
+}
+
+void ParseRequestProcessor::printParseBodyResult() {
+  std::cout << "========Body=========\n";
+  std::cout << bodyBuffer_ << "$" << std::endl;
+  std::cout << "=====================\n";
 }
 
 void ParseRequestProcessor::parseHeaderLineByLine(std::string str) {
@@ -115,6 +121,9 @@ void ParseRequestProcessor::parseBody() {
     throw std::invalid_argument("Content-Length size error");
   }
   request_.setBody(bodyBuffer_);
+  if (bodyBuffer_.size() == contentLength_) {
+    readStatus_ = DONE;
+  }
 }
 
 ProcessResult ParseRequestProcessor::process() {
@@ -123,13 +132,12 @@ ProcessResult ParseRequestProcessor::process() {
   if (readStatus_ != BODY) {
     headerBuffer_ += tmpStr;
     if (headerBuffer_.find("\r\n\r\n") != std::string::npos) {
-      readStatus_ = BODY;
       int idx = headerBuffer_.find("\r\n\r\n");
       bodyBuffer_ += headerBuffer_.substr(idx + 4, std::string::npos);
       headerBuffer_.erase(idx, std::string::npos);
-      std::cout << headerBuffer_ << "$" << std::endl;  // debug
       try {
         parseHeader();
+        readStatus_ = BODY;
       } catch (std::exception &e) {
         std::cout << "Error: parse: " << e.what() << std::endl;  // debug
         client_.setResponseStatusCode(401);
@@ -151,12 +159,7 @@ ProcessResult ParseRequestProcessor::process() {
         contentLength_ = static_cast<size_t>(contentLen);
       }
       parseBody();
-      printParseResult();  // debug
-      client_.setRequest(request_);
-      return ProcessResult().setReadOff(true).setNextProcessor(
-          new SelectMethodProcessor(client_));
     }
-    return ProcessResult();
   } else {
     try {
       bodyBuffer_ += tmpStr;
@@ -168,8 +171,11 @@ ProcessResult ParseRequestProcessor::process() {
           new ErrorPageProcessor(client_));
     }
   }
-  printParseResult();  // debug
-  client_.setRequest(request_);
-  return ProcessResult().setReadOff(true).setNextProcessor(
-      new SelectMethodProcessor(client_));
+  if (readStatus_ == DONE) {
+    printParseHeaderResult();  // debug
+    client_.setRequest(request_);
+    return ProcessResult().setReadOff(true).setNextProcessor(
+        new SelectMethodProcessor(client_));
+  }
+  return ProcessResult();
 }

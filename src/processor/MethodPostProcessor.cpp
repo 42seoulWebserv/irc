@@ -22,7 +22,7 @@ ProcessResult MethodPostProcessor::process() {
   filepath.append(client_.getRequest().getUri());
   // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
-    std::cout << "error: POST: not allow form" << std::endl;
+    std::cout << "error: POST: not allowed form" << std::endl;
     client_.setResponseStatusCode(400);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
