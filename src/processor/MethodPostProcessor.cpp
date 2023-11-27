@@ -23,7 +23,7 @@ ProcessResult MethodPostProcessor::process() {
   // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
     std::cout << "error: POST: not allow form" << std::endl;
-    client_.setResponseStatusCode(404);
+    client_.setResponseStatusCode(400);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   // 경로 존재 X
@@ -37,7 +37,7 @@ ProcessResult MethodPostProcessor::process() {
   // 들어온값에 이미 같은 이름의 파일이 존재한다면 실패.
   if (filepath.isFile()) {
     std::cout << "error: POST: Files that already exist" << std::endl;
-    client_.setResponseStatusCode(404);
+    client_.setResponseStatusCode(409);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   std::string content = client_.getRequest().getBody();
