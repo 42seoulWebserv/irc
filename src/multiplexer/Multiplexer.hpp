@@ -19,7 +19,6 @@ class Multiplexer {
 
   static Multiplexer &getInstance();
   void addReadEvent(int fd, void *controller);
-  void addReadEventWithClearFlag(int fd, void *controller);
   void addWriteEvent(int fd, void *controller);
   void removeReadEvent(int fd, void *controller);
   void removeWriteEvent(int fd, void *controller);

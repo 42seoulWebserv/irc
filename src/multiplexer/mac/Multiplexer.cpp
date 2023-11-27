@@ -18,12 +18,6 @@ void Multiplexer::addReadEvent(int fd, void* udata) {
   kevent(fd_, &event, 1, NULL, 0, 0);
 }
 
-void Multiplexer::addReadEventWithClearFlag(int fd, void* udata) {
-  struct kevent event;
-  EV_SET(&event, fd, EVFILT_READ, EV_ADD, 0, 0, udata);
-  kevent(fd_, &event, 1, NULL, 0, 0);
-}
-
 void Multiplexer::addTimeoutEvent(int fd, void* udata) {
   struct kevent timer_event;
   EV_SET(&timer_event, fd, EVFILT_TIMER, EV_ADD | EV_ONESHOT, 0, TIMEOUT * 1000,

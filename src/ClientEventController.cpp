@@ -30,7 +30,7 @@ void ClientEventController::addEventController(
     int socket, const std::vector<ServerConfig *> &configs) {
   ClientEventController *client = new ClientEventController(socket);
   client->setServerConfigs(configs);
-  Multiplexer::getInstance().addReadEventWithClearFlag(socket, client);
+  Multiplexer::getInstance().addReadEvent(socket, client);
   Multiplexer::getInstance().addTimeoutEvent(socket, client);
 }
 
