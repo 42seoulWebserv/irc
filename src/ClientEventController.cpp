@@ -9,30 +9,23 @@
 #include "StartProcessor.hpp"
 #include "String.hpp"
 
-// constructor / destructor
 ClientEventController::ClientEventController(int clientSocket)
-    : config_(NULL), processor_(NULL) {
+    : EventController(new StartProcessor(*this)), config_(NULL) {
   fd_ = clientSocket;
-  processor_ = new StartProcessor(*this);
-  ProcessResult processResult = nextProcessor();
-  while (processResult.nextProcessor_) {
-    processResult = nextProcessor();
-  }
-  if (processResult.error_) {
-    std::cout << "error: fatal close";
-    clear(true);
-    throw std::logic_error("fatal error");
-  }
 }
 
-ClientEventController::~ClientEventController() { delete processor_; }
+ClientEventController::~ClientEventController() {}
 
-void ClientEventController::addEventController(
+ClientEventController *ClientEventController::addEventController(
     int socket, const std::vector<ServerConfig *> &configs) {
   ClientEventController *client = new ClientEventController(socket);
-  client->setServerConfigs(configs);
+  if (client == NULL) {
+    return NULL;
+  }
+  client->serverConfigs_ = configs;
   Multiplexer::getInstance().addReadEvent(socket, client);
   Multiplexer::getInstance().addTimeoutEvent(socket, client);
+  return client;
 }
 
 // IClient
@@ -124,8 +117,7 @@ static const LocationConfig *selectLocationConfig(
 
 const LocationConfig *ClientEventController::getLocationConfig() {
   if (config_ == NULL) {
-    ServerConfig *serverConfig =
-        selectServerConfig(request_, getServerConfigs());
+    ServerConfig *serverConfig = selectServerConfig(request_, serverConfigs_);
     if (serverConfig == NULL) {
       response_.setStatusCode(400);
       return NULL;
@@ -136,6 +128,12 @@ const LocationConfig *ClientEventController::getLocationConfig() {
               << std::endl;
   }
   return config_;
+}
+
+void ClientEventController::init() {
+  if (loopProcess()) {
+    throw std::logic_error("error: init client event controller");
+  }
 }
 
 enum EventController::returnType ClientEventController::handleEvent(
@@ -173,45 +171,14 @@ enum EventController::returnType ClientEventController::handleEvent(
     clear(true);
     return SUCCESS;
   }
-  if (processor_ == NULL) {
-    std::cout << "error: no processor" << std::endl;
-    return FAIL;
-  }
-  ProcessResult processResult = nextProcessor();
-  while (processResult.nextProcessor_) {
-    processResult = nextProcessor();
-  }
-  if (processResult.error_) {
-    std::cout << "error: fatal close";
+  if (loopProcess()) {
     clear(true);
     return FAIL;
   }
   return PENDING;
 }
 
-ProcessResult ClientEventController::nextProcessor() {
-  ProcessResult res = processor_->process();
-  if (res.error_) {
-    return res;
-  }
-  if (res.readOn_) {
-    Multiplexer::getInstance().addReadEvent(fd_, this);
-  }
-  if (res.readOff_) {
-    Multiplexer::getInstance().removeReadEvent(fd_, this);
-  }
-  if (res.writeOn_) {
-    Multiplexer::getInstance().addWriteEvent(fd_, this);
-  }
-  if (res.writeOff_) {
-    Multiplexer::getInstance().removeWriteEvent(fd_, this);
-  }
-  if (res.nextProcessor_) {
-    delete processor_;
-    processor_ = res.nextProcessor_;
-  }
-  return res;
-}
+ProcessResult ClientEventController::nextProcessor() {}
 
 void ClientEventController::clear(bool forceClose) {
   Multiplexer::getInstance().removeReadEvent(fd_, this);
@@ -220,11 +187,14 @@ void ClientEventController::clear(bool forceClose) {
   if (response_.hasHeader("Connection") &&
       response_.getHeader("Connection") == "keep-alive" &&
       forceClose == false) {
-    const std::vector<ServerConfig *> &configs = getServerConfigs();
-    ClientEventController::addEventController(fd_, configs);
+    ClientEventController::addEventController(fd_, serverConfigs_);
   } else {
     close(fd_);
   }
+}
+
+void ClientEventController::spendBuffer(int size) {
+  recvBuffer_.erase(recvBuffer_.begin(), recvBuffer_.begin() + size);
 }
 
 std::ostream &operator<<(std::ostream &o,

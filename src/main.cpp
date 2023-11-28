@@ -23,7 +23,9 @@ int run(RootConfig &config) {
   for (size_t i = 0; i < serverConfigs.size(); i++) {
     if (servers.find(serverConfigs[i].getPort()) == servers.end()) {
       int port = serverConfigs[i].getPort();
-      ServerEventController *server = new ServerEventController(port);
+      ServerEventController *server =
+          ServerEventController::addEventController(port);
+      server->init();
       servers.insert(std::make_pair(serverConfigs[i].getPort(), server));
     }
   }
@@ -84,7 +86,8 @@ int main(int argc, char **argv) {
     config.printRootConfig();  // debug
     signal(SIGPIPE, SIG_IGN);
     run(config);
-  } catch (...) {
+  } catch (const std::exception &e) {
+    std::cout << e.what() << std::endl;
     return 1;
   }
   return 0;

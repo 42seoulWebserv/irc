@@ -18,11 +18,13 @@
 /* server(port) 또는 client가 보낸 요청을 수행하는 클래스 */
 class ClientEventController : public EventController, public IClient {
  public:
-  virtual ~ClientEventController();
-  static void addEventController(int socket,
-                                 const std::vector<ServerConfig *> &configs);
+  ~ClientEventController();
+  static ClientEventController *addEventController(
+      int socket, const std::vector<ServerConfig *> &configs);
 
+  void init();
   enum EventController::returnType handleEvent(const Multiplexer::Event &event);
+  void spendBuffer(int size);
 
   const Request &getRequest() const;
   void setRequest(const Request &reqeust);
@@ -37,13 +39,12 @@ class ClientEventController : public EventController, public IClient {
 
  private:
   const LocationConfig *config_;
+  std::vector<ServerConfig *> serverConfigs_;
 
   StringBuffer buffer_;
   Request request_;
   Response response_;
   DataStream stream_;
-
-  IProcessor *processor_;
 
   ClientEventController(int clientSocket);
   ClientEventController(const ClientEventController &src);

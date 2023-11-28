@@ -64,6 +64,7 @@ PASER_LEXER_NAME := \
 
 PROCESSOR_DIR := ./src/processor/
 PROCESSOR_NAME := \
+	AcceptClientProcessor.cpp \
 	ProcessResult.cpp \
 	StartProcessor.cpp \
 	ParseRequestProcessor.cpp \

@@ -1,7 +1,9 @@
 #ifndef EVENTCONTROLLER_HPP_
 #define EVENTCONTROLLER_HPP_
 
+#include "IProcessor.hpp"
 #include "Multiplexer.hpp"
+#include "ProcessResult.hpp"
 #include "RootConfig.hpp"
 
 /* event hadling
@@ -9,7 +11,7 @@
 */
 class EventController {
  public:
-  EventController();
+  EventController(IProcessor *processor);
   virtual ~EventController();
 
   enum returnType {
@@ -19,18 +21,19 @@ class EventController {
     PENDING,  // 계속 사용
   };
 
+  virtual void init() = 0;
   virtual enum returnType handleEvent(const Multiplexer::Event &event) = 0;
+  virtual void spendBuffer(int size) = 0;
 
-  void addServerConfig(ServerConfig *serverConfigs);
-  void setServerConfigs(const std::vector<ServerConfig *> &serverConfigs);
-  const std::vector<ServerConfig *> &getServerConfigs() const;
   int getFd() const;
 
  protected:
   int fd_;
+  bool loopProcess();
 
  private:
-  std::vector<ServerConfig *> serverConfigs_;
+  IProcessor *processor_;
+  ProcessResult nextProcessor();
 };
 
 #endif
