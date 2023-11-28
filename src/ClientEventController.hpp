@@ -8,7 +8,7 @@
 #include "DataStream.hpp"
 #include "EventController.hpp"
 #include "IObserver.hpp"
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "Multiplexer.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
@@ -43,7 +43,7 @@ class ClientEventController : public EventController, public IClient {
   Response response_;
   DataStream stream_;
 
-  IRequestProcessor *processor_;
+  IProcessor *processor_;
 
   ClientEventController(int clientSocket);
   ClientEventController(const ClientEventController &src);

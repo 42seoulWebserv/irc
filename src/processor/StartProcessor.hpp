@@ -2,10 +2,10 @@
 #define StartProcessor_HPP_
 
 #include "IClient.hpp"
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "Response.hpp"
 
-class StartProcessor : public IRequestProcessor {
+class StartProcessor : public IProcessor {
  public:
   StartProcessor(IClient &client);
   ProcessResult process();

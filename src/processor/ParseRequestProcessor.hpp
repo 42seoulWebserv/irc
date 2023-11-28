@@ -1,9 +1,9 @@
 #ifndef ParseRequestProcessor_HPP_
 #define ParseRequestProcessor_HPP_
 
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 
-class ParseRequestProcessor : public IRequestProcessor {
+class ParseRequestProcessor : public IProcessor {
  public:
   enum READ_STATUS { START_LINE, HEADER, BODY, DONE };
 
