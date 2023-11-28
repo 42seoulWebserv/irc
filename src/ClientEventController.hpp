@@ -24,6 +24,7 @@ class ClientEventController : public EventController, public IClient {
 
   void init();
   enum EventController::returnType handleEvent(const Multiplexer::Event &event);
+  void spendBuffer(int size);
 
   const Request &getRequest() const;
   void setRequest(const Request &reqeust);

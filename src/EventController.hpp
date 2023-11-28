@@ -23,6 +23,7 @@ class EventController {
 
   virtual void init() = 0;
   virtual enum returnType handleEvent(const Multiplexer::Event &event) = 0;
+  virtual void spendBuffer(int size) = 0;
 
   int getFd() const;
 
