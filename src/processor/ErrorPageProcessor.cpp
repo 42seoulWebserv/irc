@@ -2,7 +2,6 @@
 
 #include <sstream>
 
-#include "CgiProcessor.hpp"
 #include "FilePath.hpp"
 #include "MethodDeleteProcessor.hpp"
 #include "MethodGetProcessor.hpp"
