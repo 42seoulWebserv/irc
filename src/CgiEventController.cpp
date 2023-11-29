@@ -45,6 +45,9 @@ void CgiEventController::init() {
   close(fd[1]);
   fd_ = fd[0];
   Multiplexer::getInstance().addWriteEvent(fd_, this);
+  if (loopProcess()) {
+    throw std::runtime_error("process error");
+  }
 }
 
 CgiEventController* CgiEventController::addEventController(
@@ -67,21 +70,12 @@ void CgiEventController::handleEvent(const Multiplexer::Event& event) {
     cancel();
     return;
   }
-  if (event.filter == WEB_WRITE) {
-  }
-  if (event.filter == WEB_READ) {
-  }
   if (loopProcess()) {
     if (observer_) {
       observer_->onEvent(Event());
     }
     Multiplexer::getInstance().addDeleteController(this);
-    return;
   }
-      if (observer_) {
-      observer_->onEvent(Event());
-    }
-  Multiplexer::getInstance().addDeleteController(this);
 }
 
 void CgiEventController::spendBuffer(int size) { (void)size; }
