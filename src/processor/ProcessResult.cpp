@@ -6,7 +6,6 @@ ProcessResult::ProcessResult()
       readOn_(false),
       readOff_(false),
       error_(false),
-      spendReadBuffer_(0),
       nextProcessor_(NULL) {}
 
 ProcessResult& ProcessResult::setWriteOn(bool b) {
@@ -31,11 +30,6 @@ ProcessResult& ProcessResult::setReadOff(bool b) {
 
 ProcessResult& ProcessResult::setError(bool b) {
   error_ = b;
-  return *this;
-}
-
-ProcessResult& ProcessResult::setSpendReadBuffer(unsigned spendReadBuffer) {
-  this->spendReadBuffer_ = spendReadBuffer;
   return *this;
 }
 

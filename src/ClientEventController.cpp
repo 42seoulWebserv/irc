@@ -7,6 +7,7 @@
 
 #include "EventController.hpp"
 #include "StartProcessor.hpp"
+#include "String.hpp"
 
 // constructor / destructor
 ClientEventController::ClientEventController(int clientSocket)
@@ -58,9 +59,7 @@ void ClientEventController::setResponseHeader(const std::string &key,
 
 DataStream &ClientEventController::getDataStream() { return stream_; }
 
-const std::vector<char> &ClientEventController::getRecvBuffer() const {
-  return recvBuffer_;
-}
+StringBuffer &ClientEventController::getRecvBuffer() { return buffer_; }
 
 static ServerConfig *selectServerConfig(
     Request request, std::vector<ServerConfig *> serverConfigs) {
@@ -85,47 +84,12 @@ static ServerConfig *selectServerConfig(
   return config;
 }
 
-static std::vector<std::string> strSplit(const std::string &str, char delim) {
-  std::vector<std::string> result;
-  size_t prev = 0;
-  for (size_t i = 0; i < str.size(); i++) {
-    if (str[i] == delim) {
-      result.push_back(str.substr(prev, i - prev));
-      prev = i + 1;
-    }
-  }
-  if (prev < str.size()) {
-    result.push_back(str.substr(prev, str.size() - prev));
-  }
-  return result;
-}
-
-static std::string strTrim(const std::string &str) {
-  size_t start = 0;
-  size_t end = str.size();
-  for (size_t i = 0; i < str.size(); i++) {
-    if (std::isspace(str[i])) {
-      start++;
-    } else {
-      break;
-    }
-  }
-  for (size_t i = str.size() - 1; i >= 0; i--) {
-    if (std::isspace(str[i])) {
-      end--;
-    } else {
-      break;
-    }
-  }
-  return str.substr(start, end - start);
-}
-
 static bool isParentPath(const std::string &parent, const std::string &child) {
   if (parent.size() > child.size()) {
     return false;
   }
-  const std::vector<std::string> parentSplit = strSplit(parent, '/');
-  const std::vector<std::string> childSplit = strSplit(child, '/');
+  const std::vector<std::string> parentSplit = String(parent).split("/");
+  const std::vector<std::string> childSplit = String(child).split("/");
   if (parentSplit.size() > childSplit.size()) {
     return false;
   }
@@ -167,7 +131,7 @@ const LocationConfig *ClientEventController::getLocationConfig() {
       return NULL;
     }
     config_ = selectLocationConfig(serverConfig->getLocationConfigs(),
-                                   strTrim(request_.getUri()));
+                                   String(request_.getUri()).trim());
     std::cout << "debug - selected location path: " << config_->getUri()
               << std::endl;
   }
@@ -177,6 +141,7 @@ const LocationConfig *ClientEventController::getLocationConfig() {
 enum EventController::returnType ClientEventController::handleEvent(
     const Multiplexer::Event &event) {
   if (event.filter == WEB_READ) {
+    std::vector<char> recvBuffer_;
     recvBuffer_.resize(MAX_BUFFER_SIZE);
     int size = recv(fd_, recvBuffer_.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
@@ -189,7 +154,8 @@ enum EventController::returnType ClientEventController::handleEvent(
       clear(true);
       return SUCCESS;
     }
-    recvBuffer_.resize(size);
+    recvBuffer_[size] = '\0';
+    buffer_.addBuffer(recvBuffer_);
   }
   if (event.filter == WEB_WRITE) {
     int size = stream_.writeToClient(fd_);
@@ -239,10 +205,6 @@ ProcessResult ClientEventController::nextProcessor() {
   }
   if (res.writeOff_) {
     Multiplexer::getInstance().removeWriteEvent(fd_, this);
-  }
-  if (res.spendReadBuffer_) {
-    recvBuffer_.erase(recvBuffer_.begin(),
-                      recvBuffer_.begin() + res.spendReadBuffer_);
   }
   if (res.nextProcessor_) {
     delete processor_;

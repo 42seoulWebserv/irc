@@ -12,6 +12,7 @@
 #include "Multiplexer.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
+#include "StringBuffer.hpp"
 
 #define BUFF_SIZE 4
 /* server(port) 또는 client가 보낸 요청을 수행하는 클래스 */
@@ -30,14 +31,14 @@ class ClientEventController : public EventController, public IClient {
   void setResponseStatusCode(int code);
   void setResponseHeader(const std::string &key, const std::string &value);
   DataStream &getDataStream();
-  const std::vector<char> &getRecvBuffer() const;
+  StringBuffer &getRecvBuffer();
   const LocationConfig *getLocationConfig();
   ProcessResult nextProcessor();
 
  private:
   const LocationConfig *config_;
 
-  std::vector<char> recvBuffer_;
+  StringBuffer buffer_;
   Request request_;
   Response response_;
   DataStream stream_;

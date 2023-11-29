@@ -14,7 +14,6 @@ class ProcessResult {
   ProcessResult &setReadOn(bool b);
   ProcessResult &setReadOff(bool b);
   ProcessResult &setError(bool b);
-  ProcessResult &setSpendReadBuffer(unsigned spendReadBuffer);
   ProcessResult &setNextProcessor(IRequestProcessor *nextProcessor);
 
   bool writeOn_;                      // suggest write on
@@ -22,7 +21,6 @@ class ProcessResult {
   bool readOn_;                       // suggest read on
   bool readOff_;                      // suggest read off
   bool error_;                        // occur critical error (close socket)
-  int spendReadBuffer_;               // spend read size from client recvBuffer
   IRequestProcessor *nextProcessor_;  // delete this and run next processor
 };
 

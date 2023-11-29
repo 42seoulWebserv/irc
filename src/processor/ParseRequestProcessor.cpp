@@ -127,8 +127,8 @@ void ParseRequestProcessor::parseBody() {
 }
 
 ProcessResult ParseRequestProcessor::process() {
-  std::string tmpStr(client_.getRecvBuffer().begin(),
-                     client_.getRecvBuffer().end());
+  std::string tmpStr(client_.getRecvBuffer().getBuffer().begin(),
+                     client_.getRecvBuffer().getBuffer().end());
   if (readStatus_ != BODY) {
     headerBuffer_ += tmpStr;
     if (headerBuffer_.find("\r\n\r\n") != std::string::npos) {

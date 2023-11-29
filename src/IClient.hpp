@@ -7,6 +7,7 @@
 #include "LocationConfig.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
+#include "StringBuffer.hpp"
 
 class IClient {
  public:
@@ -19,7 +20,7 @@ class IClient {
   virtual void setResponseHeader(const std::string &key,
                                  const std::string &value) = 0;
   virtual DataStream &getDataStream() = 0;
-  virtual const std::vector<char> &getRecvBuffer() const = 0;
+  virtual StringBuffer &getRecvBuffer() = 0;
   virtual const LocationConfig *getLocationConfig() = 0;
 };
 
