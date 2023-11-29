@@ -1,22 +1,20 @@
 #ifndef CgiInProcessor_HPP_
 #define CgiInProcessor_HPP_
 
+#include "ICgi.hpp"
 #include "IObserver.hpp"
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "LocationConfig.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 
-class CgiInProcessor : public IRequestProcessor,
-                       public IObserver<CgiEventController::Event> {
+class CgiInProcessor : public IProcessor {
  public:
-  CgiInProcessor(IClient &client);
+  CgiInProcessor(ICgi &cgi);
   ProcessResult process();
-  void onEvent(const IObserver<CgiEventController::Event> &p);
 
  private:
-  IClient &client_;
-  CgiEventController *cgi_;
+  ICgi &cgi_;
   bool cgiRequestEnd_;
   bool error_;
 };

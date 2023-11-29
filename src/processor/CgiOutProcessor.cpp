@@ -1,9 +1,5 @@
 #include "CgiOutProcessor.hpp"
 
-CgiOutProcessor::CgiOutProcessor(IClient& client) : client_(client) {}
+CgiOutProcessor::CgiOutProcessor(ICgi& cgi) : cgi_(cgi) {}
 
 ProcessResult CgiOutProcessor::process() { return ProcessResult(); }
-
-void CgiOutProcessor::onEvent(const IObserver<CgiEventController::Event>& p) {
-  (void)p;
-}

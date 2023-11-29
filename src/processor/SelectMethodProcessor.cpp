@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "CgiInProcessor.hpp"
+#include "CgiProcessor.hpp"
 #include "ErrorPageProcessor.hpp"
 #include "MethodDeleteProcessor.hpp"
 #include "MethodGetProcessor.hpp"
@@ -45,5 +45,5 @@ ProcessResult SelectMethodProcessor::process() {
   // }
   // client_.setResponseStatusCode(500);
   // return res.setNextProcessor(new ErrorPageProcessor(client_));
-  return ProcessResult().setNextProcessor(new CgiInProcessor(client_));
+  return ProcessResult().setNextProcessor(new CgiProcessor(client_));
 }

@@ -3,22 +3,35 @@
 
 #include "DataStream.hpp"
 #include "EventController.hpp"
+#include "ICancelable.hpp"
+#include "ICgi.hpp"
+#include "IClient.hpp"
+#include "IObserver.hpp"
 #include "Request.hpp"
 
-class CgiEventController : public EventController {
+class CgiEventController : public EventController,
+                           public ICgi,
+                           public ICancelable {
  public:
   struct Event {
     // TODO
   };
 
-  static CgiEventController *addEventController(const Request &req);
-  enum returnType handleEvent(const Multiplexer::Event &event);
-  void appendRequestStr(const std::string &str);
-  void setCgiObserver(IObserver<CgiEventController::Event> *observer);
+  ~CgiEventController();
+  void init();
+
+  static CgiEventController *addEventController(
+      IClient &client, IObserver<CgiEventController::Event> *observer);
+  void handleEvent(const Multiplexer::Event &event);
+  void spendBuffer(int size);
+  void cancel();
 
  private:
-  CgiEventController();
-  DataStream data_;
+  CgiEventController(IClient &client,
+                     IObserver<CgiEventController::Event> *observer);
+  IClient &client_;
+  bool cancel_;
+  pid_t pid_;
   IObserver<CgiEventController::Event> *observer_;
 };
 

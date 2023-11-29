@@ -2,18 +2,17 @@
 #define CgiOutProcessor_HPP_
 
 #include "CgiEventController.hpp"
+#include "ICgi.hpp"
 #include "IObserver.hpp"
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 
-class CgiOutProcessor : public IRequestProcessor,
-                        public IObserver<CgiEventController::Event> {
+class CgiOutProcessor : public IProcessor {
  public:
-  CgiOutProcessor(IClient &client);
+  CgiOutProcessor(ICgi &cgi);
   ProcessResult process();
-  void onEvent(const IObserver<CgiEventController::Event> &p);
 
  private:
-  IClient &client_;
+  ICgi &cgi_;
 };
 
 #endif
