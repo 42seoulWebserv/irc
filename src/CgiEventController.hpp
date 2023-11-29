@@ -26,6 +26,9 @@ class CgiEventController : public EventController,
   void spendBuffer(int size);
   void cancel();
 
+  void setFd(int &fd);
+  int getFd();
+
  private:
   CgiEventController(IClient &client,
                      IObserver<CgiEventController::Event> *observer);
@@ -33,6 +36,7 @@ class CgiEventController : public EventController,
   bool cancel_;
   pid_t pid_;
   IObserver<CgiEventController::Event> *observer_;
+  int fd_;
 };
 
 #endif

@@ -15,7 +15,7 @@
 
 CgiEventController::CgiEventController(
     IClient& client, IObserver<CgiEventController::Event>* observer)
-    : EventController(new CgiInProcessor(*this)),
+    : EventController(new CgiInProcessor(*this, client)),
       client_(client),
       cancel_(false),
       pid_(0),
@@ -53,20 +53,19 @@ void CgiEventController::init() {
     _exit(1);
   }
   close(fd[1]);
-  fd_ = fd[0];
+  setFd(fd[0]);
+  // // cgiInProcessor part
+  // char* request = "get / http/1.1";  // cgiInProcessor에서 보내줄 내용들
+  // int requestSize = write(fd_, request, std::strlen(request));
+  // perror("write");
+  // std::cerr << "parent write size: " << requestSize << std::endl;
 
-  // cgiInProcessor part
-  char* request = "get / http/1.1";
-  int requestSize = write(fd_, request, std::strlen(request));
-  perror("write");
-  std::cerr << "parent write size: " << requestSize << std::endl;
-
-  // cgiOutProcessor part
-  char buffer[9999];
-  int size = read(fd_, buffer, 9999);
-  buffer[size] = 0;
-  std::cerr << "parent read size: " << size << std::endl;
-  std::cerr << "parent read: " << buffer << std::endl;
+  // // cgiOutProcessor part
+  // char buffer[9999];
+  // int size = read(fd_, buffer, 9999);
+  // buffer[size] = 0;
+  // std::cerr << "parent read size: " << size << std::endl;
+  // std::cerr << "parent read: " << buffer << std::endl;
 
   Multiplexer::getInstance().addWriteEvent(fd_, this);
   if (loopProcess()) {
@@ -108,3 +107,7 @@ void CgiEventController::cancel() {
   cancel_ = true;
   Multiplexer::getInstance().addDeleteController(this);
 }
+
+void CgiEventController::setFd(int& fd) { fd_ = fd; }
+
+int CgiEventController::getFd() { return fd_; }

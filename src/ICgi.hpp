@@ -4,6 +4,9 @@
 class ICgi {
  public:
   virtual ~ICgi(){};
+
+  virtual void setFd(int &fd) = 0;
+  virtual int getFd() = 0;
 };
 
 #endif

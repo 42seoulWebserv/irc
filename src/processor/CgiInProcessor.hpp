@@ -10,10 +10,11 @@
 
 class CgiInProcessor : public IProcessor {
  public:
-  CgiInProcessor(ICgi &cgi);
+  CgiInProcessor(ICgi &cgi, IClient &client);
   ProcessResult process();
 
  private:
+  IClient &client_;
   ICgi &cgi_;
   bool cgiRequestEnd_;
   bool error_;
