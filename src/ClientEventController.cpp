@@ -139,8 +139,7 @@ void ClientEventController::init() {
   }
 }
 
-enum EventController::returnType ClientEventController::handleEvent(
-    const Multiplexer::Event &event) {
+void ClientEventController::handleEvent(const Multiplexer::Event &event) {
   if (event.filter == WEB_READ) {
     std::vector<char> recvBuffer_;
     recvBuffer_.resize(MAX_BUFFER_SIZE);
@@ -148,12 +147,12 @@ enum EventController::returnType ClientEventController::handleEvent(
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
       clear(true);
-      return FAIL;
+      return;
     }
     if (size == 0) {
       std::cout << "debug: closed socket(" << fd_ << ")" << std::endl;
       clear(true);
-      return SUCCESS;
+      return;
     }
     recvBuffer_[size] = '\0';
     buffer_.addBuffer(recvBuffer_);
@@ -162,31 +161,29 @@ enum EventController::returnType ClientEventController::handleEvent(
     int size = stream_.writeToClient(fd_);
     if (size == -1) {
       clear(true);
-      return FAIL;
+      return;
     }
     if (stream_.isEOF()) {
       clear(false);
-      return SUCCESS;
+      return;
     }
   }
   if (event.filter == WEB_TIMEOUT) {
     std::cout << "debug: timeout - close client" << std::endl;
     clear(true);
-    return SUCCESS;
+
+    return;
   }
   if (loopProcess()) {
     clear(true);
-    return FAIL;
+    return;
   }
-  return PENDING;
 }
 
 ProcessResult ClientEventController::nextProcessor() {}
 
 void ClientEventController::clear(bool forceClose) {
-  Multiplexer::getInstance().removeReadEvent(fd_, this);
-  Multiplexer::getInstance().removeWriteEvent(fd_, this);
-  Multiplexer::getInstance().removeTimeoutEvent(fd_, this);
+  Multiplexer::getInstance().addDeleteController(this);
   if (response_.hasHeader("Connection") &&
       response_.getHeader("Connection") == "keep-alive" &&
       forceClose == false) {

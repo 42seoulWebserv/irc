@@ -23,7 +23,7 @@ class ClientEventController : public EventController, public IClient {
       int socket, const std::vector<ServerConfig *> &configs);
 
   void init();
-  enum EventController::returnType handleEvent(const Multiplexer::Event &event);
+  void handleEvent(const Multiplexer::Event &event);
   void spendBuffer(int size);
 
   const Request &getRequest() const;
