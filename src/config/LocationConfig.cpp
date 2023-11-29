@@ -170,6 +170,14 @@ LocationConfig::endCgiPrograms() {
   return cgiPrograms_.end();
 }
 
+bool LocationConfig::hasCgiProgram(const std::string &key) const {
+  return cgiPrograms_.find(key) != cgiPrograms_.end();
+}
+
+const std::string &LocationConfig::getCgiProgram(const std::string &key) const {
+  return cgiPrograms_.at(key);
+}
+
 void LocationConfig::addErrorPage(int errorCode, const std::string &page) {
   errorPages_.insert(std::pair<int, std::string>(errorCode, page));
 }
