@@ -81,6 +81,7 @@ UTIL_DIR := ./src/util/
 UTIL_NAME := \
 	FilePath.cpp \
 	DataStream.cpp \
+	StringBuffer.cpp \
 
 ifeq ($(shell uname), Linux)
 MULTIPLEXER_DIR	= ./src/multiplexer/linux/
