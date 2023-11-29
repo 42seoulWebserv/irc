@@ -58,9 +58,7 @@ void ClientEventController::setResponseHeader(const std::string &key,
 
 DataStream &ClientEventController::getDataStream() { return stream_; }
 
-const std::vector<char> &ClientEventController::getRecvBuffer() const {
-  return recvBuffer_;
-}
+StringBuffer &ClientEventController::getRecvBuffer() { return buffer_; }
 
 static ServerConfig *selectServerConfig(
     Request request, std::vector<ServerConfig *> serverConfigs) {
@@ -177,6 +175,7 @@ const LocationConfig *ClientEventController::getLocationConfig() {
 enum EventController::returnType ClientEventController::handleEvent(
     const Multiplexer::Event &event) {
   if (event.filter == WEB_READ) {
+    std::vector<char> recvBuffer_;
     recvBuffer_.resize(MAX_BUFFER_SIZE);
     int size = recv(fd_, recvBuffer_.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
@@ -189,7 +188,8 @@ enum EventController::returnType ClientEventController::handleEvent(
       clear(true);
       return SUCCESS;
     }
-    recvBuffer_.resize(size);
+    recvBuffer_[size] = '\0';
+    buffer_.addBuffer(recvBuffer_);
   }
   if (event.filter == WEB_WRITE) {
     int size = stream_.writeToClient(fd_);
@@ -239,10 +239,6 @@ ProcessResult ClientEventController::nextProcessor() {
   }
   if (res.writeOff_) {
     Multiplexer::getInstance().removeWriteEvent(fd_, this);
-  }
-  if (res.spendReadBuffer_) {
-    recvBuffer_.erase(recvBuffer_.begin(),
-                      recvBuffer_.begin() + res.spendReadBuffer_);
   }
   if (res.nextProcessor_) {
     delete processor_;
