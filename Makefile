@@ -79,6 +79,7 @@ PROCESSOR_NAME := \
 
 UTIL_DIR := ./src/util/
 UTIL_NAME := \
+	String.cpp \
 	FilePath.cpp \
 	DataStream.cpp \
 	StringBuffer.cpp \
