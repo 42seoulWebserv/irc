@@ -1,5 +1,7 @@
 #include "CgiProcessor.hpp"
 
+#include <sstream>
+
 #include "ErrorPageProcessor.hpp"
 #include "WaitProcessor.hpp"
 
@@ -18,12 +20,14 @@ ProcessResult CgiProcessor::process() {
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   if (end_) {
+    std::stringstream ss;
+    ss << client_.getBody().size();
+    client_.setResponseHeader("Content-Length", ss.str());
     client_.getDataStream().readStr(client_.getResponse().toString());
     client_.getDataStream().readStr(client_.getBody());
     client_.getDataStream().setEof(true);
-    std::cout << "asdf" << std::endl;
 
-    return ProcessResult().setNextProcessor(new WaitProcessor());  // TODO
+    return ProcessResult().setNextProcessor(new WaitProcessor());
   }
   if (cgi_) {
     return ProcessResult();

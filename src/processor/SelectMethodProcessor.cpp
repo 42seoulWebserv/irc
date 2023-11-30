@@ -39,7 +39,8 @@ ProcessResult SelectMethodProcessor::process() {
     return res.setNextProcessor(new ErrorPageProcessor(client_));
   }
   if (cgiChecker(client_)) {
-    return ProcessResult().setNextProcessor(new CgiProcessor(client_));
+    return ProcessResult().setWriteOn(true).setNextProcessor(
+        new CgiProcessor(client_));
   }
   if (client_.getLocationConfig()->getRedirectionStatusCode()) {
     int code = client_.getLocationConfig()->getRedirectionStatusCode();

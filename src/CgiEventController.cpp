@@ -19,7 +19,8 @@ CgiEventController::CgiEventController(
       client_(client),
       cancel_(false),
       pid_(0),
-      observer_(observer) {}
+      observer_(observer),
+      end_(false) {}
 
 CgiEventController::~CgiEventController() {
   if (pid_ > 0) {
@@ -65,7 +66,7 @@ void CgiEventController::init() {
   // buffer[size] = 0;
   // std::cerr << "parent read size: " << size << std::endl;
   // std::cerr << "parent read: " << buffer << std::endl;
-
+  Multiplexer::getInstance().addReadEvent(fd_, this);
   Multiplexer::getInstance().addWriteEvent(fd_, this);
   if (loopProcess()) {
     throw std::runtime_error("process error");
@@ -110,7 +111,7 @@ void CgiEventController::handleEvent(const Multiplexer::Event& event) {
       }
       Multiplexer::getInstance().addDeleteController(this);
     }
-    buff[size] = '\0';
+    buff.resize(size);
     recvBuffer_.addBuffer(buff);
   }
   if (event.filter == WEB_WRITE) {
@@ -134,6 +135,8 @@ void CgiEventController::setFd(int& fd) { fd_ = fd; }
 int CgiEventController::getFd() { return fd_; }
 
 StringBuffer& CgiEventController::getRecvBuffer() { return recvBuffer_; }
+
+void CgiEventController::end() { end_ = true; }
 
 CgiEventController::Event& CgiEventController::Event::setError(bool error) {
   error_ = error;
