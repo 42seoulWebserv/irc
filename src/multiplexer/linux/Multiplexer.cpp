@@ -16,13 +16,6 @@ void Multiplexer::addReadEvent(int fd, void* udata) {
   epoll_ctl(fd_, EPOLL_CTL_ADD, fd, &event);
 }
 
-void Multiplexer::addReadEventWithClearFlag(int fd, void* udata) {
-  struct epoll_event event;
-  event.data.ptr = udata;
-  event.events = EPOLLIN | EPOLLET;
-  epoll_ctl(fd_, EPOLL_CTL_ADD, fd, &event);
-}
-
 void Multiplexer::addWriteEvent(int fd, void* udata) {
   struct epoll_event event;
   event.data.ptr = udata;
