@@ -32,7 +32,6 @@ CgiEventController::~CgiEventController() {
 void CgiEventController::init() {
   int fd[2];
   socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
-  std::cout << "body: " << client_.getRequest().getBody() << std::endl;
   pid_ = fork();
   if (pid_ == -1) {
     std::cerr << "debug fork error" << std::endl;
@@ -95,7 +94,7 @@ void CgiEventController::handleEvent(const Multiplexer::Event& event) {
   }
   if (loopProcess()) {
     if (observer_) {
-      observer_->onEvent(Event());
+      observer_->onEvent(Event());  // TODO ERROR HANDLE
     }
     Multiplexer::getInstance().addDeleteController(this);
   }

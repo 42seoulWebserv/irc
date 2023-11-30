@@ -18,6 +18,7 @@ class CgiInProcessor : public IProcessor {
   ICgi &cgi_;
   bool cgiRequestEnd_;
   bool error_;
+  ssize_t totalBytesSent_;
 };
 
 #endif
