@@ -23,7 +23,6 @@ class CgiEventController : public EventController,
   static CgiEventController *addEventController(
       IClient &client, IObserver<CgiEventController::Event> *observer);
   void handleEvent(const Multiplexer::Event &event);
-  void spendBuffer(int size);
   void cancel();
 
   void setFd(int &fd);

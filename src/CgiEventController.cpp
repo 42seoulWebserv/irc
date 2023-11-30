@@ -101,8 +101,6 @@ void CgiEventController::handleEvent(const Multiplexer::Event& event) {
   }
 }
 
-void CgiEventController::spendBuffer(int size) { (void)size; }
-
 void CgiEventController::cancel() {
   cancel_ = true;
   Multiplexer::getInstance().addDeleteController(this);
