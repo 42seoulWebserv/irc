@@ -193,10 +193,6 @@ void ClientEventController::clear(bool forceClose) {
   }
 }
 
-void ClientEventController::spendBuffer(int size) {
-  recvBuffer_.erase(recvBuffer_.begin(), recvBuffer_.begin() + size);
-}
-
 std::ostream &operator<<(std::ostream &o,
                          const std::map<std::string, std::string> &rhs) {
   for (std::map<std::string, std::string>::const_iterator it = rhs.begin();

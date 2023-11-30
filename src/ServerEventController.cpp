@@ -72,8 +72,6 @@ enum EventController::returnType ServerEventController::handleEvent(
   return PENDING;
 }
 
-void ServerEventController::spendBuffer(int size) { (void)size; }
-
 int ServerEventController::acceptClient() {
   socklen_t client_addr_size;
   sockaddr_in client_addr;

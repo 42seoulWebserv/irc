@@ -35,9 +35,6 @@ ProcessResult EventController::nextProcessor() {
   if (res.writeOff_) {
     Multiplexer::getInstance().removeWriteEvent(fd_, this);
   }
-  if (res.spendReadBuffer_) {
-    spendBuffer(res.spendReadBuffer_);
-  }
   if (res.nextProcessor_) {
     delete processor_;
     processor_ = res.nextProcessor_;

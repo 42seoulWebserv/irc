@@ -14,7 +14,6 @@ class ServerEventController : public EventController, public IServer {
 
   void init();
   enum EventController::returnType handleEvent(const Multiplexer::Event &event);
-  void spendBuffer(int size);
 
   int acceptClient();
   const std::vector<ServerConfig *> &getServerConfigs() const;
