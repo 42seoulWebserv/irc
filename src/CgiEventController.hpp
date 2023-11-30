@@ -8,13 +8,16 @@
 #include "IClient.hpp"
 #include "IObserver.hpp"
 #include "Request.hpp"
+#include "StringBuffer.hpp"
 
 class CgiEventController : public EventController,
                            public ICgi,
                            public ICancelable {
  public:
   struct Event {
-    // TODO
+    Event() : error_(false){};
+    Event &setError(bool error);
+    bool error_;
   };
 
   ~CgiEventController();
@@ -27,6 +30,7 @@ class CgiEventController : public EventController,
 
   void setFd(int &fd);
   int getFd();
+  StringBuffer &getRecvBuffer();
 
  private:
   CgiEventController(IClient &client,
@@ -36,6 +40,7 @@ class CgiEventController : public EventController,
   pid_t pid_;
   IObserver<CgiEventController::Event> *observer_;
   int fd_;
+  StringBuffer recvBuffer_;
 };
 
 #endif

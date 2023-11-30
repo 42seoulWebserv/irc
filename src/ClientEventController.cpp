@@ -53,6 +53,8 @@ void ClientEventController::setResponseHeader(const std::string &key,
   response_.setHeader(key, value);
 }
 
+void ClientEventController::setBody(const std::string &body) { body_ = body; }
+
 DataStream &ClientEventController::getDataStream() { return stream_; }
 
 StringBuffer &ClientEventController::getRecvBuffer() { return buffer_; }

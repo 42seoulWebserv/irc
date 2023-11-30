@@ -92,9 +92,33 @@ void CgiEventController::handleEvent(const Multiplexer::Event& event) {
     cancel();
     return;
   }
+  if (event.filter == WEB_READ) {
+    std::vector<char> buff;
+    buff.resize(CGI_RECV_BUFFER);
+    int size = recv(fd_, buff.data(), CGI_RECV_BUFFER, 0);
+    if (size == -1) {
+      if (observer_) {
+        observer_->onEvent(Event().setError(true));
+      }
+      Multiplexer::getInstance().addDeleteController(this);
+      return;
+    }
+    if (size == 0) {
+      client_.setBody(recvBuffer_.getBuffer());
+      if (observer_) {
+        observer_->onEvent(Event());
+      }
+      Multiplexer::getInstance().addDeleteController(this);
+    }
+    buff[size] = '\0';
+    recvBuffer_.addBuffer(buff);
+  }
+  if (event.filter == WEB_WRITE) {
+    //
+  }
   if (loopProcess()) {
     if (observer_) {
-      observer_->onEvent(Event());  // TODO ERROR HANDLE
+      observer_->onEvent(Event().setError(true));
     }
     Multiplexer::getInstance().addDeleteController(this);
   }
@@ -108,3 +132,10 @@ void CgiEventController::cancel() {
 void CgiEventController::setFd(int& fd) { fd_ = fd; }
 
 int CgiEventController::getFd() { return fd_; }
+
+StringBuffer& CgiEventController::getRecvBuffer() { return recvBuffer_; }
+
+CgiEventController::Event& CgiEventController::Event::setError(bool error) {
+  error_ = error;
+  return *this;
+}

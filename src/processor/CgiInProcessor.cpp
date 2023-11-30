@@ -26,7 +26,7 @@ ProcessResult CgiInProcessor::process() {
   if (totalBytesSent_ == size) {
     std::cout << "totalBytesSent_: " << totalBytesSent_ << std::endl;
     std::cout << "request: " << request << std::endl;
-    return ProcessResult().setNextProcessor(new CgiOutProcessor(cgi_));
+    return ProcessResult().setNextProcessor(new CgiOutProcessor(cgi_, client_));
   } else if (totalBytesSent_ > size) {
     std::cerr << "cgi in fatal error" << std::endl;
     return ProcessResult().setError(true);
