@@ -2,12 +2,12 @@
 #define CgiProcessor_HPP_
 
 #include "IObserver.hpp"
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "LocationConfig.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 
-class CgiProcessor : public IRequestProcessor {
+class CgiProcessor : public IProcessor {
  public:
   CgiProcessor(IClient &client);
   ProcessResult process();

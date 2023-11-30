@@ -4,12 +4,12 @@
 #include <fstream>
 
 #include "IObserver.hpp"
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "LocationConfig.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 
-class MethodPostProcessor : public IRequestProcessor {
+class MethodPostProcessor : public IProcessor {
  public:
   MethodPostProcessor(IClient &client);
   ~MethodPostProcessor();

@@ -1,20 +1,43 @@
 #include "EventController.hpp"
 
-EventController::EventController() {}
+EventController::EventController(IProcessor *processor)
+    : processor_(processor) {}
 
-EventController::~EventController() {}
-
-void EventController::addServerConfig(ServerConfig *serverConfig) {
-  serverConfigs_.push_back(serverConfig);
-}
-
-void EventController::setServerConfigs(
-    const std::vector<ServerConfig *> &serverConfigs) {
-  serverConfigs_ = serverConfigs;
-}
-
-const std::vector<ServerConfig *> &EventController::getServerConfigs() const {
-  return serverConfigs_;
-}
+EventController::~EventController() { delete processor_; }
 
 int EventController::getFd() const { return fd_; }
+
+bool EventController::loopProcess() {
+  ProcessResult processResult = nextProcessor();
+  while (processResult.nextProcessor_ && processResult.error_ == false) {
+    processResult = nextProcessor();
+  }
+  return processResult.error_;
+}
+
+ProcessResult EventController::nextProcessor() {
+  if (processor_ == NULL) {
+    return ProcessResult().setError(true);
+  }
+  ProcessResult res = processor_->process();
+  if (res.error_) {
+    return res;
+  }
+  if (res.readOn_) {
+    Multiplexer::getInstance().addReadEvent(fd_, this);
+  }
+  if (res.readOff_) {
+    Multiplexer::getInstance().removeReadEvent(fd_, this);
+  }
+  if (res.writeOn_) {
+    Multiplexer::getInstance().addWriteEvent(fd_, this);
+  }
+  if (res.writeOff_) {
+    Multiplexer::getInstance().removeWriteEvent(fd_, this);
+  }
+  if (res.nextProcessor_) {
+    delete processor_;
+    processor_ = res.nextProcessor_;
+  }
+  return res;
+}

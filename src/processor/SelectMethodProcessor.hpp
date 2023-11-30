@@ -1,10 +1,10 @@
 #ifndef SelectMethodProcessor_HPP_
 #define SelectMethodProcessor_HPP_
 
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "Response.hpp"
 
-class SelectMethodProcessor : public IRequestProcessor {
+class SelectMethodProcessor : public IProcessor {
  public:
   SelectMethodProcessor(IClient &client);
   ProcessResult process();

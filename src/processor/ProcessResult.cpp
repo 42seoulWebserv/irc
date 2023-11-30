@@ -34,7 +34,7 @@ ProcessResult& ProcessResult::setError(bool b) {
 }
 
 ProcessResult& ProcessResult::setNextProcessor(
-    IRequestProcessor* nextProcessor) {
+    IProcessor* nextProcessor) {
   this->nextProcessor_ = nextProcessor;
   return *this;
 }

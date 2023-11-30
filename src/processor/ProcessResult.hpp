@@ -4,7 +4,7 @@
 #include "Request.hpp"
 #include "Response.hpp"
 
-class IRequestProcessor;
+class IProcessor;
 class ProcessResult {
  public:
   ProcessResult();
@@ -14,14 +14,14 @@ class ProcessResult {
   ProcessResult &setReadOn(bool b);
   ProcessResult &setReadOff(bool b);
   ProcessResult &setError(bool b);
-  ProcessResult &setNextProcessor(IRequestProcessor *nextProcessor);
+  ProcessResult &setNextProcessor(IProcessor *nextProcessor);
 
-  bool writeOn_;                      // suggest write on
-  bool writeOff_;                     // suggest write off
-  bool readOn_;                       // suggest read on
-  bool readOff_;                      // suggest read off
-  bool error_;                        // occur critical error (close socket)
-  IRequestProcessor *nextProcessor_;  // delete this and run next processor
+  bool writeOn_;               // suggest write on
+  bool writeOff_;              // suggest write off
+  bool readOn_;                // suggest read on
+  bool readOff_;               // suggest read off
+  bool error_;                 // occur critical error (close socket)
+  IProcessor *nextProcessor_;  // delete this and run next processor
 };
 
 #endif

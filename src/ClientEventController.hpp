@@ -8,7 +8,7 @@
 #include "DataStream.hpp"
 #include "EventController.hpp"
 #include "IObserver.hpp"
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "Multiplexer.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
@@ -18,10 +18,11 @@
 /* server(port) 또는 client가 보낸 요청을 수행하는 클래스 */
 class ClientEventController : public EventController, public IClient {
  public:
-  virtual ~ClientEventController();
-  static void addEventController(int socket,
-                                 const std::vector<ServerConfig *> &configs);
+  ~ClientEventController();
+  static ClientEventController *addEventController(
+      int socket, const std::vector<ServerConfig *> &configs);
 
+  void init();
   enum EventController::returnType handleEvent(const Multiplexer::Event &event);
 
   const Request &getRequest() const;
@@ -37,13 +38,12 @@ class ClientEventController : public EventController, public IClient {
 
  private:
   const LocationConfig *config_;
+  std::vector<ServerConfig *> serverConfigs_;
 
   StringBuffer buffer_;
   Request request_;
   Response response_;
   DataStream stream_;
-
-  IRequestProcessor *processor_;
 
   ClientEventController(int clientSocket);
   ClientEventController(const ClientEventController &src);

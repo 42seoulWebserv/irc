@@ -1,10 +1,10 @@
 #ifndef RedirectionProcessor_HPP_
 #define RedirectionProcessor_HPP_
 
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "Response.hpp"
 
-class RedirectionProcessor : public IRequestProcessor {
+class RedirectionProcessor : public IProcessor {
  public:
   RedirectionProcessor(IClient &client);
   ProcessResult process();

@@ -5,10 +5,10 @@
 
 #include "FilePath.hpp"
 #include "IObserver.hpp"
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "Response.hpp"
 
-class ProvideFileProcessor : public IRequestProcessor {
+class ProvideFileProcessor : public IProcessor {
  public:
   ProvideFileProcessor(IClient &client, const FilePath &path);
   ~ProvideFileProcessor();

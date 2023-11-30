@@ -12,9 +12,31 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "AcceptClientProcessor.hpp"
 #include "Multiplexer.hpp"
 
-ServerEventController::ServerEventController(int port) : port_(port) {
+ServerEventController::ServerEventController(int port)
+    : EventController(new AcceptClientProcessor(*this)), port_(port) {}
+ServerEventController::~ServerEventController() {}
+ServerEventController *ServerEventController::addEventController(int port) {
+  ServerEventController *server = new ServerEventController(port);
+  if (server == NULL) {
+    return NULL;
+  }
+  Multiplexer::getInstance().addReadEvent(server->fd_, server);
+  return server;
+}
+
+void ServerEventController::addServerConfig(ServerConfig *serverConfig) {
+  serverConfigs_.push_back(serverConfig);
+}
+
+const std::vector<ServerConfig *> &ServerEventController::getServerConfigs()
+    const {
+  return serverConfigs_;
+}
+
+void ServerEventController::init() {
   fd_ = socket(PF_INET, SOCK_STREAM, 0);
   if (fd_ == -1) {
     throw std::logic_error("bind error");
@@ -42,21 +64,18 @@ ServerEventController::ServerEventController(int port) : port_(port) {
   Multiplexer::getInstance().addReadEvent(fd_, this);
 }
 
-ServerEventController::~ServerEventController() {}
-
 enum EventController::returnType ServerEventController::handleEvent(
     const Multiplexer::Event &event) {
+  if (loopProcess()) {
+    std::cout << "accept error" << std::endl;
+  }
+  return PENDING;
+}
+
+int ServerEventController::acceptClient() {
   socklen_t client_addr_size;
   sockaddr_in client_addr;
-  client_addr_size = sizeof(client_addr);  // client 주소의 크기
+  client_addr_size = sizeof(client_addr);
 
-  int clientSocket =
-      accept(fd_, (struct sockaddr *)&client_addr, &client_addr_size);
-  if (clientSocket == -1) {
-    std::cout << "accept error" << std::endl;
-    return PENDING;
-  }
-  std::cout << "---------- client accept(" << clientSocket << ")" << std::endl;
-  ClientEventController::addEventController(clientSocket, getServerConfigs());
-  return PENDING;
+  return accept(fd_, (struct sockaddr *)&client_addr, &client_addr_size);
 }

@@ -3,16 +3,25 @@
 
 #include "ClientEventController.hpp"
 #include "EventController.hpp"
+#include "IServer.hpp"
 
-class ServerEventController : public EventController {
+class ServerEventController : public EventController, public IServer {
  public:
-  ServerEventController(int port);
   ~ServerEventController();
+  static ServerEventController *addEventController(int port);
 
-  enum EventController::returnType handleEvent(const Multiplexer::Event& event);
+  void addServerConfig(ServerConfig *serverConfigs);
+
+  void init();
+  enum EventController::returnType handleEvent(const Multiplexer::Event &event);
+
+  int acceptClient();
+  const std::vector<ServerConfig *> &getServerConfigs() const;
 
  private:
   int port_;
+  std::vector<ServerConfig *> serverConfigs_;
+  ServerEventController(int port);
 };
 
 #endif

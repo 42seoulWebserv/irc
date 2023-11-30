@@ -1,9 +1,9 @@
 #ifndef WaitProcessor_HPP_
 #define WaitProcessor_HPP_
 
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 
-class WaitProcessor : public IRequestProcessor {
+class WaitProcessor : public IProcessor {
  public:
   ProcessResult process();
 };

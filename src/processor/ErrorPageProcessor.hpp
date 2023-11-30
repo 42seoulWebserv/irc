@@ -3,10 +3,10 @@
 
 #define CRLF "\r\n"
 
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "Response.hpp"
 
-class ErrorPageProcessor : public IRequestProcessor {
+class ErrorPageProcessor : public IProcessor {
  public:
   ErrorPageProcessor(IClient &client);
   ProcessResult process();
