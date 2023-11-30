@@ -17,7 +17,6 @@ class CgiOutProcessor : public IProcessor {
   ICgi &cgi_;
   IClient &client_;
   int isBody_;
-  int status_;
   std::map<std::string, std::string> parseHeader(String &raw);
 };
 

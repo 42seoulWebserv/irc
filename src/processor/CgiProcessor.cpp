@@ -1,6 +1,7 @@
 #include "CgiProcessor.hpp"
 
 #include "ErrorPageProcessor.hpp"
+#include "WaitProcessor.hpp"
 
 CgiProcessor::CgiProcessor(IClient& client)
     : client_(client), cgi_(NULL), error_(false), end_(false) {}
@@ -17,7 +18,12 @@ ProcessResult CgiProcessor::process() {
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   if (end_) {
-    return ProcessResult();  // TODO
+    client_.getDataStream().readStr(client_.getResponse().toString());
+    client_.getDataStream().readStr(client_.getBody());
+    client_.getDataStream().setEof(true);
+    std::cout << "asdf" << std::endl;
+
+    return ProcessResult().setNextProcessor(new WaitProcessor());  // TODO
   }
   if (cgi_) {
     return ProcessResult();
@@ -33,4 +39,5 @@ ProcessResult CgiProcessor::process() {
 void CgiProcessor::onEvent(const CgiEventController::Event& e) {
   cgi_ = NULL;
   end_ = true;
+  error_ = e.error_;
 }

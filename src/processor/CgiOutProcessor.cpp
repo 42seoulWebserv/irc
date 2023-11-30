@@ -5,7 +5,7 @@
 #include "String.hpp"
 
 CgiOutProcessor::CgiOutProcessor(ICgi& cgi, IClient& client)
-    : cgi_(cgi), client_(client), isBody_(false), status_(200) {}
+    : cgi_(cgi), client_(client), isBody_(false) {}
 
 ProcessResult CgiOutProcessor::process() {
   // response body ㅈㅓ자ㅇ할 공공간간이 없없음음
@@ -33,6 +33,7 @@ std::map<std::string, std::string> CgiOutProcessor::parseHeader(String& raw) {
   Response response;
   std::map<std::string, std::string> res;
   std::vector<std::string> strHeaders = raw.split("\r\n");
+  int status = 200;
   for (size_t i = 0; i < strHeaders.size(); i++) {
     std::string& header = strHeaders[i];
     size_t pos = header.find(':');
@@ -41,10 +42,10 @@ std::map<std::string, std::string> CgiOutProcessor::parseHeader(String& raw) {
     }
     String key = String(header.substr(0, pos));
     String value = String(header.substr(pos + 1)).trim();
-    // headers.insert(std::make_pair(key, value));
     if (key == "Status") {
       std::stringstream ss(value.substr(0, value.find(" ")));
-      ss >> status_;
+      ss >> status;
+      client_.setResponseStatusCode(status);
     } else {
       response.setHeader(key, value);
     }

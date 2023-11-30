@@ -32,6 +32,7 @@ class ClientEventController : public EventController, public IClient {
   void setResponseStatusCode(int code);
   void setResponseHeader(const std::string &key, const std::string &value);
   void setBody(const std::string &body);
+  std::string &getBody();
   DataStream &getDataStream();
   StringBuffer &getRecvBuffer();
   const LocationConfig *getLocationConfig();
