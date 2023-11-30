@@ -32,6 +32,8 @@ class CgiEventController : public EventController,
   int getFd();
   StringBuffer &getRecvBuffer();
   void end();
+  DataStream &getWriteBuffer();
+  void clear(bool error);
 
  private:
   CgiEventController(IClient &client,
@@ -42,6 +44,7 @@ class CgiEventController : public EventController,
   IObserver<CgiEventController::Event> *observer_;
   StringBuffer recvBuffer_;
   bool end_;
+  DataStream writeBuffer_;
 };
 
 #endif

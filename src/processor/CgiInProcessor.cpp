@@ -11,33 +11,22 @@ CgiInProcessor::CgiInProcessor(ICgi& cgi, IClient& client)
       cgi_(cgi),
       error_(false),
       cgiRequestEnd_(false),
-      totalBytesSent_(0) {}
+      isPushStr_(false) {}
 
 /*
-fd에서 한번에 읽을 수 있는 content의 size가 정해져있으므로
-body를 한번에 읽을 수 없는 경우를 생각해서 CgiInProcessor을 여러번 호출하여 모든
-body를 읽어들이는것이 해당 Process의 목표.
+이 함수에서 writeBuffer에 값을 채워넣는 역할.
+flag를 사용하여 1번만 사용.
+writeBuffer cgi에 다 밀어넣었다면 outProcessor 적용.
 */
 ProcessResult CgiInProcessor::process() {
-  std::cout << "in CgiInProcessor" << std::endl;
-
-  const char* request = client_.getRequest().getBody().c_str();
-  const int size = client_.getRequest().getBody().size();
-  if (totalBytesSent_ == size) {
-    std::cout << "totalBytesSent_: " << totalBytesSent_ << std::endl;
-    std::cout << "request: " << request << std::endl;
+  if (isPushStr_ == false) {
+    isPushStr_ = true;
+    const char* request = client_.getRequest().getBody().c_str();
+    cgi_.getWriteBuffer().readStr(request);
+    cgi_.getWriteBuffer().setEof(true);
+  }
+  if (cgi_.getWriteBuffer().isEOF() == true) {
     return ProcessResult().setNextProcessor(new CgiOutProcessor(cgi_, client_));
-  } else if (totalBytesSent_ > size) {
-    std::cerr << "cgi in fatal error" << std::endl;
-    return ProcessResult().setError(true);
   }
-  std::cout << "request: " << request << std::endl;
-  int remain = size - totalBytesSent_;
-  int requestSize = write(cgi_.getFd(), request + totalBytesSent_, remain);
-  if (requestSize == -1) {
-    perror("write");
-    return ProcessResult().setError(true);
-  }
-  totalBytesSent_ += requestSize;
   return ProcessResult();
 }

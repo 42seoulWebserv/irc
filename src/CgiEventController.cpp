@@ -98,30 +98,26 @@ void CgiEventController::handleEvent(const Multiplexer::Event& event) {
     buff.resize(CGI_RECV_BUFFER);
     int size = recv(fd_, buff.data(), CGI_RECV_BUFFER, 0);
     if (size == -1) {
-      if (observer_) {
-        observer_->onEvent(Event().setError(true));
-      }
-      Multiplexer::getInstance().addDeleteController(this);
+      clear(true);
       return;
     }
     if (size == 0) {
       client_.setBody(recvBuffer_.getBuffer());
-      if (observer_) {
-        observer_->onEvent(Event());
-      }
-      Multiplexer::getInstance().addDeleteController(this);
+      clear(false);
+      return;
     }
     buff.resize(size);
     recvBuffer_.addBuffer(buff);
   }
   if (event.filter == WEB_WRITE) {
-    //
+    int size = writeBuffer_.writeToClient(fd_);
+    if (size == -1) {
+      clear(true);
+      return;
+    }
   }
   if (loopProcess()) {
-    if (observer_) {
-      observer_->onEvent(Event().setError(true));
-    }
-    Multiplexer::getInstance().addDeleteController(this);
+    clear(true);
   }
 }
 
@@ -137,6 +133,15 @@ int CgiEventController::getFd() { return fd_; }
 StringBuffer& CgiEventController::getRecvBuffer() { return recvBuffer_; }
 
 void CgiEventController::end() { end_ = true; }
+
+DataStream& CgiEventController::getWriteBuffer() { return writeBuffer_; }
+
+void CgiEventController::clear(bool error) {
+  if (observer_) {
+    observer_->onEvent(Event().setError(error));
+  }
+  Multiplexer::getInstance().addDeleteController(this);
+}
 
 CgiEventController::Event& CgiEventController::Event::setError(bool error) {
   error_ = error;
