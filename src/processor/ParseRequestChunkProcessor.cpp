@@ -43,8 +43,15 @@ ProcessResult ParseRequestChunkProcessor::process() {
     }
   }
   if (readStatus_ == DONE) {
-    if (static_cast<long long>(request_.getBody().size()) >
-        client_.getLocationConfig()->getLimitClientBodySize()) {
+    const LocationConfig* config = client_.getLocationConfig();
+    if (!config) {
+      client_.setResponseStatusCode(404);
+      client_.setRequest(request_);
+      return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+    }
+    if (config->getLimitClientBodySize() != 0 &&
+        static_cast<long long>(request_.getBody().size()) >
+            config->getLimitClientBodySize()) {
       client_.setResponseStatusCode(413);
       client_.setRequest(request_);
       return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
