@@ -1,5 +1,6 @@
 #include "ClientEventController.hpp"
 
+#include <fcntl.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -12,6 +13,8 @@
 ClientEventController::ClientEventController(int clientSocket)
     : EventController(new StartProcessor(*this)), config_(NULL) {
   fd_ = clientSocket;
+  fcntl(fd_, F_SETFL, O_NONBLOCK);
+  fcntl(fd_, F_SETFD, FD_CLOEXEC);
 }
 
 ClientEventController::~ClientEventController() {}

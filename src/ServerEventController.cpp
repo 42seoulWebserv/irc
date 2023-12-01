@@ -1,5 +1,6 @@
 #include "ServerEventController.hpp"
 
+#include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -41,6 +42,8 @@ void ServerEventController::init() {
   if (fd_ == -1) {
     throw std::runtime_error("socket error");
   }
+  fcntl(fd_, F_SETFL, O_NONBLOCK);
+  fcntl(fd_, F_SETFD, FD_CLOEXEC);
 
   struct sockaddr_in addr;
 
