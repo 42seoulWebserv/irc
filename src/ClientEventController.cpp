@@ -142,9 +142,9 @@ void ClientEventController::init() {
 enum EventController::returnType ClientEventController::handleEvent(
     const Multiplexer::Event &event) {
   if (event.filter == WEB_READ) {
-    std::vector<char> recvBuffer_;
-    recvBuffer_.resize(MAX_BUFFER_SIZE);
-    int size = recv(fd_, recvBuffer_.data(), MAX_BUFFER_SIZE, 0);
+    std::vector<char> recvBuffer;
+    recvBuffer.resize(MAX_BUFFER_SIZE);
+    int size = recv(fd_, recvBuffer.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
       std::cout << "debug: read error" << std::endl;
       clear(true);
@@ -155,8 +155,8 @@ enum EventController::returnType ClientEventController::handleEvent(
       clear(true);
       return SUCCESS;
     }
-    recvBuffer_[size] = '\0';
-    buffer_.addBuffer(recvBuffer_);
+    recvBuffer.resize(size);
+    buffer_.addBuffer(recvBuffer);
   }
   if (event.filter == WEB_WRITE) {
     int size = stream_.writeToClient(fd_);
