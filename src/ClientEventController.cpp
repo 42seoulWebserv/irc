@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "EventController.hpp"
+#include "Log.hpp"
 #include "StartProcessor.hpp"
 #include "String.hpp"
 
@@ -131,8 +132,8 @@ const LocationConfig *ClientEventController::getLocationConfig() {
     }
     config_ = selectLocationConfig(serverConfig->getLocationConfigs(),
                                    String(request_.getUri()).trim());
-    std::cout << "debug - selected location path: " << config_->getUri()
-              << std::endl;
+    Log::debug << fd_ << ": selected location path: " << config_->getUri()
+               << NL;
   }
   return config_;
 }
@@ -153,12 +154,11 @@ void ClientEventController::handleEvent(const Multiplexer::Event &event) {
     recvBuffer.resize(MAX_BUFFER_SIZE);
     int size = recv(fd_, recvBuffer.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
-      std::cout << "debug: read error" << std::endl;
+      print(Log::info, "read error");
       clear(true);
       return;
     }
     if (size == 0) {
-      std::cout << "debug: closed socket(" << fd_ << ")" << std::endl;
       clear(true);
       return;
     }
@@ -177,7 +177,7 @@ void ClientEventController::handleEvent(const Multiplexer::Event &event) {
     }
   }
   if (event.filter == WEB_TIMEOUT) {
-    std::cout << "debug: timeout - close client" << std::endl;
+    print(Log::info, "timeout");
     clear(true);
 
     return;
@@ -196,11 +196,13 @@ void ClientEventController::clear(bool forceClose) {
     ClientEventController *client =
         ClientEventController::addEventController(fd_, serverConfigs_);
     if (client == NULL) {
+      print(Log::info, "close socket");
       close(fd_);
       return;
     }
     client->getRecvBuffer().addBuffer(getRecvBuffer().getBuffer());
   } else {
+    print(Log::info, "close socket");
     close(fd_);
   }
 }

@@ -74,7 +74,7 @@ void ParseRequestChunkProcessor::parseChunk() {
 }
 
 void ParseRequestChunkProcessor::printParseBodyResult() {
-  std::cout << "========Body=========\n";
-  std::cout << chunk_ << "$" << std::endl;
-  std::cout << "=====================\n";
+  client_.print(Log::debug, "========Body=========");
+  client_.print(Log::debug, chunk_ + "$");
+  client_.print(Log::debug, "=====================");
 }

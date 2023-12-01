@@ -13,6 +13,7 @@
 
 #include "Directive.hpp"
 #include "FilePath.hpp"
+#include "Log.hpp"
 
 // asset
 
@@ -235,7 +236,7 @@ void ConfigChecker::checkDirective(Directive directive) {
     }
     checkDirectiveChildren(directive);
   } catch (const std::exception &e) {
-    std::cout << "Error: Config: " << e.what() << '\n';
+    Log::error << "Config: " << e.what() << NL;
     throw e;
   }
 }

@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "Log.hpp"
 #include "RootConfig.hpp"
 
 ServerConfig::ServerConfig(const RootConfig &src)
@@ -35,27 +36,27 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &rhs) {
 ServerConfig::~ServerConfig(void) {}
 
 void ServerConfig::printServerConfig(void) {
-  std::cout << "server {" << '\n';
-  std::cout << "  root: " << this->rootPath_ << '\n';
-  std::cout << "  server_name: " << this->serverName_ << '\n';
-  std::cout << "  client_max_body_size: " << this->limitClientBodySize_ << '\n';
-  std::cout << "  listen: " << this->port_ << '\n';
-  std::cout << "  autoindex: " << std::boolalpha << this->autoindex_ << '\n';
-  std::cout << "  index: " << this->index_ << '\n';
+  Log::debug << "server {" << NL;
+  Log::debug << "  root: " << this->rootPath_ << NL;
+  Log::debug << "  server_name: " << this->serverName_ << NL;
+  Log::debug << "  client_max_body_size: " << this->limitClientBodySize_ << NL;
+  Log::debug << "  listen: " << this->port_ << NL;
+  Log::debug << "  autoindex: " << std::boolalpha << this->autoindex_ << NL;
+  Log::debug << "  index: " << this->index_ << NL;
   std::map<int, std::string>::const_iterator errorPage;
   for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
        errorPage++) {
     std::stringstream ss;
     ss << errorPage->first;
-    std::cout << "  error_page: " << ss.str() << " " << errorPage->second
-              << '\n';
+    Log::debug << "  error_page: " << ss.str() << " " << errorPage->second
+               << NL;
   }
   std::vector<LocationConfig>::iterator location;
   for (location = locationConfigs_.begin(); location != locationConfigs_.end();
        location++) {
     location->printLocationConfig();
   }
-  std::cout << '}' << '\n';
+  Log::debug << '}' << NL;
 }
 
 void ServerConfig::setAutoindex(const std::string &autoindex) {

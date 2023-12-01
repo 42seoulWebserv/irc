@@ -47,7 +47,7 @@ void MethodGetProcessor::createAutoindex(FilePath path) {
       throw std::invalid_argument("wrong path");
     }
   } catch (const std::exception& e) {
-    std::cout << "Error: GET: " << e.what() << '\n';
+    client_.print(Log::error, std::string("GET: ") + e.what());
     return;
   }
   std::string html =

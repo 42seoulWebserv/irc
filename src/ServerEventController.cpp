@@ -14,6 +14,7 @@
 #include <stdexcept>
 
 #include "AcceptClientProcessor.hpp"
+#include "Log.hpp"
 #include "Multiplexer.hpp"
 
 ServerEventController::ServerEventController(int port)
@@ -69,11 +70,11 @@ void ServerEventController::init() {
 
 void ServerEventController::handleEvent(const Multiplexer::Event &event) {
   if (event.filter == WEB_WRITE || event.filter == WEB_TIMEOUT) {
-    std::cerr << "invalid server filter" << std::endl;
+    Log::error << "invalid server filter" << NL;
     return;
   }
   if (loopProcess()) {
-    std::cout << "accept error" << std::endl;
+    Log::error << "accept error" << NL;
   }
 }
 

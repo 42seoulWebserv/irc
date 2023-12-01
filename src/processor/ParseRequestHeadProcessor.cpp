@@ -41,11 +41,11 @@ ProcessResult ParseRequestHeadProcessor::process() {
           new ParseRequestBodyProcessor(client_));
     }
   } catch (std::length_error& e) {
-    std::cout << "Error: " << e.what() << std::endl;
+    client_.print(Log::debug, e.what());
     client_.setResponseStatusCode(402);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   } catch (std::exception& e) {
-    std::cout << "Error: " << e.what() << std::endl;
+    client_.print(Log::debug, e.what());
     client_.setResponseStatusCode(401);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
@@ -139,14 +139,13 @@ bool ParseRequestHeadProcessor::isChunk() {
 }
 
 void ParseRequestHeadProcessor::printParseHeadResult() {
-  std::cout << "=====ParseResult=====\n";
-  std::cout << "method: " << request_.getMethod() << "$" << std::endl;
-  std::cout << "uri: " << request_.getUri() << "$" << std::endl;
-  std::cout << "version: " << request_.getVersion() << "$" << std::endl;
+  client_.print(Log::debug, "ParseResult");
+  client_.print(Log::debug, "  method: " + request_.getMethod() + "$");
+  client_.print(Log::debug, "  uri: " + request_.getUri() + "$");
+  client_.print(Log::debug, "  version: " + request_.getVersion() + "$");
   std::map<std::string, std::string>::const_iterator iter;
   for (iter = request_.getHeaders().begin();
        iter != request_.getHeaders().end(); iter++) {
-    std::cout << iter->first << ": " << iter->second << "$" << std::endl;
+    client_.print(Log::debug, "  " + iter->first + ": " + iter->second + "$");
   }
-  std::cout << "=====================\n";
 }

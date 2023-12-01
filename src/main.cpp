@@ -10,6 +10,7 @@
 
 #include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"
+#include "Log.hpp"
 #include "Multiplexer.hpp"
 #include "RootConfig.hpp"
 #include "ServerConfig.hpp"
@@ -57,12 +58,12 @@ int main(int argc, char **argv) {
   } else if (argc == 2) {
     filepath = argv[1];
   } else {
-    std::cout << "Error: too many args" << std::endl;
+    Log::error << "too many args" << NL;
     return 1;
   }
   std::ifstream configFile(filepath.c_str());
   if (!configFile.is_open()) {
-    std::cout << "Error: config file open error" << std::endl;
+    Log::error << "config file open error" << NL;
     return 1;
   }
   std::string configStr((std::istreambuf_iterator<char>(configFile)),
@@ -75,7 +76,7 @@ int main(int argc, char **argv) {
     signal(SIGPIPE, SIG_IGN);
     run(config);
   } catch (const std::exception &e) {
-    std::cout << e.what() << std::endl;
+    Log::error << "error: " << e.what() << NL;
     return 1;
   }
   return 0;

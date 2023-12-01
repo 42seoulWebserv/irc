@@ -14,6 +14,7 @@
 #include "CgiInProcessor.hpp"
 #include "FilePath.hpp"
 #include "IObserver.hpp"
+#include "Log.hpp"
 #include "Multiplexer.hpp"
 
 CgiEventController::CgiEventController(
@@ -48,7 +49,7 @@ void CgiEventController::init() {
   socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
   pid_ = fork();
   if (pid_ == -1) {
-    std::cerr << "debug fork error" << std::endl;
+    Log::error << "fork error" << NL;
     throw std::runtime_error("fork error");
   }
 

@@ -58,7 +58,7 @@ void ParseRequestBodyProcessor::parseBody() {
 }
 
 void ParseRequestBodyProcessor::printParseBodyResult() {
-  std::cout << "========Body=========\n";
-  std::cout << body_ << "$" << std::endl;
-  std::cout << "=====================\n";
+  client_.print(Log::debug, "========Body=========");
+  client_.print(Log::debug, body_ + "$");
+  client_.print(Log::debug, "=====================");
 }

@@ -1,6 +1,7 @@
 #include "AcceptClientProcessor.hpp"
 
 #include "ClientEventController.hpp"
+#include "Log.hpp"
 
 AcceptClientProcessor::AcceptClientProcessor(IServer& server)
     : server_(server) {}
@@ -14,6 +15,6 @@ ProcessResult AcceptClientProcessor::process() {
           clientSocket, server_.getServerConfigs()) == NULL) {
     return ProcessResult().setError(true);
   }
-  std::cout << "---------- client accept(" << clientSocket << ")" << std::endl;
+  Log::info << clientSocket << ": client accepted" << NL;
   return ProcessResult();
 }
