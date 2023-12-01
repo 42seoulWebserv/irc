@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-RootConfig::RootConfig() : limitClientBodySize_(2), autoindex_(false) {}
+RootConfig::RootConfig() : limitClientBodySize_(2097152), autoindex_(false) {}
 
 RootConfig::RootConfig(const RootConfig &src) { *this = src; }
 
