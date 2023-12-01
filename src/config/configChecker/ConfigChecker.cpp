@@ -19,10 +19,11 @@ static int strToInt(const std::string &s) {
   char *end = NULL;
   double tmp = std::strtod(s.c_str(), &end);
   int n = static_cast<int>(tmp);
-  if (std::isnan(tmp) || std::isinf(tmp) ||
+  if ((end && std::strlen(end) != 1 && std::isprint(end[0])) ||
+      std::isnan(tmp) || std::isinf(tmp) ||
       tmp < std::numeric_limits<int>::min() ||
       tmp > std::numeric_limits<int>::max()) {
-    throw std::invalid_argument("port number is invalid");
+    throw std::invalid_argument('"' + s + '"' + " port number is invalid");
   }
   return n;
 }
