@@ -4,10 +4,6 @@
 
 #include "SelectMethodProcessor.hpp"
 
-#define RED "\033[31m"    // debug
-#define GREEN "\033[32m"  // debug
-#define RESET "\033[0m"   // debug
-
 ParseRequestChunkProcessor::ParseRequestChunkProcessor(IClient& client)
     : readStatus_(SIZE_LINE),
       chunkLength_(0),
