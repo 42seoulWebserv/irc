@@ -67,8 +67,11 @@ void ServerEventController::init() {
   Multiplexer::getInstance().addReadEvent(fd_, this);
 }
 
-void ServerEventController::handleEvent(
-    const Multiplexer::Event &event) {
+void ServerEventController::handleEvent(const Multiplexer::Event &event) {
+  if (event.filter == WEB_WRITE || event.filter == WEB_TIMEOUT) {
+    std::cerr << "invalid server filter" << std::endl;
+    return;
+  }
   if (loopProcess()) {
     std::cout << "accept error" << std::endl;
   }

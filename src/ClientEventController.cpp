@@ -184,8 +184,6 @@ void ClientEventController::handleEvent(const Multiplexer::Event &event) {
   }
 }
 
-ProcessResult ClientEventController::nextProcessor() {}
-
 void ClientEventController::clear(bool forceClose) {
   Multiplexer::getInstance().addDeleteController(this);
   if (response_.hasHeader("Connection") &&

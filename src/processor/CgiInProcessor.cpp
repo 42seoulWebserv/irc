@@ -7,11 +7,7 @@
 #include "ErrorPageProcessor.hpp"
 
 CgiInProcessor::CgiInProcessor(ICgi& cgi, IClient& client)
-    : client_(client),
-      cgi_(cgi),
-      error_(false),
-      cgiRequestEnd_(false),
-      isPushStr_(false) {}
+    : client_(client), cgi_(cgi), isPushStr_(false) {}
 
 /*
 이 함수에서 writeBuffer에 값을 채워넣는 역할.

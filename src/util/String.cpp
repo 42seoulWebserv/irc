@@ -33,7 +33,7 @@ String String::trim() {
     }
     start++;
   }
-  for (size_t i = size() - 1; i >= 0; i--) {
+  for (long i = size() - 1; i >= 0; i--) {
     if (std::isspace(at(i)) == false) {
       break;
     }
@@ -57,7 +57,7 @@ String String::ltrim() {
 String String::rtrim() {
   size_t start = 0;
   size_t end = size();
-  for (size_t i = size() - 1; i >= 0; i--) {
+  for (long i = size() - 1; i >= 0; i--) {
     if (std::isspace(at(i)) == false) {
       break;
     }

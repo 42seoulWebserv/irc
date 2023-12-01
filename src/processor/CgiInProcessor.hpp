@@ -16,8 +16,6 @@ class CgiInProcessor : public IProcessor {
  private:
   IClient &client_;
   ICgi &cgi_;
-  bool cgiRequestEnd_;
-  bool error_;
   bool isPushStr_;
 };
 

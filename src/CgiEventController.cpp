@@ -3,8 +3,10 @@
 #include <signal.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
+#include <cstring>
 #include <map>
 #include <sstream>
 #include <stdexcept>
@@ -77,7 +79,7 @@ void CgiEventController::init() {
     char* const* envp = &envp_vec[0];
     execve(program, argv, envp);
     perror("execve");
-    exit(1);
+    _exit(1);
   }
   close(fd[1]);
   setFd(fd[0]);

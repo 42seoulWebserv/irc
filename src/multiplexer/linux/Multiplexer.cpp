@@ -1,6 +1,9 @@
 #include "Multiplexer.hpp"
 
 #include <sys/epoll.h>
+#include <cstddef>
+
+#include "EventController.hpp"
 
 Multiplexer::Multiplexer() : fd_(epoll_create1(EPOLL_CLOEXEC)) {}
 
@@ -73,6 +76,9 @@ std::vector<Multiplexer::Event> Multiplexer::wait(int size) {
 }
 
 void Multiplexer::addDeleteController(EventController* controller) {
+  if (controller == NULL) {
+    return;
+  }
   removeReadEvent(controller->getFd(), controller);
   removeWriteEvent(controller->getFd(), controller);
   removeTimeoutEvent(controller->getFd(), controller);
