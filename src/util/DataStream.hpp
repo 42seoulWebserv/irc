@@ -22,6 +22,7 @@ class DataStream {
   int getTotalWrite() const;
   bool isEOF() const;
   void setEof(bool eof);
+  void writeTo(DataStream &data);
 
  private:
   class Chunk {
