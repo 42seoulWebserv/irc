@@ -46,8 +46,12 @@ void RootConfig::setRootPath(const std::string &rootPath) {
 
 int RootConfig::getLimitClientBodySize() const { return limitClientBodySize_; }
 
-void RootConfig::setLimitClientBodySize(const int &limitClientBodySize) {
-  limitClientBodySize_ = limitClientBodySize;
+void RootConfig::setLimitClientBodySize(
+    const std::string &limitClientBodySize) {
+  std::stringstream ss;
+  ss << limitClientBodySize;
+  ss >> limitClientBodySize_;
+  limitClientBodySize_ = limitClientBodySize_ * 1024 * 1024;
 }
 
 void RootConfig::setAutoindex(const std::string &autoindex) {

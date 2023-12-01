@@ -71,8 +71,12 @@ int LocationConfig::getLimitClientBodySize() const {
   return limitClientBodySize_;
 }
 
-void LocationConfig::setLimitClientBodySize(const int &limitClientBodySize) {
-  limitClientBodySize_ = limitClientBodySize;
+void LocationConfig::setLimitClientBodySize(
+    const std::string &limitClientBodySize) {
+  std::stringstream ss;
+  ss << limitClientBodySize;
+  ss >> limitClientBodySize_;
+  limitClientBodySize_ = limitClientBodySize_ * 1024 * 1024;
 }
 
 bool LocationConfig::getAutoindex() const { return autoindex_; }

@@ -74,8 +74,12 @@ int ServerConfig::getLimitClientBodySize() const {
   return limitClientBodySize_;
 }
 
-void ServerConfig::setLimitClientBodySize(const int &limitClientBodySize) {
-  limitClientBodySize_ = limitClientBodySize;
+void ServerConfig::setLimitClientBodySize(
+    const std::string &limitClientBodySize) {
+  std::stringstream ss;
+  ss << limitClientBodySize;
+  ss >> limitClientBodySize_;
+  limitClientBodySize_ = limitClientBodySize_ * 1024 * 1024;
 }
 
 std::string ServerConfig::getRootPath() const { return rootPath_; }

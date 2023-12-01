@@ -16,7 +16,7 @@ class LocationConfig {
   void printLocationConfig(void);
 
   int getLimitClientBodySize() const;
-  void setLimitClientBodySize(const int &limitClientBodySize);
+  void setLimitClientBodySize(const std::string &limitClientBodySize);
   bool getAutoindex() const;
   void setAutoindex(const std::string &autoindex);
   int getRedirectionStatusCode() const;
@@ -47,7 +47,7 @@ class LocationConfig {
   const std::map<int, std::string> &getErrorPages() const;
 
  private:
-  int limitClientBodySize_;
+  long long limitClientBodySize_;
   bool autoindex_;
   int redirectionStatusCode_;
   std::string uri_;
