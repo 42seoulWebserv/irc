@@ -22,7 +22,6 @@ ProcessResult ParseRequestBodyProcessor::process() {
       body_ = client_.getRecvBuffer().nextBuffer(contentLength_);
       if (!body_.empty() || contentLength_ == 0) {
         parseBody();
-        body_.clear();
       }
     }
     if (readStatus_ == DONE) {
