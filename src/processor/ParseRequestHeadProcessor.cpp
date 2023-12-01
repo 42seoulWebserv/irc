@@ -1,5 +1,6 @@
 #include "ParseRequestHeadProcessor.hpp"
 
+#include <cstdlib>
 #include <exception>
 
 #include "ErrorPageProcessor.hpp"

@@ -1,5 +1,6 @@
 #include "ParseRequestBodyProcessor.hpp"
 
+#include <cstdlib>
 #include <exception>
 
 #include "ErrorPageProcessor.hpp"
