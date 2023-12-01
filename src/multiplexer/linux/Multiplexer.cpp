@@ -9,45 +9,46 @@ Multiplexer& Multiplexer::getInstance() {
   return instance;
 }
 
-void Multiplexer::addReadEvent(int fd, void* udata) {
+void Multiplexer::addReadEvent(int fd, EventController* udata) {
   struct epoll_event event;
   event.data.ptr = udata;
   event.events = EPOLLIN;
   epoll_ctl(fd_, EPOLL_CTL_ADD, fd, &event);
 }
 
-void Multiplexer::addWriteEvent(int fd, void* udata) {
+void Multiplexer::addWriteEvent(int fd, EventController* udata) {
   struct epoll_event event;
   event.data.ptr = udata;
   event.events = EPOLLOUT;
   epoll_ctl(fd_, EPOLL_CTL_ADD, fd, &event);
 }
 
-void Multiplexer::removeReadEvent(int fd, void* udata) {
+void Multiplexer::removeReadEvent(int fd, EventController* udata) {
   struct epoll_event event;
   event.data.ptr = udata;
   event.events = EPOLLIN;
   epoll_ctl(fd_, EPOLL_CTL_DEL, fd, &event);
 }
 
-void Multiplexer::removeWriteEvent(int fd, void* udata) {
+void Multiplexer::removeWriteEvent(int fd, EventController* udata) {
   struct epoll_event event;
   event.data.ptr = udata;
   event.events = EPOLLOUT;
   epoll_ctl(fd_, EPOLL_CTL_DEL, fd, &event);
 }
 
-void Multiplexer::addTimeoutEvent(int fd, void* udata) {
+void Multiplexer::addTimeoutEvent(int fd, EventController* udata) {
   // nothing to do
   (void)fd;
   (void)udata;
 }
 
-void Multiplexer::removeTimeoutEvent(int fd, void* udata) {
+void Multiplexer::removeTimeoutEvent(int fd, EventController* udata) {
   // nothing to do
   (void)fd;
   (void)udata;
 }
+
 std::vector<Multiplexer::Event> Multiplexer::wait(int size) {
   std::vector<Event> result;
   struct epoll_event eventList[size];
@@ -69,4 +70,24 @@ std::vector<Multiplexer::Event> Multiplexer::wait(int size) {
     result.push_back(event);
   }
   return result;
+}
+
+void Multiplexer::addDeleteController(EventController* controller) {
+  removeReadEvent(controller->getFd(), controller);
+  removeWriteEvent(controller->getFd(), controller);
+  removeTimeoutEvent(controller->getFd(), controller);
+  deleteList_.insert(controller);
+}
+
+void Multiplexer::deleteAddedControllers() {
+  if (deleteList_.size() == 0) {
+    return;
+  }
+  std::set<EventController*> deleteList = deleteList_;
+  deleteList_.clear();
+  std::set<EventController*>::const_iterator it;
+  for (it = deleteList.begin(); it != deleteList.end(); it++) {
+    delete *it;
+  }
+  deleteAddedControllers();
 }

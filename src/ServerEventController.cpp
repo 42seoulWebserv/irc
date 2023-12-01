@@ -67,12 +67,11 @@ void ServerEventController::init() {
   Multiplexer::getInstance().addReadEvent(fd_, this);
 }
 
-enum EventController::returnType ServerEventController::handleEvent(
+void ServerEventController::handleEvent(
     const Multiplexer::Event &event) {
   if (loopProcess()) {
     std::cout << "accept error" << std::endl;
   }
-  return PENDING;
 }
 
 int ServerEventController::acceptClient() {

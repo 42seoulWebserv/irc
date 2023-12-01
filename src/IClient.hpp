@@ -19,6 +19,8 @@ class IClient {
   virtual void setResponseStatusCode(int code) = 0;
   virtual void setResponseHeader(const std::string &key,
                                  const std::string &value) = 0;
+  virtual void setBody(const std::string &body) = 0;
+  virtual std::string &getBody() = 0;
   virtual DataStream &getDataStream() = 0;
   virtual StringBuffer &getRecvBuffer() = 0;
   virtual const LocationConfig *getLocationConfig() = 0;

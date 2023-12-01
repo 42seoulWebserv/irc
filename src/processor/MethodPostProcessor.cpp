@@ -30,8 +30,8 @@ ProcessResult MethodPostProcessor::process() {
   FilePath directoryPath = FilePath::getDirectory(filepath);
   directoryPath = directoryPath.toDirectoryPath();
   if (!directoryPath.isExist()) {
-    std::cout << "error: POST: non exist path" << std::endl;
-    client_.setResponseStatusCode(404);
+    std::cout << "error: POST: Forbidden" << std::endl;
+    client_.setResponseStatusCode(403);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   // 들어온값에 이미 같은 이름의 파일이 존재한다면 실패.

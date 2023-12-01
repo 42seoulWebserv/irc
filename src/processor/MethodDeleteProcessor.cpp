@@ -29,10 +29,9 @@ ProcessResult MethodDeleteProcessor::process() {
   }
   FilePath directoryPath = FilePath::getDirectory(filepath);
   directoryPath = directoryPath.toDirectoryPath();
-  // 들어온값이 잘못된 경로라면 실패.
   if (!directoryPath.isExist()) {
-    std::cout << "error: DELETE: non exist path" << std::endl;
-    client_.setResponseStatusCode(404);
+    std::cout << "error: DELETE: Forbidden" << std::endl;
+    client_.setResponseStatusCode(403);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   // 삭제할려는 파일이 존재하지않는다면 실패.

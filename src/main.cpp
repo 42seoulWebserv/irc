@@ -42,22 +42,10 @@ int run(RootConfig &config) {
 
   while (1) {
     std::vector<Multiplexer::Event> events = Multiplexer.wait(5);
-    std::set<EventController *> deleteList;
     for (size_t i = 0; i < events.size(); i++) {
-      EventController::returnType type =
-          events[i].controller->handleEvent(events[i]);
-      if (type == EventController::SUCCESS || type == EventController::FAIL) {
-        deleteList.insert(events[i].controller);
-      }
+      events[i].controller->handleEvent(events[i]);
     }
-    std::set<EventController *>::const_iterator it;
-    for (it = deleteList.begin(); it != deleteList.end(); it++) {
-      delete *it;
-    }
-
-    // sprintf(buff_snd, "%d : %s", strlen(buff_rcv), buff_rcv);
-    // write(client_socket, "write", strlen(buff_snd) + 1); // +1: NULL까지
-    // 포함해서 전송 close(client_socket);
+    Multiplexer::getInstance().deleteAddedControllers();
   }
   return 0;
 }

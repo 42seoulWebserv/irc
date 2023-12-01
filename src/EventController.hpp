@@ -14,21 +14,15 @@ class EventController {
   EventController(IProcessor *processor);
   virtual ~EventController();
 
-  enum returnType {
-    SUCCESS,  // 정상적인 페이지 반환
-    FAIL,     // response X, connect 끊기
-    ERROR,    // error page 준비
-    PENDING,  // 계속 사용
-  };
-
   virtual void init() = 0;
-  virtual enum returnType handleEvent(const Multiplexer::Event &event) = 0;
+  virtual void handleEvent(const Multiplexer::Event &event) = 0;
 
   int getFd() const;
 
  protected:
   int fd_;
   bool loopProcess();
+  void reserveDeleteSelf();
 
  private:
   IProcessor *processor_;

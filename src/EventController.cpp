@@ -15,6 +15,10 @@ bool EventController::loopProcess() {
   return processResult.error_;
 }
 
+void EventController::reserveDeleteSelf() {
+  Multiplexer::getInstance().addDeleteController(this);
+}
+
 ProcessResult EventController::nextProcessor() {
   if (processor_ == NULL) {
     return ProcessResult().setError(true);

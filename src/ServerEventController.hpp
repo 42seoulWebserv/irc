@@ -13,7 +13,7 @@ class ServerEventController : public EventController, public IServer {
   void addServerConfig(ServerConfig *serverConfigs);
 
   void init();
-  enum EventController::returnType handleEvent(const Multiplexer::Event &event);
+  void handleEvent(const Multiplexer::Event &event);
 
   int acceptClient();
   const std::vector<ServerConfig *> &getServerConfigs() const;

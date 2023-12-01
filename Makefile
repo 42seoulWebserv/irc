@@ -30,6 +30,7 @@ MAIN_NAME := \
 	EventController.cpp \
 	ServerEventController.cpp \
 	ClientEventController.cpp \
+	CgiEventController.cpp \
 	Request.cpp \
 	Response.cpp \
 
@@ -71,6 +72,8 @@ PROCESSOR_NAME := \
 	ParseRequestChunkProcessor.cpp \
 	ParseRequestHeadProcessor.cpp \
 	CgiProcessor.cpp \
+	CgiInProcessor.cpp \
+	CgiOutProcessor.cpp \
 	MethodDeleteProcessor.cpp \
 	MethodGetProcessor.cpp \
 	MethodPostProcessor.cpp \
