@@ -1,10 +1,10 @@
 #ifndef ParseRequestHeadProcessor_HPP_
 #define ParseRequestHeadProcessor_HPP_
 
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "String.hpp"
 
-class ParseRequestHeadProcessor : public IRequestProcessor {
+class ParseRequestHeadProcessor : public IProcessor {
  public:
   enum READ_STATUS { START_LINE, HEADER, BODY, DONE };
 

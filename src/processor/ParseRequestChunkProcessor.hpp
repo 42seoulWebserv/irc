@@ -1,10 +1,10 @@
 #ifndef ParseRequestChunkProcessor_HPP_
 #define ParseRequestChunkProcessor_HPP_
 
-#include "IRequestProcessor.hpp"
+#include "IProcessor.hpp"
 #include "String.hpp"
 
-class ParseRequestChunkProcessor : public IRequestProcessor {
+class ParseRequestChunkProcessor : public IProcessor {
  public:
   enum READ_STATUS { SIZE_LINE, CHUNK, DONE };
 
