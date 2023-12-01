@@ -60,7 +60,7 @@ void ParseRequestBodyProcessor::parseBody() {
 }
 
 void ParseRequestBodyProcessor::printParseBodyResult() {
-  client_.print(Log::debug, "========Body=========");
-  client_.print(Log::debug, body_ + "$");
-  client_.print(Log::debug, "=====================");
+  client_.print(Log::debug, " ========Body=========");
+  client_.print(Log::debug, " " + body_ + "$");
+  client_.print(Log::debug, " =====================");
 }

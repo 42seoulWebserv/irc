@@ -132,7 +132,7 @@ const LocationConfig *ClientEventController::getLocationConfig() {
     }
     config_ = selectLocationConfig(serverConfig->getLocationConfigs(),
                                    String(request_.getUri()).trim());
-    Log::debug << fd_ << ": selected location path: " << config_->getUri()
+    Log::debug << fd_ << ":  selected location path: " << config_->getUri()
                << NL;
   }
   return config_;

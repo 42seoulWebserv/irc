@@ -16,29 +16,29 @@ static void deleteFile(FilePath &filepath) {
   if (code != 0) {
     throw std::invalid_argument("file remove error");
   }
-  Log::debug << "delete success" << filepath << NL;
+  Log::debug << " delete success" << filepath << NL;
 }
 
 ProcessResult MethodDeleteProcessor::process() {
-  client_.print(Log::debug, "in delete method");
+  client_.print(Log::debug, " in delete method");
   FilePath filepath = client_.getLocationConfig()->getRootPath();
   filepath.append(client_.getRequest().getUri());
   // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
-    client_.print(Log::debug, "DELETE: not allowed form");
+    client_.print(Log::debug, " DELETE: not allowed form");
     client_.setResponseStatusCode(404);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   FilePath directoryPath = FilePath::getDirectory(filepath);
   directoryPath = directoryPath.toDirectoryPath();
   if (!directoryPath.isExist()) {
-    client_.print(Log::debug, "DELETE: Forbidden");
+    client_.print(Log::debug, " DELETE: Forbidden");
     client_.setResponseStatusCode(403);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   // 삭제할려는 파일이 존재하지않는다면 실패.
   if (!filepath.isFile()) {
-    client_.print(Log::debug, "DELETE: non exits file");
+    client_.print(Log::debug, " DELETE: non exits file");
     client_.setResponseStatusCode(204);  // 204 No Content
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }

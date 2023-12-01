@@ -141,7 +141,7 @@ bool ParseRequestHeadProcessor::isChunk() {
 }
 
 void ParseRequestHeadProcessor::printParseHeadResult() {
-  client_.print(Log::debug, "ParseResult");
+  client_.print(Log::debug, " ParseResult");
   client_.print(Log::debug, "  method: " + request_.getMethod() + "$");
   client_.print(Log::debug, "  uri: " + request_.getUri() + "$");
   client_.print(Log::debug, "  version: " + request_.getVersion() + "$");

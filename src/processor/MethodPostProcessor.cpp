@@ -24,7 +24,7 @@ ProcessResult MethodPostProcessor::process() {
   filepath.append(client_.getRequest().getUri());
   // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
-    client_.print(Log::debug, "POST: not allowed form");
+    client_.print(Log::debug, " POST: not allowed form");
     client_.setResponseStatusCode(400);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
@@ -32,13 +32,13 @@ ProcessResult MethodPostProcessor::process() {
   FilePath directoryPath = FilePath::getDirectory(filepath);
   directoryPath = directoryPath.toDirectoryPath();
   if (!directoryPath.isExist()) {
-    client_.print(Log::debug, "POST: Forbidden");
+    client_.print(Log::debug, " POST: Forbidden");
     client_.setResponseStatusCode(403);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
   // 들어온값에 이미 같은 이름의 파일이 존재한다면 실패.
   if (filepath.isFile()) {
-    client_.print(Log::debug, "POST: Files that already exist");
+    client_.print(Log::debug, " POST: Files that already exist");
     client_.setResponseStatusCode(409);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
