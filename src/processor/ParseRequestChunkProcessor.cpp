@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "ErrorPageProcessor.hpp"
 #include "SelectMethodProcessor.hpp"
 
 ParseRequestChunkProcessor::ParseRequestChunkProcessor(IClient& client)
@@ -43,6 +44,12 @@ ProcessResult ParseRequestChunkProcessor::process() {
     }
   }
   if (readStatus_ == DONE) {
+    if (static_cast<long long>(request_.getBody().size()) >
+        client_.getLocationConfig()->getLimitClientBodySize()) {
+      client_.setResponseStatusCode(413);
+      client_.setRequest(request_);
+      return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+    }
     client_.setRequest(request_);
     return ProcessResult().setNextProcessor(new SelectMethodProcessor(client_));
   }

@@ -26,12 +26,15 @@ ProcessResult ParseRequestHeadProcessor::process() {
       }
     }
     if (readStatus_ == BODY) {
-      checkContentLength();
-      printParseHeadResult();
+      printParseHeadResult();  // debug
       client_.setRequest(request_);
       if (isChunk()) {
         return ProcessResult().setNextProcessor(
             new ParseRequestChunkProcessor(client_));
+      }
+      if (!checkContentLength()) {
+        return ProcessResult().setNextProcessor(
+            new ErrorPageProcessor(client_));
       }
       return ProcessResult().setNextProcessor(
           new ParseRequestBodyProcessor(client_));
@@ -99,16 +102,27 @@ void ParseRequestHeadProcessor::parseHeaderLineByLine(String str) {
   request_.setHeader(key, value);
 }
 
-void ParseRequestHeadProcessor::checkContentLength() {
+bool ParseRequestHeadProcessor::checkContentLength() {
   std::map<std::string, std::string>::const_iterator it =
       request_.getHeaders().find("Content-Length");
   if (it != request_.getHeaders().end()) {
     char* end;
     double contentLen = std::strtod(it->second.c_str(), &end);
     if ((end && *end != '\0') || contentLen < 0) {
-      throw std::length_error("wrong Content-Length format");
+      client_.setResponseStatusCode(400);
+      return false;
+    }
+    const LocationConfig* config = client_.getLocationConfig();
+    if (!config) {
+      client_.setResponseStatusCode(404);
+      return false;
+    }
+    if (contentLen > config->getLimitClientBodySize()) {
+      client_.setResponseStatusCode(413);
+      return false;
     }
   }
+  return true;
 }
 
 bool ParseRequestHeadProcessor::isChunk() {
