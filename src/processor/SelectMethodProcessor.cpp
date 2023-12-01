@@ -23,6 +23,10 @@ static bool cgiChecker(IClient& client_) {
 
 ProcessResult SelectMethodProcessor::process() {
   ProcessResult res;
+  if (client_.getLocationConfig() == NULL) {
+    client_.setResponseStatusCode(503);
+    return res.setNextProcessor(new ErrorPageProcessor(client_));
+  }
   const std::string& method = client_.getRequest().getMethod();
   const std::vector<std::string>& accepts =
       client_.getLocationConfig()->getAcceptMethods();
