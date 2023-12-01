@@ -67,7 +67,9 @@ PROCESSOR_NAME := \
 	AcceptClientProcessor.cpp \
 	ProcessResult.cpp \
 	StartProcessor.cpp \
-	ParseRequestProcessor.cpp \
+	ParseRequestBodyProcessor.cpp \
+	ParseRequestChunkProcessor.cpp \
+	ParseRequestHeadProcessor.cpp \
 	CgiProcessor.cpp \
 	MethodDeleteProcessor.cpp \
 	MethodGetProcessor.cpp \
