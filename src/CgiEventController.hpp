@@ -34,6 +34,7 @@ class CgiEventController : public EventController,
   void end();
   DataStream &getWriteBuffer();
   void clear(bool error);
+  void print(Log &logger, const std::string &msg);
 
  private:
   CgiEventController(IClient &client,

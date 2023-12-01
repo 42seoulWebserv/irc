@@ -167,6 +167,10 @@ void CgiEventController::clear(bool error) {
   Multiplexer::getInstance().addDeleteController(this);
 }
 
+void CgiEventController::print(Log& logger, const std::string& msg) {
+  logger << fd_ << ": " << msg << NL;
+}
+
 CgiEventController::Event& CgiEventController::Event::setError(bool error) {
   error_ = error;
   return *this;
