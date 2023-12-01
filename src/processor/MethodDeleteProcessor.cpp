@@ -7,7 +7,9 @@
 #include "WaitProcessor.hpp"
 
 MethodDeleteProcessor::MethodDeleteProcessor(IClient &client)
-    : client_(client) {}
+    : client_(client) {
+  client_.print(Log::info, " MethodDeleteProcessor");
+}
 
 static void deleteFile(FilePath &filepath) {
   int code = remove(filepath.c_str());

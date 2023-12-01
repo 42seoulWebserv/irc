@@ -10,7 +10,11 @@
 #include "WaitProcessor.hpp"
 
 ErrorPageProcessor::ErrorPageProcessor(IClient& client)
-    : client_(client), onlyUseDefaultPage_(false) {}
+    : client_(client), onlyUseDefaultPage_(false) {
+  std::stringstream ss;
+  ss << " ErrorPageProcessor(" << client_.getResponse().getStatusCode() << ")";
+  client_.print(Log::info, ss.str());
+}
 
 static std::string intToString(int number) {
   std::stringstream ss;

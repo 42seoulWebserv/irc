@@ -12,7 +12,9 @@ ProvideFileProcessor::ProvideFileProcessor(IClient& client,
       fileSize_(0),
       totalReadSize_(0),
       processReadFile_(false),
-      file_() {}
+      file_() {
+  client_.print(Log::info, " ProvideFileProcessor");
+}
 
 ProvideFileProcessor::~ProvideFileProcessor() {
   if (file_.is_open()) {

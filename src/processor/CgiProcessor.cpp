@@ -6,7 +6,9 @@
 #include "WaitProcessor.hpp"
 
 CgiProcessor::CgiProcessor(IClient& client)
-    : client_(client), cgi_(NULL), error_(false), end_(false) {}
+    : client_(client), cgi_(NULL), error_(false), end_(false) {
+  client_.print(Log::info, " CgiProcessor");
+}
 
 CgiProcessor::~CgiProcessor() {
   if (cgi_) {

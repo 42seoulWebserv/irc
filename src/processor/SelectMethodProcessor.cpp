@@ -11,7 +11,9 @@
 #include "RedirectionProcessor.hpp"
 
 SelectMethodProcessor::SelectMethodProcessor(IClient& client)
-    : client_(client) {}
+    : client_(client) {
+  client_.print(Log::info, " SelectMethodProcessor");
+}
 
 static bool cgiChecker(IClient& client_) {
   FilePath extension = FilePath::getExtension(client_.getRequest().getUri());

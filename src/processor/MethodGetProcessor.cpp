@@ -10,7 +10,9 @@
 #include "ProvideFileProcessor.hpp"
 #include "WaitProcessor.hpp"
 
-MethodGetProcessor::MethodGetProcessor(IClient& client) : client_(client) {}
+MethodGetProcessor::MethodGetProcessor(IClient& client) : client_(client) {
+  client_.print(Log::info, " MethodGetProcessor");
+}
 
 ProcessResult MethodGetProcessor::process() {
   FilePath path = client_.getLocationConfig()->getRootPath();

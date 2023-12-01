@@ -10,7 +10,9 @@ ParseRequestBodyProcessor::ParseRequestBodyProcessor(IClient& client)
     : readStatus_(HEADER),
       contentLength_(0),
       client_(client),
-      request_(client.getRequest()) {}
+      request_(client.getRequest()) {
+  client_.print(Log::info, " ParseRequestBodyProcessor");
+}
 
 ProcessResult ParseRequestBodyProcessor::process() {
   try {

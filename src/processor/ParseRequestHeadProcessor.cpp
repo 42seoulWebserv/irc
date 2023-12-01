@@ -10,7 +10,9 @@
 #include "StringBuffer.hpp"
 
 ParseRequestHeadProcessor::ParseRequestHeadProcessor(IClient& client)
-    : readStatus_(START_LINE), client_(client), request_(client.getRequest()) {}
+    : readStatus_(START_LINE), client_(client), request_(client.getRequest()) {
+  client_.print(Log::info, " ParseRequestHeadProcessor");
+}
 
 ProcessResult ParseRequestHeadProcessor::process() {
   try {

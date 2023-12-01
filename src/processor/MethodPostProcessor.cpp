@@ -7,7 +7,9 @@
 #include "FilePath.hpp"
 
 MethodPostProcessor::MethodPostProcessor(IClient &client)
-    : file_(), client_(client) {}
+    : file_(), client_(client) {
+  client_.print(Log::info, " MethodPostProcessor");
+}
 
 MethodPostProcessor::~MethodPostProcessor() {
   if (file_.is_open()) {
