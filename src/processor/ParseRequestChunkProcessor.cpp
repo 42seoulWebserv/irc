@@ -29,7 +29,6 @@ ProcessResult ParseRequestChunkProcessor::process() {
     if (!chunk_.empty()) {
       chunk_.erase(chunk_.size() - 2);
       parseChunk();
-      // printParseBodyResult(); // debug
       chunk_.clear();
       chunk_ = client_.getRecvBuffer().nextSeek("0\r\n");
       if (!chunk_.empty()) {
