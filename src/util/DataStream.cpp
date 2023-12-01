@@ -116,3 +116,11 @@ int DataStream::getTotalWrite() const { return totalWrite_; }
 bool DataStream::isEOF() const { return list_.size() == 0 && isEOF_; }
 
 void DataStream::setEof(bool eof) { isEOF_ = eof; }
+
+void DataStream::writeTo(DataStream &data) {
+  while (list_.size() > 0) {
+    Chunk *chunk = list_.front();
+    list_.pop_front();
+    data.list_.push_back(chunk);
+  }
+}

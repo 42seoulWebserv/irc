@@ -191,7 +191,13 @@ void ClientEventController::clear(bool forceClose) {
   if (response_.hasHeader("Connection") &&
       response_.getHeader("Connection") == "keep-alive" &&
       forceClose == false) {
-    ClientEventController::addEventController(fd_, serverConfigs_);
+    ClientEventController *client =
+        ClientEventController::addEventController(fd_, serverConfigs_);
+    if (client == NULL) {
+      close(fd_);
+      return;
+    }
+    stream_.writeTo(client->stream_);
   } else {
     close(fd_);
   }
