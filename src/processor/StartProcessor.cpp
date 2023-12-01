@@ -1,6 +1,6 @@
 #include "StartProcessor.hpp"
 
-#include "ParseRequestProcessor.hpp"
+#include "ParseRequestHeadProcessor.hpp"
 
 StartProcessor::StartProcessor(IClient& client) : client_(client) {}
 
@@ -12,5 +12,6 @@ ProcessResult StartProcessor::process() {
   response.setHeader("Connection", "keep-alive");
   response.setHeader("Content-Type", "text/html");
   client_.setResponse(response);
-  return ProcessResult().setNextProcessor(new ParseRequestProcessor(client_));
+  return ProcessResult().setNextProcessor(
+      new ParseRequestHeadProcessor(client_));
 };

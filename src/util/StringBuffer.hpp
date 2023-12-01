@@ -12,12 +12,11 @@ class StringBuffer {
   void addBuffer(const std::vector<char> &buffer);
   void addBuffer(const std::string &buffer);
   std::string nextSeek(const std::string &needle);
-  std::string nextBuffer(int size);
+  std::string nextBuffer(std::string::size_type size);
   const std::string &getBuffer();
   size_t size();
 
  private:
-  int begin_;
   std::string buffer_;
   std::map<std::string, int> cache_;
 };

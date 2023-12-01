@@ -2,6 +2,9 @@ main
 webserv
 .vscode
 www
+.DS_Store
+dump
+tmp.txt
 
 # Prerequisites
 *.d

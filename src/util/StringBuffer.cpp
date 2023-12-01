@@ -1,13 +1,13 @@
 #include "StringBuffer.hpp"
 
-StringBuffer::StringBuffer() : begin_(0) {}
+StringBuffer::StringBuffer() {}
 
 void StringBuffer::addBuffer(const char* buffer) {
   buffer_ += std::string(buffer);
 }
 
 void StringBuffer::addBuffer(const std::vector<char>& buffer) {
-  buffer_ += std::string(buffer.data());
+  buffer_.insert(buffer_.size(), buffer.data(), buffer.size());
 }
 
 void StringBuffer::addBuffer(const std::string& buffer) { buffer_ += buffer; }
@@ -42,7 +42,7 @@ std::string StringBuffer::nextSeek(const std::string& needle) {
   return foundStr;
 }
 
-std::string StringBuffer::nextBuffer(int size) {
+std::string StringBuffer::nextBuffer(std::string::size_type size) {
   if (size > buffer_.size()) {
     return "";
   }
