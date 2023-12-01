@@ -5,7 +5,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-Multiplexer::Multiplexer() { fd_ = kqueue(); }
+#include "fcntl.h"
+
+Multiplexer::Multiplexer() {
+  fd_ = kqueue();
+  fcntl(fd_, F_SETFL, O_NONBLOCK);
+  fcntl(fd_, F_SETFD, FD_CLOEXEC);
+}
 
 Multiplexer& Multiplexer::getInstance() {
   static Multiplexer instance;

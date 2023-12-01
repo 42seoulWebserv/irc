@@ -1,5 +1,6 @@
 #include "ServerEventController.hpp"
 
+#include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -39,8 +40,10 @@ const std::vector<ServerConfig *> &ServerEventController::getServerConfigs()
 void ServerEventController::init() {
   fd_ = socket(PF_INET, SOCK_STREAM, 0);
   if (fd_ == -1) {
-    throw std::logic_error("bind error");
+    throw std::runtime_error("socket error");
   }
+  fcntl(fd_, F_SETFL, O_NONBLOCK);
+  fcntl(fd_, F_SETFD, FD_CLOEXEC);
 
   struct sockaddr_in addr;
 
@@ -48,7 +51,7 @@ void ServerEventController::init() {
 
   int opt = 1;
   if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int))) {
-    throw std::logic_error("bind error");
+    throw std::runtime_error("setsockopt error");
   }
 
   addr.sin_family = AF_INET;                 // IPv4 인터넷 프로토롤
@@ -59,7 +62,7 @@ void ServerEventController::init() {
     throw std::logic_error("bind error");
   }
   if (listen(fd_, 128) == -1) {
-    throw std::logic_error("bind error");
+    throw std::logic_error("listen error");
   }
   Multiplexer::getInstance().addReadEvent(fd_, this);
 }
