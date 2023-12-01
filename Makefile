@@ -85,6 +85,7 @@ PROCESSOR_NAME := \
 
 UTIL_DIR := $(SRC_DIR)/util/
 UTIL_NAME := \
+	Log.cpp \
 	String.cpp \
 	FilePath.cpp \
 	DataStream.cpp \
