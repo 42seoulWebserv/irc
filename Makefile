@@ -13,8 +13,8 @@ INC_DIR := \
 	-I./src/util \
 	-I./src/multiplexer \
 
-SRC_DIR := ./src
-BUILD_DIR := ./build
+SRC_DIR := src
+BUILD_DIR := build
 
 CXX := c++
 CXXFLAGS := -std=c++98 -Wall -Wextra -MMD -MP -g3 -Weffc++ $(INC_DIR)
@@ -24,7 +24,7 @@ endif
 
 # ===============================================
 
-MAIN_DIR := ./src/
+MAIN_DIR := $(SRC_DIR)/
 MAIN_NAME := \
 	main.cpp \
 	EventController.cpp \
@@ -34,26 +34,26 @@ MAIN_NAME := \
 	Request.cpp \
 	Response.cpp \
 
-CONFIG_DIR := ./src/config/
+CONFIG_DIR := $(SRC_DIR)/config/
 CONFIG_NAME := \
 	Directive.cpp \
 	LocationConfig.cpp \
 	RootConfig.cpp \
 	ServerConfig.cpp \
 
-CONFIGCHECKER_DIR := ./src/config/configChecker/
+CONFIGCHECKER_DIR := $(SRC_DIR)/config/configChecker/
 CONFIGCHECKER_NAME := \
 	ConfigChecker.cpp \
 
-CONFIGMAKER_DIR := ./src/config/configMaker/
+CONFIGMAKER_DIR := $(SRC_DIR)/config/configMaker/
 CONFIGMAKER_NAME := \
 	ConfigMaker.cpp \
 
-CONFIGLEXER_DIR := ./src/config/configLexer/
+CONFIGLEXER_DIR := $(SRC_DIR)/config/configLexer/
 CONFIGLEXER_NAME := \
 	ConfigLexer.cpp \
 
-PASER_LEXER_DIR := ./src/parser/lexer/
+PASER_LEXER_DIR := $(SRC_DIR)/parser/lexer/
 PASER_LEXER_NAME := \
 	Parser.cpp \
 	ParseResult.cpp \
@@ -63,7 +63,7 @@ PASER_LEXER_NAME := \
 	PatternSequence.cpp \
 	PatternWord.cpp \
 
-PROCESSOR_DIR := ./src/processor/
+PROCESSOR_DIR := $(SRC_DIR)/processor/
 PROCESSOR_NAME := \
 	AcceptClientProcessor.cpp \
 	ProcessResult.cpp \
@@ -83,7 +83,7 @@ PROCESSOR_NAME := \
 	WaitProcessor.cpp \
 	RedirectionProcessor.cpp \
 
-UTIL_DIR := ./src/util/
+UTIL_DIR := $(SRC_DIR)/util/
 UTIL_NAME := \
 	String.cpp \
 	FilePath.cpp \
@@ -91,9 +91,9 @@ UTIL_NAME := \
 	StringBuffer.cpp \
 
 ifeq ($(shell uname), Linux)
-MULTIPLEXER_DIR	= ./src/multiplexer/linux/
+MULTIPLEXER_DIR	= $(SRC_DIR)/multiplexer/linux/
 else
-MULTIPLEXER_DIR	= ./src/multiplexer/mac/
+MULTIPLEXER_DIR	= $(SRC_DIR)/multiplexer/mac/
 endif
 MULTIPLEXER_NAME := \
 	Multiplexer.cpp \
@@ -122,26 +122,23 @@ SRCS_DIR := \
 
 vpath %.cpp $(SRCS_DIR)
 
-%.o	: %.cpp
-	$(CXX) $(CXXFLAGS) -MD -c -o $@ $^
-
 OBJS := $(SRCS:.cpp=.o)
-DEPS := $(SRCS:.cpp=.d)
-OBJS_FILES := $(addprefix $(BUILD_DIR)/, $(notdir $(OBJS)))
+OBJS_FILES := $(patsubst $(SRC_DIR)%,$(BUILD_DIR)%,$(OBJS))
 
--include $(DEPS)
+DEPS := $(SRCS:.cpp=.d)
+DEPS_FILES := $(patsubst $(SRC_DIR)%,$(BUILD_DIR)%,$(DEPS))
+
+-include $(DEPS_FILES)
 
 # ===============================================
 
-all: $(BUILD_DIR) $(NAME)
+all: $(NAME)
 
 $(NAME): $(OBJS_FILES)
 	$(CXX) $(CXXFLAGS) $(OBJS_FILES) -o $(NAME)
 
-$(BUILD_DIR):
-	@mkdir -p $(BUILD_DIR)
-
-$(BUILD_DIR)/%.o : %.cpp
+$(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
