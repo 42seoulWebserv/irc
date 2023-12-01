@@ -24,9 +24,10 @@ CgiEventController::CgiEventController(
       end_(false) {}
 
 CgiEventController::~CgiEventController() {
-  if (pid_ > 0) {
-    std::cout << "kill: " << pid_ << std::endl;
+  int err;
+  if (waitpid(pid_, &err, WNOHANG) == 0) {
     kill(pid_, SIGKILL);
+    waitpid(pid_, &err, WNOHANG);
   }
   close(fd_);
 }
@@ -74,10 +75,9 @@ void CgiEventController::init() {
     envp_vec.push_back(strdup(("CONTENT_LENGTH=" + ss.str()).c_str()));
     envp_vec.push_back(NULL);
     char* const* envp = &envp_vec[0];
-
     execve(program, argv, envp);
     perror("execve");
-    _exit(1);
+    exit(1);
   }
   close(fd[1]);
   setFd(fd[0]);
@@ -98,6 +98,9 @@ CgiEventController* CgiEventController::addEventController(
     cgi->init();
   } catch (...) {
     delete cgi;
+    if (observer) {
+      observer->onEvent(Event().setError(true));
+    }
     return NULL;
   }
   return cgi;
@@ -152,6 +155,9 @@ void CgiEventController::end() { end_ = true; }
 DataStream& CgiEventController::getWriteBuffer() { return writeBuffer_; }
 
 void CgiEventController::clear(bool error) {
+  if (client_.getResponse().getStatusCode() == 100) {
+    error = true;
+  }
   if (observer_) {
     observer_->onEvent(Event().setError(error));
   }
