@@ -137,6 +137,10 @@ const LocationConfig *ClientEventController::getLocationConfig() {
   return config_;
 }
 
+void ClientEventController::print(Log &logger, const std::string &msg) {
+  logger << fd_ << ": " << msg << NL;
+}
+
 void ClientEventController::init() {
   if (loopProcess()) {
     throw std::logic_error("error: init client event controller");

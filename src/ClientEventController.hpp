@@ -36,6 +36,7 @@ class ClientEventController : public EventController, public IClient {
   DataStream &getDataStream();
   StringBuffer &getRecvBuffer();
   const LocationConfig *getLocationConfig();
+  void print(Log &logger, const std::string &msg);
 
  private:
   const LocationConfig *config_;
