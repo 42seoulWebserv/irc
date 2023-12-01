@@ -5,10 +5,6 @@
 #include "ErrorPageProcessor.hpp"
 #include "SelectMethodProcessor.hpp"
 
-#define RED "\033[31m"    // debug
-#define GREEN "\033[32m"  // debug
-#define RESET "\033[0m"   // debug
-
 ParseRequestBodyProcessor::ParseRequestBodyProcessor(IClient& client)
     : readStatus_(HEADER),
       contentLength_(0),
