@@ -54,7 +54,6 @@ void ParseRequestChunkProcessor::setChunkLength() {
   std::stringstream ss;
   ss << std::hex << sizeLine_;
   ss >> chunkLength_;
-  std::cout << "chunk len: " << chunkLength_ << std::endl;
 }
 
 void ParseRequestChunkProcessor::parseChunk() {
