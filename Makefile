@@ -19,7 +19,7 @@ BUILD_DIR := build
 CXX := c++
 CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -MMD -MP -g3 $(INC_DIR)
 ifdef DEBUG
-CXXFLAGS += -fsanitize=address
+CXXFLAGS += -fsanitize=address -DLOG_LEVEL=4
 endif
 
 # ===============================================
@@ -154,6 +154,6 @@ re:
 
 debug:
 	$(MAKE) fclean
-	$(MAKE) -j DEBUG=1
+	$(MAKE) -j DEBUG=1 LOG_LEVEL=1
 
 .PHONY: all clean fclean re debug

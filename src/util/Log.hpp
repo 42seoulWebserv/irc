@@ -9,7 +9,7 @@
 #define LOG_ERROR 1
 
 #ifndef LOG_LEVEL
-#define LOG_LEVEL LOG_DEBUG
+#define LOG_LEVEL LOG_INFO
 #endif
 
 #define NL "\n"
