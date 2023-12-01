@@ -22,7 +22,7 @@ class ServerConfig {
   int getPort() const;
   void setPort(const int &port);
   int getLimitClientBodySize() const;
-  void setLimitClientBodySize(const int &limitClientBodySize);
+  void setLimitClientBodySize(const std::string &limitClientBodySize);
   std::string getRootPath() const;
   void setRootPath(const std::string &rootPath);
   std::string getServerName() const;
@@ -43,7 +43,7 @@ class ServerConfig {
  private:
   bool autoindex_;
   int port_;
-  int limitClientBodySize_;
+  long long limitClientBodySize_;
   std::string rootPath_;
   std::string serverName_;
   std::string index_;

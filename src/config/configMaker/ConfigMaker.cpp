@@ -41,8 +41,7 @@ LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
       }
       res.setRootPath(rootPath);
     } else if (element->getKey() == "client_max_body_size") {
-      res.setLimitClientBodySize(
-          strToInteger(element->getElementAtIndexValues(0)));
+      res.setLimitClientBodySize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "return") {
       res.setRedirectionStatusCode(
           strToInteger(element->getElementAtIndexValues(0)));
@@ -74,8 +73,7 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
     if (element->getKey() == "root") {
       res.setRootPath(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "client_max_body_size") {
-      res.setLimitClientBodySize(
-          strToInteger(element->getElementAtIndexValues(0)));
+      res.setLimitClientBodySize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "listen") {
       res.setPort(strToInteger(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "location") {
@@ -84,8 +82,7 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
     } else if (element->getKey() == "server_name") {
       res.setServerName(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "client_max_body_size") {
-      res.setLimitClientBodySize(
-          strToInteger(element->getElementAtIndexValues(0)));
+      res.setLimitClientBodySize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "index") {
       res.setIndex(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "error_page") {
@@ -111,8 +108,7 @@ RootConfig ConfigMaker::makeConfig(Directive directive) {
     if (element->getKey() == "root") {
       res.setRootPath(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "client_max_body_size") {
-      res.setLimitClientBodySize(
-          strToInteger(element->getElementAtIndexValues(0)));
+      res.setLimitClientBodySize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "autoindex") {
       res.setAutoindex(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "server") {

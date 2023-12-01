@@ -15,7 +15,7 @@ class ParseRequestHeadProcessor : public IProcessor {
   void parseStartLine();
   void parseHeader();
   void parseHeaderLineByLine(String str);
-  void checkContentLength();
+  bool checkContentLength();
   bool isChunk();
   void printParseHeadResult();
 

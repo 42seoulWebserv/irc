@@ -5,6 +5,7 @@ www
 .DS_Store
 dump
 tmp.txt
+cgi_tester
 
 # Prerequisites
 *.d

@@ -26,7 +26,7 @@ class ClientEventController : public EventController, public IClient {
   void handleEvent(const Multiplexer::Event &event);
 
   const Request &getRequest() const;
-  void setRequest(const Request &reqeust);
+  void setRequest(const Request &request);
   const Response &getResponse() const;
   void setResponse(const Response &response);
   void setResponseStatusCode(int code);
@@ -58,7 +58,7 @@ class ClientEventController : public EventController, public IClient {
 TEST :123 // key에 :가 붙어있지않음
 :TEST: 123 // 맨앞에 :
 TE ST: 123 // key 사이에 공백
-*/
+*/ // debug
 
 std::ostream &operator<<(std::ostream &o,
                          const std::map<std::string, std::string> &rhs);

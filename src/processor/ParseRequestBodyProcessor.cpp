@@ -22,7 +22,6 @@ ProcessResult ParseRequestBodyProcessor::process() {
       }
     }
     if (readStatus_ == DONE) {
-      printParseBodyResult();
       client_.setRequest(request_);
       return ProcessResult().setNextProcessor(
           new SelectMethodProcessor(client_));
