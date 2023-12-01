@@ -51,7 +51,6 @@ ProcessResult ParseRequestChunkProcessor::process() {
 
 void ParseRequestChunkProcessor::setChunkLength() {
   sizeLine_ = sizeLine_.trim();
-  // std::cout << "sizeLine_: " << sizeLine_ << std::endl;
   std::stringstream ss;
   ss << std::hex << sizeLine_;
   ss >> chunkLength_;
