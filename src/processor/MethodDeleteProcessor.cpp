@@ -31,7 +31,7 @@ ProcessResult MethodDeleteProcessor::process() {
   directoryPath = directoryPath.toDirectoryPath();
   // 들어온값이 잘못된 경로라면 실패.
   if (!directoryPath.isExist()) {
-    std::cout << "error: DELETE: non exist path" << std::endl;
+    std::cout << "error: DELETE: Not Found" << std::endl;
     client_.setResponseStatusCode(404);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }

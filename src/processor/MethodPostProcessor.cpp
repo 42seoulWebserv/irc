@@ -30,7 +30,7 @@ ProcessResult MethodPostProcessor::process() {
   FilePath directoryPath = FilePath::getDirectory(filepath);
   directoryPath = directoryPath.toDirectoryPath();
   if (!directoryPath.isExist()) {
-    std::cout << "error: POST: non exist path" << std::endl;
+    std::cout << "error: POST: Not Found" << std::endl;
     client_.setResponseStatusCode(404);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
