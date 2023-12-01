@@ -195,7 +195,7 @@ void ClientEventController::clear(bool forceClose) {
       close(fd_);
       return;
     }
-    stream_.writeTo(client->stream_);
+    client->getRecvBuffer().addBuffer(getRecvBuffer().getBuffer());
   } else {
     close(fd_);
   }
