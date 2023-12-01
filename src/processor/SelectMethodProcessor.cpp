@@ -4,6 +4,7 @@
 
 #include "CgiProcessor.hpp"
 #include "ErrorPageProcessor.hpp"
+#include "FilePath.hpp"
 #include "MethodDeleteProcessor.hpp"
 #include "MethodGetProcessor.hpp"
 #include "MethodPostProcessor.hpp"
@@ -13,13 +14,8 @@ SelectMethodProcessor::SelectMethodProcessor(IClient& client)
     : client_(client) {}
 
 static bool cgiChecker(IClient& client_) {
-  std::string uri = client_.getRequest().getUri();
-  size_t extensionPos = uri.rfind('.');
-  if (extensionPos == -1) {
-    return false;
-  }
-  uri.erase(0, extensionPos);
-  if (!client_.getLocationConfig()->hasCgiProgram(uri)) {
+  FilePath extension = FilePath::getExtension(client_.getRequest().getUri());
+  if (!client_.getLocationConfig()->hasCgiProgram('.' + extension)) {
     return false;
   }
   return true;
