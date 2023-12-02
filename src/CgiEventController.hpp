@@ -7,7 +7,6 @@
 #include "ICgi.hpp"
 #include "IClient.hpp"
 #include "IObserver.hpp"
-#include "Request.hpp"
 #include "StringBuffer.hpp"
 
 class CgiEventController : public EventController,

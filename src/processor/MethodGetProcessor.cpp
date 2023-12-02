@@ -2,7 +2,6 @@
 
 #include <dirent.h>
 
-#include <exception>
 #include <sstream>
 
 #include "ErrorPageProcessor.hpp"

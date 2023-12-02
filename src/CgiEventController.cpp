@@ -2,18 +2,13 @@
 
 #include <signal.h>
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 #include <cstring>
-#include <map>
 #include <sstream>
-#include <stdexcept>
 
 #include "CgiInProcessor.hpp"
-#include "FilePath.hpp"
-#include "IObserver.hpp"
 #include "Log.hpp"
 #include "Multiplexer.hpp"
 

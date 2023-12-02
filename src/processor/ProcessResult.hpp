@@ -1,9 +1,6 @@
 #ifndef ProcessResult_HPP_
 #define ProcessResult_HPP_
 
-#include "Request.hpp"
-#include "Response.hpp"
-
 class IProcessor;
 class ProcessResult {
  public:

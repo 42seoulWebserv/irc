@@ -1,8 +1,5 @@
 #include "MethodPutProcessor.hpp"
 
-#include <fstream>
-#include <iostream>
-
 #include "ErrorPageProcessor.hpp"
 #include "FilePath.hpp"
 #include "WaitProcessor.hpp"

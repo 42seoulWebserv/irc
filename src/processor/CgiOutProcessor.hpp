@@ -1,12 +1,9 @@
 #ifndef CgiOutProcessor_HPP_
 #define CgiOutProcessor_HPP_
 
-#include "CgiEventController.hpp"
 #include "ICgi.hpp"
-#include "IObserver.hpp"
 #include "IProcessor.hpp"
 #include "String.hpp"
-#include "StringBuffer.hpp"
 
 class CgiOutProcessor : public IProcessor {
  public:

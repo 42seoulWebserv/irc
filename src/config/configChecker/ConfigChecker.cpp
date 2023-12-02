@@ -1,14 +1,11 @@
 #include "ConfigChecker.hpp"
 
-#include <cctype>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
-#include <exception>
 #include <iostream>
 #include <limits>
 #include <set>
-#include <sstream>
 #include <vector>
 
 #include "Directive.hpp"

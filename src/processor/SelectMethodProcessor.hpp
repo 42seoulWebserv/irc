@@ -2,7 +2,6 @@
 #define SelectMethodProcessor_HPP_
 
 #include "IProcessor.hpp"
-#include "Response.hpp"
 
 class SelectMethodProcessor : public IProcessor {
  public:

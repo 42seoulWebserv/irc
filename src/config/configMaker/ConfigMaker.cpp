@@ -1,6 +1,5 @@
 #include "ConfigMaker.hpp"
 
-#include <cmath>
 #include <cstdlib>
 
 #include "ConfigChecker.hpp"

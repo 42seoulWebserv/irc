@@ -1,7 +1,5 @@
 #include "MethodDeleteProcessor.hpp"
 
-#include <cstdio>
-
 #include "ErrorPageProcessor.hpp"
 #include "FilePath.hpp"
 #include "WaitProcessor.hpp"

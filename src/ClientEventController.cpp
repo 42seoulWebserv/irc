@@ -4,8 +4,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <iostream>
-
 #include "EventController.hpp"
 #include "Log.hpp"
 #include "StartProcessor.hpp"

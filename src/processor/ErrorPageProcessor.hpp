@@ -4,7 +4,6 @@
 #define CRLF "\r\n"
 
 #include "IProcessor.hpp"
-#include "Response.hpp"
 
 class ErrorPageProcessor : public IProcessor {
  public:

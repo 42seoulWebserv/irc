@@ -2,7 +2,6 @@
 #define FilePath_HPP_
 
 #include <iostream>
-#include <string>
 
 class FilePath : public std::string {
  public:

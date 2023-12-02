@@ -4,9 +4,7 @@
 #include <fstream>
 
 #include "FilePath.hpp"
-#include "IObserver.hpp"
 #include "IProcessor.hpp"
-#include "Response.hpp"
 
 class ProvideFileProcessor : public IProcessor {
  public:
