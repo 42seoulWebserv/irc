@@ -35,6 +35,7 @@ class ClientEventController : public EventController, public IClient {
   std::string &getBody();
   DataStream &getDataStream();
   StringBuffer &getRecvBuffer();
+  FilePath getRequestResourcePath();
   const LocationConfig *getLocationConfig();
   void print(Log &logger, const std::string &msg);
 

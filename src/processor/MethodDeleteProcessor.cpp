@@ -21,8 +21,7 @@ static void deleteFile(FilePath &filepath) {
 
 ProcessResult MethodDeleteProcessor::process() {
   client_.print(Log::debug, " in delete method");
-  FilePath filepath = client_.getLocationConfig()->getRootPath();
-  filepath.append(client_.getRequest().getUri());
+  FilePath filepath = client_.getRequestResourcePath();
   // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
     client_.print(Log::debug, " DELETE: not allowed form");
