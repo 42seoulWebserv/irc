@@ -77,6 +77,7 @@ PROCESSOR_NAME := \
 	MethodDeleteProcessor.cpp \
 	MethodGetProcessor.cpp \
 	MethodPostProcessor.cpp \
+	MethodPutProcessor.cpp \
 	ErrorPageProcessor.cpp \
 	SelectMethodProcessor.cpp \
 	ProvideFileProcessor.cpp \
