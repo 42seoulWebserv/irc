@@ -8,6 +8,7 @@
 #include "MethodDeleteProcessor.hpp"
 #include "MethodGetProcessor.hpp"
 #include "MethodPostProcessor.hpp"
+#include "MethodPutProcessor.hpp"
 #include "RedirectionProcessor.hpp"
 
 SelectMethodProcessor::SelectMethodProcessor(IClient& client)
@@ -61,6 +62,9 @@ ProcessResult SelectMethodProcessor::process() {
   }
   if (method == "DELETE") {
     return res.setNextProcessor(new MethodDeleteProcessor(client_));
+  }
+  if (method == "PUT") {
+    return res.setNextProcessor(new MethodPutProcessor(client_));
   }
   client_.setResponseStatusCode(500);
   return res.setNextProcessor(new ErrorPageProcessor(client_));

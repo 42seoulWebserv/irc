@@ -61,7 +61,8 @@ void ParseRequestHeadProcessor::parseStartLine() {
   method = method.ltrim().rtrim();
   if (method.empty()) {
     throw std::invalid_argument('"' + startLine_ + "'" + " no space");
-  } else if (method != "GET" && method != "POST" && method != "DELETE") {
+  } else if (method != "GET" && method != "POST" && method != "DELETE" &&
+             method != "PUT") {
     throw std::invalid_argument('"' + method + '"' + " wrong method");
   }
   request_.setMethod(method);

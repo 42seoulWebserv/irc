@@ -1,4 +1,4 @@
-#include "MethodPostProcessor.hpp"
+#include "MethodPutProcessor.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -7,12 +7,12 @@
 #include "FilePath.hpp"
 #include "WaitProcessor.hpp"
 
-MethodPostProcessor::MethodPostProcessor(IClient &client)
+MethodPutProcessor::MethodPutProcessor(IClient &client)
     : file_(), client_(client) {
-  client_.print(Log::info, " MethodPostProcessor");
+  client_.print(Log::info, " MethodPutProcessor");
 }
 
-MethodPostProcessor::~MethodPostProcessor() {
+MethodPutProcessor::~MethodPutProcessor() {
   if (file_.is_open()) {
     file_.close();
   }
@@ -20,12 +20,12 @@ MethodPostProcessor::~MethodPostProcessor() {
 
 // 들어온 경로가 디렉토리라면 실패.
 // 들어온 경로가 파일이라면 그 형태 그대로 생성.
-ProcessResult MethodPostProcessor::process() {
+ProcessResult MethodPutProcessor::process() {
   FilePath filepath = client_.getLocationConfig()->getRootPath();
   filepath.append(client_.getRequest().getUri());
   // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
-    client_.print(Log::debug, " POST: not allowed form");
+    client_.print(Log::debug, " PUT: not allowed form");
     client_.setResponseStatusCode(400);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
@@ -33,16 +33,11 @@ ProcessResult MethodPostProcessor::process() {
   FilePath directoryPath = FilePath::getDirectory(filepath);
   directoryPath = directoryPath.toDirectoryPath();
   if (!directoryPath.isExist()) {
-    client_.print(Log::debug, " POST: Forbidden");
+    client_.print(Log::debug, " PUT: Forbidden");
     client_.setResponseStatusCode(403);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  // 들어온값에 이미 같은 이름의 파일이 존재한다면 실패.
-  if (filepath.isFile()) {
-    client_.print(Log::debug, " POST: Files that already exist");
-    client_.setResponseStatusCode(409);
-    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
-  }
+  bool existFile = filepath.isFile();
   std::string content = client_.getRequest().getBody();
   file_.open(filepath.c_str(), std::ios::binary | std::ios::trunc);
   if (file_.is_open() == false) {
@@ -54,7 +49,7 @@ ProcessResult MethodPostProcessor::process() {
     client_.setResponseStatusCode(502);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  client_.setResponseStatusCode(201);
+  client_.setResponseStatusCode(existFile ? 200 : 201);
   client_.setResponseHeader("Content-Length", "0");
   client_.getDataStream().readStr(client_.getResponse().toString());
   client_.getDataStream().setEof(true);
