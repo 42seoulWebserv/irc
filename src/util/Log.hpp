@@ -20,7 +20,9 @@
 #define LOG_WHITE "\033[37m"
 #define LOG_COLOR_RESET "\033[0m"
 
-class Log : public std::ostream {
+#include <iostream>
+
+class Log {
  public:
   static Log debug;
   static Log info;
@@ -30,13 +32,14 @@ class Log : public std::ostream {
   template <typename T>
   Log& operator<<(const T& rhs) {
     if (level_ <= LOG_LEVEL) {
-      std::cout << color_ << rhs << LOG_COLOR_RESET;
+      os_ << color_ << rhs << LOG_COLOR_RESET;
     }
     return *this;
   }
 
  private:
-  Log(const char* color, int level);
+  Log(std::ostream& os, const char* color, int level);
+  std::ostream& os_;
   const char* color_;
   int level_;
 };
