@@ -5,6 +5,7 @@
 
 #include "ErrorPageProcessor.hpp"
 #include "FilePath.hpp"
+#include "WaitProcessor.hpp"
 
 MethodPutProcessor::MethodPutProcessor(IClient &client)
     : file_(), client_(client) {
@@ -36,8 +37,7 @@ ProcessResult MethodPutProcessor::process() {
     client_.setResponseStatusCode(403);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  // 들어온값에 이미 같은 이름의 파일이 존재한다면 실패.
-  bool exist = filepath.isFile();
+  bool existFile = filepath.isFile();
   std::string content = client_.getRequest().getBody();
   file_.open(filepath.c_str(), std::ios::binary | std::ios::trunc);
   if (file_.is_open() == false) {
@@ -49,9 +49,9 @@ ProcessResult MethodPutProcessor::process() {
     client_.setResponseStatusCode(502);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  client_.setResponseStatusCode(exist ? 200 : 201);
+  client_.setResponseStatusCode(existFile ? 200 : 201);
   client_.setResponseHeader("Content-Length", "0");
   client_.getDataStream().readStr(client_.getResponse().toString());
   client_.getDataStream().setEof(true);
-  return ProcessResult().setWriteOn(true);
+  return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }

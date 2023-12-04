@@ -5,6 +5,7 @@
 
 #include "ErrorPageProcessor.hpp"
 #include "FilePath.hpp"
+#include "WaitProcessor.hpp"
 
 MethodPostProcessor::MethodPostProcessor(IClient &client)
     : file_(), client_(client) {
@@ -57,5 +58,5 @@ ProcessResult MethodPostProcessor::process() {
   client_.setResponseHeader("Content-Length", "0");
   client_.getDataStream().readStr(client_.getResponse().toString());
   client_.getDataStream().setEof(true);
-  return ProcessResult().setWriteOn(true);
+  return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }
