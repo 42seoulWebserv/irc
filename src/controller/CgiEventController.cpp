@@ -14,7 +14,7 @@
 
 CgiEventController::CgiEventController(
     IClient& client, IObserver<CgiEventController::Event>* observer)
-    : EventController(new CgiInProcessor(*this, client)),
+    : EventController(NULL),
       client_(client),
       cancel_(false),
       pid_(0),
@@ -80,6 +80,7 @@ void CgiEventController::init() {
   setFd(fd[0]);
   Multiplexer::getInstance().addReadEvent(fd_, this);
   Multiplexer::getInstance().addWriteEvent(fd_, this);
+  setProcessor(new CgiInProcessor(*this, client_));
   if (loopProcess()) {
     throw std::runtime_error("process error");
   }

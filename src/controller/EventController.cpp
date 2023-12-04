@@ -25,6 +25,12 @@ void EventController::reserveDeleteSelf() {
   Multiplexer::getInstance().addDeleteController(this);
 }
 
+void EventController::setProcessor(IProcessor *processor) {
+  processor_ = processor;
+}
+
+IProcessor *EventController::getProcessor() const { return processor_; }
+
 ProcessResult EventController::nextProcessor() {
   if (processor_ == NULL) {
     return ProcessResult().setError(true);

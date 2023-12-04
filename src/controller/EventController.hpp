@@ -25,6 +25,8 @@ class EventController {
   bool deprecated_;
   bool loopProcess();
   void reserveDeleteSelf();
+  void setProcessor(IProcessor *processor);
+  IProcessor *getProcessor() const;
 
  private:
   IProcessor *processor_;
