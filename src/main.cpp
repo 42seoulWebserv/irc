@@ -1,12 +1,4 @@
 #include <signal.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-
-#include <fstream>
-#include <iostream>
-#include <iterator>
-#include <set>
-#include <vector>
 
 #include "ConfigLexer.hpp"
 #include "ConfigMaker.hpp"

@@ -1,6 +1,5 @@
 #include "ConfigLexer.hpp"
 
-#include <exception>
 #include <vector>
 
 #include "Log.hpp"

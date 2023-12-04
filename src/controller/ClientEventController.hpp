@@ -1,17 +1,12 @@
 #ifndef CLIENTEVENTCONTROLLER_HPP_
 #define CLIENTEVENTCONTROLLER_HPP_
 
-#include <map>
-#include <ostream>
-#include <string>
-
 #include "DataStream.hpp"
 #include "EventController.hpp"
-#include "IObserver.hpp"
-#include "IProcessor.hpp"
 #include "Multiplexer.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
+#include "ServerConfig.hpp"
 #include "StringBuffer.hpp"
 
 #define BUFF_SIZE 4
@@ -35,6 +30,7 @@ class ClientEventController : public EventController, public IClient {
   std::string &getBody();
   DataStream &getDataStream();
   StringBuffer &getRecvBuffer();
+  FilePath getRequestResourcePath();
   const LocationConfig *getLocationConfig();
   void print(Log &logger, const std::string &msg);
 

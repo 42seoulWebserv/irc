@@ -1,8 +1,6 @@
 #ifndef IObserver_HPP_
 #define IObserver_HPP_
 
-#include <string>
-
 template <typename T>
 class IObserver {
  public:

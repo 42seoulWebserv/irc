@@ -1,7 +1,6 @@
 #ifndef SERVEREVENTCONTROLLER_HPP_
 #define SERVEREVENTCONTROLLER_HPP_
 
-#include "ClientEventController.hpp"
 #include "EventController.hpp"
 #include "IServer.hpp"
 

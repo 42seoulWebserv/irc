@@ -3,9 +3,6 @@
 #include <sstream>
 
 #include "FilePath.hpp"
-#include "MethodDeleteProcessor.hpp"
-#include "MethodGetProcessor.hpp"
-#include "MethodPostProcessor.hpp"
 #include "ProvideFileProcessor.hpp"
 #include "WaitProcessor.hpp"
 

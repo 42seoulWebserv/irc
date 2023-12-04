@@ -1,17 +1,9 @@
 #include "ServerEventController.hpp"
 
 #include <fcntl.h>
-#include <netdb.h>
 #include <netinet/in.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <sys/types.h>
 
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
-#include <iostream>
-#include <stdexcept>
 
 #include "AcceptClientProcessor.hpp"
 #include "Log.hpp"

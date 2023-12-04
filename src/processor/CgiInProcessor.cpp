@@ -1,8 +1,5 @@
 #include "CgiInProcessor.hpp"
 
-#include <unistd.h>
-
-#include "CgiEventController.hpp"
 #include "CgiOutProcessor.hpp"
 #include "ErrorPageProcessor.hpp"
 

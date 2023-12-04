@@ -1,7 +1,6 @@
 #include "FilePath.hpp"
 
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 FilePath::FilePath() {}

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "DataStream.hpp"
+#include "FilePath.hpp"
 #include "LocationConfig.hpp"
 #include "Log.hpp"
 #include "Request.hpp"
@@ -24,6 +25,7 @@ class IClient {
   virtual std::string &getBody() = 0;
   virtual DataStream &getDataStream() = 0;
   virtual StringBuffer &getRecvBuffer() = 0;
+  virtual FilePath getRequestResourcePath() = 0;
   virtual const LocationConfig *getLocationConfig() = 0;
   virtual void print(Log &logger, const std::string &msg) = 0;
 };

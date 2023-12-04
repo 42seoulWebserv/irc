@@ -3,7 +3,6 @@
 
 #include "IClient.hpp"
 #include "IProcessor.hpp"
-#include "Response.hpp"
 
 class StartProcessor : public IProcessor {
  public:

@@ -4,7 +4,6 @@
 #include "IProcessor.hpp"
 #include "Multiplexer.hpp"
 #include "ProcessResult.hpp"
-#include "RootConfig.hpp"
 
 /* event hadling
 ** kqueue가 발생시키는 event를 handle

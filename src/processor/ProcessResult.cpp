@@ -1,5 +1,7 @@
 #include "ProcessResult.hpp"
 
+#include <cstdlib>
+
 ProcessResult::ProcessResult()
     : writeOn_(false),
       writeOff_(false),
@@ -33,8 +35,7 @@ ProcessResult& ProcessResult::setError(bool b) {
   return *this;
 }
 
-ProcessResult& ProcessResult::setNextProcessor(
-    IProcessor* nextProcessor) {
+ProcessResult& ProcessResult::setNextProcessor(IProcessor* nextProcessor) {
   this->nextProcessor_ = nextProcessor;
   return *this;
 }

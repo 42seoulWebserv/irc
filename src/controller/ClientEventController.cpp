@@ -4,8 +4,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <iostream>
-
 #include "EventController.hpp"
 #include "Log.hpp"
 #include "StartProcessor.hpp"
@@ -61,6 +59,16 @@ std::string &ClientEventController::getBody() { return body_; }
 DataStream &ClientEventController::getDataStream() { return stream_; }
 
 StringBuffer &ClientEventController::getRecvBuffer() { return buffer_; }
+
+FilePath ClientEventController::getRequestResourcePath() {
+  const LocationConfig *config = getLocationConfig();
+  if (config == NULL) {
+    return FilePath();
+  }
+  FilePath path = config->getRootPath();
+  path.append(request_.getUri());
+  return path;
+}
 
 static ServerConfig *selectServerConfig(
     Request request, std::vector<ServerConfig *> serverConfigs) {

@@ -12,6 +12,7 @@ INC_DIR := \
 	-I./src/processor \
 	-I./src/util \
 	-I./src/multiplexer \
+	-I./src/controller \
 
 SRC_DIR := src
 BUILD_DIR := build
@@ -27,10 +28,6 @@ endif
 MAIN_DIR := $(SRC_DIR)/
 MAIN_NAME := \
 	main.cpp \
-	EventController.cpp \
-	ServerEventController.cpp \
-	ClientEventController.cpp \
-	CgiEventController.cpp \
 	Request.cpp \
 	Response.cpp \
 
@@ -52,6 +49,13 @@ CONFIGMAKER_NAME := \
 CONFIGLEXER_DIR := $(SRC_DIR)/config/configLexer/
 CONFIGLEXER_NAME := \
 	ConfigLexer.cpp \
+
+CONTROLLER_DIR := $(SRC_DIR)/controller/
+CONTROLLER_NAME := \
+	EventController.cpp \
+	ServerEventController.cpp \
+	ClientEventController.cpp \
+	CgiEventController.cpp \
 
 PASER_LEXER_DIR := $(SRC_DIR)/parser/lexer/
 PASER_LEXER_NAME := \
@@ -106,6 +110,7 @@ SRCS := \
 	$(addprefix $(CONFIGCHECKER_DIR), $(CONFIGCHECKER_NAME)) \
 	$(addprefix $(CONFIGLEXER_DIR), $(CONFIGLEXER_NAME)) \
 	$(addprefix $(CONFIGMAKER_DIR), $(CONFIGMAKER_NAME)) \
+	$(addprefix $(CONTROLLER_DIR), $(CONTROLLER_NAME)) \
 	$(addprefix $(PASER_LEXER_DIR), $(PASER_LEXER_NAME)) \
 	$(addprefix $(PROCESSOR_DIR), $(PROCESSOR_NAME)) \
 	$(addprefix $(UTIL_DIR), $(UTIL_NAME)) \
@@ -117,6 +122,7 @@ SRCS_DIR := \
 	$(CONFIGCHECKER_DIR) \
 	$(CONFIGLEXER_DIR) \
 	$(CONFIGMAKER_DIR) \
+	$(CONTROLLER_DIR) \
 	$(PASER_LEXER_DIR) \
 	$(PROCESSOR_DIR) \
 	$(UTIL_DIR) \
