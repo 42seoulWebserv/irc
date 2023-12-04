@@ -58,21 +58,22 @@ void CgiEventController::init() {
     char* program = new char[root.size() + 1];
     std::strcpy(program, root.c_str());
 
-    char* const argv[] = {program, NULL};
-    std::vector<char*> envp_vec;
-    envp_vec.push_back(
-        strdup(("REQUEST_METHOD=" + client_.getRequest().getMethod()).c_str()));
+    std::vector<char*> argvList;
+    argvList.push_back(program);
+    argvList.push_back(strdup(client_.getRequestResourcePath().c_str()));
+    argvList.push_back(NULL);
 
-    envp_vec.push_back(strdup(
-        ("SERVER_PROTOCOL=" + client_.getRequest().getVersion()).c_str()));
-    envp_vec.push_back(
-        strdup(("PATH_INFO=" + client_.getRequest().getUri()).c_str()));
+    const Request& req = client_.getRequest();
+    std::vector<char*> envpList;
+    envpList.push_back(strdup(("REQUEST_METHOD=" + req.getMethod()).c_str()));
+    envpList.push_back(strdup(("SERVER_PROTOCOL=" + req.getVersion()).c_str()));
+    envpList.push_back(strdup(("PATH_INFO=" + req.getUri()).c_str()));
     std::stringstream ss;
-    ss << client_.getRequest().getBody().size();
-    envp_vec.push_back(strdup(("CONTENT_LENGTH=" + ss.str()).c_str()));
-    envp_vec.push_back(NULL);
-    char* const* envp = &envp_vec[0];
-    execve(program, argv, envp);
+    ss << req.getBody().size();
+    envpList.push_back(strdup(("CONTENT_LENGTH=" + ss.str()).c_str()));
+    envpList.push_back(NULL);
+
+    execve(program, argvList.data(), envpList.data());
     perror("execve");
     _exit(1);
   }
