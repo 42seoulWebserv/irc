@@ -3,6 +3,7 @@
 #include <exception>
 #include <vector>
 
+#include "Log.hpp"
 #include "ParseResult.hpp"
 #include "Parser.hpp"
 #include "PatternLetters.hpp"
@@ -181,7 +182,7 @@ const Directive ConfigLexer::run(const std::string raw) {
     ParseResult result = configParser.compile("httpBlock", raw);
     return parseResultToDirective(result);
   } catch (std::invalid_argument &e) {
-    std::cout << e.what() << std::endl;
+    Log::error << "ConfigLexer: " << e.what() << NL;
     throw e;
   }
 }

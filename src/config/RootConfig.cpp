@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include "Log.hpp"
+
 RootConfig::RootConfig()
     : limitClientBodySize_(1 * 1024 * 1024), autoindex_(false) {}
 
@@ -23,15 +25,15 @@ RootConfig::~RootConfig() {}
 
 void RootConfig::printRootConfig() {
   std::vector<ServerConfig>::iterator server;
-  std::cout << "root: " << this->rootPath_ << '\n';
-  std::cout << "client_max_body_size: " << this->limitClientBodySize_ << '\n';
-  std::cout << "autoindex: " << std::boolalpha << autoindex_ << '\n';
+  Log::debug << "root: " << this->rootPath_ << NL;
+  Log::debug << "client_max_body_size: " << this->limitClientBodySize_ << NL;
+  Log::debug << "autoindex: " << std::boolalpha << autoindex_ << NL;
   std::map<int, std::string>::const_iterator errorPage;
   for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
        errorPage++) {
     std::stringstream ss;
     ss << errorPage->first;
-    std::cout << "error_page: " << ss.str() << " " << errorPage->second << '\n';
+    Log::debug << "error_page: " << ss.str() << " " << errorPage->second << NL;
   }
   for (server = this->serverConfigs_.begin();
        server != this->serverConfigs_.end(); server++) {

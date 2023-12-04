@@ -2,7 +2,9 @@
 
 #include "WaitProcessor.hpp"
 
-RedirectionProcessor::RedirectionProcessor(IClient& client) : client_(client) {}
+RedirectionProcessor::RedirectionProcessor(IClient& client) : client_(client) {
+  client_.print(Log::info, " RedirectionProcessor");
+}
 
 ProcessResult RedirectionProcessor::process() {
   int status = client_.getLocationConfig()->getRedirectionStatusCode();

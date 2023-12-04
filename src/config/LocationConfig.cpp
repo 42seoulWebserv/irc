@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "Log.hpp"
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
@@ -36,35 +37,35 @@ LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
 LocationConfig::~LocationConfig(void) {}
 
 void LocationConfig::printLocationConfig(void) {
-  std::cout << "  location " << uri_ << " {" << '\n';
-  std::cout << "    root: " << rootPath_ << '\n';
-  std::cout << "    client_max_body_size: " << limitClientBodySize_ << '\n';
-  std::cout << "    return " << redirectionStatusCode_ << ' '
-            << redirectionPath_ << '\n';
-  std::cout << "    index: " << indexPath_ << '\n';
-  std::cout << "    autoindex: " << std::boolalpha << autoindex_ << '\n';
-  std::cout << "    accept_methods ";
+  Log::debug << "  location " << uri_ << " {" << NL;
+  Log::debug << "    root: " << rootPath_ << NL;
+  Log::debug << "    client_max_body_size: " << limitClientBodySize_ << NL;
+  Log::debug << "    return " << redirectionStatusCode_ << ' '
+             << redirectionPath_ << NL;
+  Log::debug << "    index: " << indexPath_ << NL;
+  Log::debug << "    autoindex: " << std::boolalpha << autoindex_ << NL;
+  Log::debug << "    accept_methods ";
   std::vector<std::string>::iterator method;
   for (method = acceptMethods_.begin(); method != acceptMethods_.end();
        method++) {
-    std::cout << *method << ' ';
+    Log::debug << *method << ' ';
   }
-  std::cout << '\n';
+  Log::debug << NL;
   std::map<std::string, std::string>::iterator cgi;
   for (cgi = this->cgiPrograms_.begin(); cgi != this->cgiPrograms_.end();
        cgi++) {
-    std::cout << "    cgi_extension " << cgi->first << ' ' << cgi->second
-              << '\n';
+    Log::debug << "    cgi_extension " << cgi->first << ' ' << cgi->second
+               << NL;
   }
   std::map<int, std::string>::const_iterator errorPage;
   for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
        errorPage++) {
     std::stringstream ss;
     ss << errorPage->first;
-    std::cout << "    error_page: " << ss.str() << " " << errorPage->second
-              << '\n';
+    Log::debug << "    error_page: " << ss.str() << " " << errorPage->second
+               << NL;
   }
-  std::cout << "  }" << '\n';
+  Log::debug << "  }" << NL;
 }
 
 int LocationConfig::getLimitClientBodySize() const {

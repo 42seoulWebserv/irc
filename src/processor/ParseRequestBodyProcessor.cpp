@@ -10,7 +10,9 @@ ParseRequestBodyProcessor::ParseRequestBodyProcessor(IClient& client)
     : readStatus_(HEADER),
       contentLength_(0),
       client_(client),
-      request_(client.getRequest()) {}
+      request_(client.getRequest()) {
+  client_.print(Log::info, " ParseRequestBodyProcessor");
+}
 
 ProcessResult ParseRequestBodyProcessor::process() {
   try {
@@ -58,7 +60,7 @@ void ParseRequestBodyProcessor::parseBody() {
 }
 
 void ParseRequestBodyProcessor::printParseBodyResult() {
-  std::cout << "========Body=========\n";
-  std::cout << body_ << "$" << std::endl;
-  std::cout << "=====================\n";
+  client_.print(Log::debug, " ========Body=========");
+  client_.print(Log::debug, " " + body_ + "$");
+  client_.print(Log::debug, " =====================");
 }

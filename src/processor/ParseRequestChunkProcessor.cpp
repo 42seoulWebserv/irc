@@ -9,7 +9,9 @@ ParseRequestChunkProcessor::ParseRequestChunkProcessor(IClient& client)
     : readStatus_(SIZE_LINE),
       chunkLength_(0),
       client_(client),
-      request_(client.getRequest()) {}
+      request_(client.getRequest()) {
+  client_.print(Log::info, " ParseRequestChunkProcessor");
+}
 
 ProcessResult ParseRequestChunkProcessor::process() {
   if (readStatus_ == SIZE_LINE && sizeLine_.empty()) {
@@ -74,7 +76,7 @@ void ParseRequestChunkProcessor::parseChunk() {
 }
 
 void ParseRequestChunkProcessor::printParseBodyResult() {
-  std::cout << "========Body=========\n";
-  std::cout << chunk_ << "$" << std::endl;
-  std::cout << "=====================\n";
+  client_.print(Log::debug, " ========Body=========");
+  client_.print(Log::debug, " " + chunk_ + "$");
+  client_.print(Log::debug, " =====================");
 }

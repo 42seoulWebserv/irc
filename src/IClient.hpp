@@ -5,6 +5,7 @@
 
 #include "DataStream.hpp"
 #include "LocationConfig.hpp"
+#include "Log.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 #include "StringBuffer.hpp"
@@ -24,6 +25,7 @@ class IClient {
   virtual DataStream &getDataStream() = 0;
   virtual StringBuffer &getRecvBuffer() = 0;
   virtual const LocationConfig *getLocationConfig() = 0;
+  virtual void print(Log &logger, const std::string &msg) = 0;
 };
 
 #endif

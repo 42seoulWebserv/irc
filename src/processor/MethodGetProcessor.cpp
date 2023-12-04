@@ -10,7 +10,9 @@
 #include "ProvideFileProcessor.hpp"
 #include "WaitProcessor.hpp"
 
-MethodGetProcessor::MethodGetProcessor(IClient& client) : client_(client) {}
+MethodGetProcessor::MethodGetProcessor(IClient& client) : client_(client) {
+  client_.print(Log::info, " MethodGetProcessor");
+}
 
 ProcessResult MethodGetProcessor::process() {
   FilePath path = client_.getLocationConfig()->getRootPath();
@@ -47,7 +49,7 @@ void MethodGetProcessor::createAutoindex(FilePath path) {
       throw std::invalid_argument("wrong path");
     }
   } catch (const std::exception& e) {
-    std::cout << "Error: GET: " << e.what() << '\n';
+    client_.print(Log::error, std::string("GET: ") + e.what());
     return;
   }
   std::string html =

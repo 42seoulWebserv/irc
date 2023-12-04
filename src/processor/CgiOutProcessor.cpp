@@ -6,7 +6,9 @@
 #include "WaitProcessor.hpp"
 
 CgiOutProcessor::CgiOutProcessor(ICgi& cgi, IClient& client)
-    : cgi_(cgi), client_(client) {}
+    : cgi_(cgi), client_(client) {
+  client_.print(Log::info, "  CgiOutProcessor");
+}
 
 ProcessResult CgiOutProcessor::process() {
   String rawHeaders = cgi_.getRecvBuffer().nextSeek("\r\n\r\n");
