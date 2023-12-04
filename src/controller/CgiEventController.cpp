@@ -18,8 +18,7 @@ CgiEventController::CgiEventController(
       client_(client),
       cancel_(false),
       pid_(0),
-      observer_(observer),
-      end_(false) {}
+      observer_(observer) {}
 
 CgiEventController::~CgiEventController() {
   int err;
@@ -147,8 +146,6 @@ void CgiEventController::setFd(int& fd) { fd_ = fd; }
 int CgiEventController::getFd() { return fd_; }
 
 StringBuffer& CgiEventController::getRecvBuffer() { return recvBuffer_; }
-
-void CgiEventController::end() { end_ = true; }
 
 DataStream& CgiEventController::getWriteBuffer() { return writeBuffer_; }
 
