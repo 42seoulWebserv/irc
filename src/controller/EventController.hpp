@@ -17,9 +17,12 @@ class EventController {
   virtual void handleEvent(const Multiplexer::Event &event) = 0;
 
   int getFd() const;
+  bool isDeprecated() const;
+  void setDeprecated(bool deprecated);
 
  protected:
   int fd_;
+  bool deprecated_;
   bool loopProcess();
   void reserveDeleteSelf();
 

@@ -1,11 +1,17 @@
 #include "EventController.hpp"
 
 EventController::EventController(IProcessor *processor)
-    : processor_(processor) {}
+    : deprecated_(false), processor_(processor) {}
 
 EventController::~EventController() { delete processor_; }
 
 int EventController::getFd() const { return fd_; }
+
+bool EventController::isDeprecated() const { return deprecated_; }
+
+void EventController::setDeprecated(bool deprecated) {
+  deprecated_ = deprecated;
+}
 
 bool EventController::loopProcess() {
   ProcessResult processResult = nextProcessor();
