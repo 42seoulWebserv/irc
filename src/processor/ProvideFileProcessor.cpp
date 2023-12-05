@@ -45,6 +45,9 @@ ProcessResult ProvideFileProcessor::process() {
   fileSize_ = path_.getFileSize();
   std::stringstream ss;
   ss << path_.getFileSize();
+  if (FilePath::getExtension(client_.getRequestResourcePath()) == "jpg") {
+    client_.setResponseHeader("Content-Type", "image/jpeg");
+  }
   client_.setResponseHeader("Content-Length", ss.str());
   client_.getDataStream().readStr(response.toString());
   if (fileSize_ == 0) {
