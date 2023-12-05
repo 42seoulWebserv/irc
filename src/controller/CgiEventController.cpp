@@ -71,6 +71,10 @@ void CgiEventController::init() {
     std::stringstream ss;
     ss << req.getBody().size();
     envpList.push_back(strdup(("CONTENT_LENGTH=" + ss.str()).c_str()));
+    if (req.hasHeader("Cookie")) {
+      envpList.push_back(
+          strdup(("HTTP_COOKIE=" + req.getHeader("Cookie")).c_str()));
+    }
     envpList.push_back(NULL);
 
     execve(program, argvList.data(), envpList.data());
