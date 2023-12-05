@@ -119,6 +119,14 @@ std::string FilePath::getDirectory(const std::string& path) {
   return path.substr(0, pos);
 }
 
+std::string FilePath::getLastDirectory(const std::string& path) {
+  size_t pos = path.rfind('/');
+  if (pos == std::string::npos) {
+    return "";
+  }
+  return path.substr(pos);
+}
+
 std::ostream& operator<<(std::ostream& os, const FilePath& path) {
   os << path.getPath();
   return os;
