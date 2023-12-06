@@ -15,7 +15,6 @@ ProcessResult CgiOutProcessor::process() {
   if (rawHeaders.empty()) {
     return ProcessResult();
   }
-  Response response = client_.getResponse();
   std::map<std::string, std::string> headers = parseHeader(rawHeaders);
   if (headers.empty()) {
     return ProcessResult().setError(true);
