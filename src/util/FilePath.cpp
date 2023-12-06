@@ -123,6 +123,9 @@ std::string FilePath::getLastDirectory(const std::string& path) {
   size_t pos = path.rfind('/');
   if (pos == std::string::npos) {
     return "";
+  } else {
+    size_t pos1 = path.rfind('/', pos - 1);
+    return path.substr(pos1);
   }
   return path.substr(pos);
 }
