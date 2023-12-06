@@ -3,7 +3,7 @@
 
 #include <set>
 #include <vector>
-#define TIMEOUT 111111
+#define TIMEOUT 30
 #define MAX_BUFFER_SIZE 16384
 
 #define WEB_READ 1
