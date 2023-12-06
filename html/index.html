@@ -1,0 +1,101 @@
+<html>
+<head>
+  <title>irc</title>
+  <script>
+    function postText() {
+      const title = prompt("file name", "title");
+      const body = prompt("body", "body");
+      if (title == null) return;
+      fetch(`/static/${title}`, {
+        method: "POST",
+        credentials: "same-origin",
+        body,
+      }).then(function(response) {
+        alert(`${response.status} ${response.statusText}`);
+      }).catch(function(error) {
+        alert(error);
+      });
+    }
+
+    function postFile() {
+      file = document.getElementById("file").click();
+    }
+
+    function deleteText() {
+      const title = prompt("file name", "title");
+      fetch(`/static/${title}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+      }).then(function(response) {
+        alert(`${response.status} ${response.statusText}`);
+      }).catch(function(error) {
+        alert(error);
+      });
+    }
+
+    function getCgi() {
+      fetch(`/api/cart.py`, {
+        method: "GET",
+        credentials: "same-origin",
+      }).then(async function(response) {
+        alert(`${response.status} ${response.statusText}\n${await response.text()}`);
+      }).catch(function(error) {
+        alert(error);
+      })
+    }
+
+    function postCgi() {
+      const body = prompt("item", "item");
+      fetch(`/api/cart.py`, {
+        method: "POST",
+        credentials: "same-origin",
+        body,
+      }).then(function(response) {
+        alert(`${response.status} ${response.statusText}`);
+      }).catch(function(error) {
+        alert(error);
+      })
+    }
+
+    function deleteCgi() {
+      const body = prompt("item", "item");
+      fetch(`/api/cart.py`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        body,
+      }).then(function(response) {
+        alert(`${response.status} ${response.statusText}`);
+      }).catch(function(error) {
+        alert(error);
+      })
+    }
+  </script>
+</head>
+<body>
+  <h1>It is not irc</h1>
+  <li><a href="/largeImg.jpg">GET large image</a></li>
+  <li><a href="/static/">GET static file</a></li>
+  <li><a href="javascript:postText()">POST static text</a></li>
+  <li><a href="javascript:postFile()">POST static file</a><input id="file" hidden type="file"/></li>
+  <li><a href="javascript:deleteText()">DELETE static file</a></li>
+  <li><a href="/old/file">Redirect old page</a></li>
+  <li><a href="javascript:getCgi()">GET CGI</a></li>
+  <li><a href="javascript:postCgi()">POST CGI</a></li>
+  <li><a href="javascript:deleteCgi()">DELETE CGI</a></li>
+  <script>
+    document.getElementById("file").addEventListener("change", _ => {
+      const title = prompt("file name", "title");
+      const body = document.getElementById("file").files[0];
+      if (title == null) return;
+      const a = fetch(`/static/${title}`, {
+        method: "POST",
+        credentials: "same-origin",
+        body,
+      }).then(function(response) {
+        alert(`${response.status} ${response.statusText}`);
+      }).catch(function(error) {
+        alert(error);
+      })
+    });
+  </script>
+</html>
