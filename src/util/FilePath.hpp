@@ -26,6 +26,7 @@ class FilePath : public std::string {
   static std::string getExtension(const std::string &path);
   static std::string getFileName(const std::string &path);
   static std::string getDirectory(const std::string &path);
+  static std::string getLastDirectory(const std::string &path);
 };
 
 #endif
