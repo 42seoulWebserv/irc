@@ -78,6 +78,10 @@ std::vector<Multiplexer::Event> Multiplexer::wait(int size) {
 }
 
 void Multiplexer::addDeleteController(EventController* controller) {
+  if (controller == NULL) {
+    return;
+  }
+  controller->setDeprecated(true);
   removeReadEvent(controller->getFd(), controller);
   removeWriteEvent(controller->getFd(), controller);
   removeTimeoutEvent(controller->getFd(), controller);

@@ -34,6 +34,11 @@ ProcessResult CgiProcessor::process() {
   if (cgi_) {
     return ProcessResult();
   }
+  FilePath path = client_.getRequestResourcePath();
+  if (path.isFile() == false || path.isAccessible(FilePath::READ) == false) {
+    client_.setResponseStatusCode(404);
+    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+  }
   cgi_ = CgiEventController::addEventController(client_, this);
   if (cgi_ == NULL) {
     client_.setResponseStatusCode(500);

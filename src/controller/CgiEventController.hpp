@@ -30,7 +30,6 @@ class CgiEventController : public EventController,
   void setFd(int &fd);
   int getFd();
   StringBuffer &getRecvBuffer();
-  void end();
   DataStream &getWriteBuffer();
   void clear(bool error);
   void print(Log &logger, const std::string &msg);
@@ -43,7 +42,6 @@ class CgiEventController : public EventController,
   pid_t pid_;
   IObserver<CgiEventController::Event> *observer_;
   StringBuffer recvBuffer_;
-  bool end_;
   DataStream writeBuffer_;
 };
 

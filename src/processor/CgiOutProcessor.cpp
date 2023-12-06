@@ -24,7 +24,6 @@ ProcessResult CgiOutProcessor::process() {
   for (it = headers.begin(); it != headers.end(); it++) {
     client_.setResponseHeader(it->first, it->second);
   }
-  cgi_.end();
   return ProcessResult().setNextProcessor(new WaitProcessor());
 }
 

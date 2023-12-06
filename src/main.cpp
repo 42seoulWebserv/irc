@@ -36,7 +36,9 @@ int run(RootConfig &config) {
   while (1) {
     std::vector<Multiplexer::Event> events = Multiplexer.wait(5);
     for (size_t i = 0; i < events.size(); i++) {
-      events[i].controller->handleEvent(events[i]);
+      if (events[i].controller->isDeprecated() == false) {
+        events[i].controller->handleEvent(events[i]);
+      }
     }
     Multiplexer::getInstance().deleteAddedControllers();
   }

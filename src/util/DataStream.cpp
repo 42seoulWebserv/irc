@@ -20,6 +20,9 @@ DataStream::Chunk::Chunk(int seq, int size)
 DataStream::Chunk::~Chunk() { delete[] buffer_; }
 
 int DataStream::readStr(const std::string &str) {
+  if (str.size() == 0) {
+    return 0;
+  }
   Chunk *chunk = new Chunk(seq_++, str.size());
   std::memcpy(chunk->buffer_, str.c_str(), str.size());
   totalRead_ += str.size();

@@ -11,10 +11,8 @@ class ICgi {
  public:
   virtual ~ICgi(){};
 
-  virtual void setFd(int &fd) = 0;
   virtual int getFd() = 0;
   virtual StringBuffer &getRecvBuffer() = 0;
-  virtual void end() = 0;
   virtual DataStream &getWriteBuffer() = 0;
   virtual void print(Log &logger, const std::string &msg) = 0;
 };
