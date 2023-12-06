@@ -65,21 +65,19 @@ ProcessResult ProvideFileProcessor::process() {
 
 ProcessResult ProvideFileProcessor::processReadFile() {
   int size = client_.getDataStream().readFile(file_);
-  totalReadSize_ += size;
-
   if (size == DELAYED_FILE_READ) {
     return ProcessResult();
   }
   if (size == -1) {
     return ProcessResult().setError(true);
   }
+  totalReadSize_ += size;
+
   if (size != 0) {
     return ProcessResult();
   }
 
-  const int responseHeaderSize = client_.getResponse().toString().size();
-  const int bodySize = totalReadSize_ - responseHeaderSize;
-  if (bodySize != fileSize_) {
+  if (totalReadSize_ != fileSize_) {
     return ProcessResult().setError(true);
   }
 
