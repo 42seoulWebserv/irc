@@ -70,6 +70,7 @@ PASER_LEXER_NAME := \
 PROCESSOR_DIR := $(SRC_DIR)/processor/
 PROCESSOR_NAME := \
 	AcceptClientProcessor.cpp \
+	AutoindexProcessor.cpp \
 	ProcessResult.cpp \
 	StartProcessor.cpp \
 	ParseRequestBodyProcessor.cpp \
