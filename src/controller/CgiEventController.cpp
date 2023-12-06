@@ -40,7 +40,10 @@ static std::string cgiPath(IClient& client_) {
 void CgiEventController::init() {
   int fd[2];
 
-  socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == -1) {
+    Log::error << "socketpair error" << NL;
+    throw std::runtime_error("socketpair error");
+  }
   pid_ = fork();
   if (pid_ == -1) {
     Log::error << "fork error" << NL;
