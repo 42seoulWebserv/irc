@@ -3,6 +3,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include <iomanip>
 #include <sstream>
 
 #include "ErrorPageProcessor.hpp"
@@ -14,7 +15,10 @@ AutoindexProcessor::AutoindexProcessor(IClient& client) : client_(client) {
 }
 
 ProcessResult AutoindexProcessor::process() {
+  FilePath uri = client_.getRequest().getUri();
   FilePath path = client_.getRequestResourcePath().toDirectoryPath();
+  client_.print(Log::debug, "uri: " + uri);
+  client_.print(Log::debug, "path: " + path);
   DIR* dir = opendir(path.c_str());
   if (dir == NULL) {
     client_.print(Log::error, std::string("GET: opendir failed"));
@@ -23,10 +27,9 @@ ProcessResult AutoindexProcessor::process() {
   }
   std::stringstream ss;
   ss << "<!DOCTYPE html>";
-  ss << "<head><title>Index of " << FilePath::getLastDirectory(path)
-     << "</title></head>";
+  ss << "<head><title>Index of " << uri << "</title></head>";
   ss << "<body>";
-  ss << "<h1>Index of " << FilePath::getLastDirectory(path) << "</h1>";
+  ss << "<h1>Index of " << uri << "</h1>";
   ss << "<hr><pre>";
   dirent* entry;
   do {
@@ -40,14 +43,16 @@ ProcessResult AutoindexProcessor::process() {
       continue;
     }
     if (entry->d_type == DT_DIR) {
-      fileName.toDirectoryPath();
+      fileName = fileName.toDirectoryPath();
     }
-    ss << "<a href=\"" << FilePath::getLastDirectory(path) << fileName << "\">"
-       << fileName << "</a>";
-    if (fileName != "..") {
-      ss << getFileTimeInfo(fileName);
+    ss << "<a href=\"" << fileName << "\">" << fileName << "</a>";
+    if (fileName == "../") {
+      ss << "<br>";
+    } else {
+      ss << std::right << std::setw(70 - fileName.size())
+         << getFileTimeInfo(fileName);
       ss << " ";
-      ss << getFileSize(fileName);
+      ss << std::right << std::setw(10) << getFileSize(fileName);
       ss << "<br>";
     }
   } while (entry != NULL);
@@ -67,7 +72,7 @@ const std::string AutoindexProcessor::getFileTimeInfo(FilePath fileName) {
   stat(fileName.c_str(), &fileStat);
   char buff[20];
   struct tm* timeInfo = std::localtime(&fileStat.st_ctime);
-  std::strftime(buff, sizeof(buff), "%d-%m-%y %H:%M", timeInfo);
+  std::strftime(buff, sizeof(buff), "%d-%b-%y %H:%M", timeInfo);
   return std::string(buff);
 }
 
