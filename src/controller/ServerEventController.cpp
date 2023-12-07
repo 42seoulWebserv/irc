@@ -47,9 +47,9 @@ void ServerEventController::init() {
     throw std::runtime_error("setsockopt error");
   }
 
-  addr.sin_family = AF_INET;                 // IPv4 인터넷 프로토롤
-  addr.sin_port = htons(port_);              // 사용할 port 번호는 port
-  addr.sin_addr.s_addr = htonl(INADDR_ANY);  // 32bit IPV4 주소
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(port_);
+  addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
   if (bind(fd_, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
     throw std::logic_error("bind error");
