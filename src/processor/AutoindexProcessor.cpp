@@ -61,9 +61,9 @@ ProcessResult AutoindexProcessor::process() {
   tmp << ss.str().length();
   client_.setResponseStatusCode(200);
   client_.setResponseHeader("Content-Length", tmp.str());
-  client_.getDataStream().push(client_.getResponse().toString());
-  client_.getDataStream().push(ss.str());
-  client_.getDataStream().markEOF();
+  client_.getResponseStream().push(client_.getResponse().toString());
+  client_.getResponseStream().push(ss.str());
+  client_.getResponseStream().markEOF();
   return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }
 

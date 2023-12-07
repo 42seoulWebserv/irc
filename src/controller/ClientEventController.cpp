@@ -56,7 +56,7 @@ void ClientEventController::setBody(const std::string &body) { body_ = body; }
 
 std::string &ClientEventController::getBody() { return body_; }
 
-DataStream &ClientEventController::getDataStream() { return stream_; }
+DataStream &ClientEventController::getResponseStream() { return responseStream_; }
 
 StringBuffer &ClientEventController::getRecvBuffer() { return buffer_; }
 
@@ -174,12 +174,12 @@ void ClientEventController::handleEvent(const Multiplexer::Event &event) {
     buffer_.addBuffer(recvBuffer);
   }
   if (event.filter == WEB_WRITE) {
-    int size = stream_.popToClient(fd_);
+    int size = responseStream_.popToClient(fd_);
     if (size == -1) {
       clear(true);
       return;
     }
-    if (stream_.isEOF()) {
+    if (responseStream_.isEOF()) {
       clear(false);
       return;
     }

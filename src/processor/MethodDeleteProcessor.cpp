@@ -42,6 +42,6 @@ ProcessResult MethodDeleteProcessor::process() {
   deleteFile(filepath);
   client_.setResponseStatusCode(200);
   client_.setResponseHeader("Content-Length", "0");
-  client_.getDataStream().push(client_.getResponse().toString());
+  client_.getResponseStream().push(client_.getResponse().toString());
   return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }

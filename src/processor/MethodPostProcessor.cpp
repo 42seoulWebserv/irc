@@ -52,7 +52,7 @@ ProcessResult MethodPostProcessor::process() {
   }
   client_.setResponseStatusCode(201);
   client_.setResponseHeader("Content-Length", "0");
-  client_.getDataStream().push(client_.getResponse().toString());
-  client_.getDataStream().markEOF();
+  client_.getResponseStream().push(client_.getResponse().toString());
+  client_.getResponseStream().markEOF();
   return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }

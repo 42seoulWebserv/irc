@@ -28,7 +28,7 @@ class ClientEventController : public EventController, public IClient {
   void setResponseHeader(const std::string &key, const std::string &value);
   void setBody(const std::string &body);
   std::string &getBody();
-  DataStream &getDataStream();
+  DataStream &getResponseStream();
   StringBuffer &getRecvBuffer();
   FilePath getRequestResourcePath();
   const LocationConfig *getLocationConfig();
@@ -41,7 +41,7 @@ class ClientEventController : public EventController, public IClient {
   StringBuffer buffer_;
   Request request_;
   Response response_;
-  DataStream stream_;
+  DataStream responseStream_;
   std::string body_;
 
   ClientEventController(int clientSocket);

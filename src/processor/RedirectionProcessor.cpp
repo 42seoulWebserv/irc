@@ -12,7 +12,7 @@ ProcessResult RedirectionProcessor::process() {
   client_.setResponseStatusCode(status);
   client_.setResponseHeader("Location", path);
   client_.setResponseHeader("Content-Length", "0");
-  client_.getDataStream().push(client_.getResponse().toString());
-  client_.getDataStream().markEOF();
+  client_.getResponseStream().push(client_.getResponse().toString());
+  client_.getResponseStream().markEOF();
   return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }
