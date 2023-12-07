@@ -56,9 +56,11 @@ void ClientEventController::setBody(const std::string &body) { body_ = body; }
 
 std::string &ClientEventController::getBody() { return body_; }
 
-DataStream &ClientEventController::getResponseStream() { return responseStream_; }
+DataStream &ClientEventController::getResponseStream() {
+  return responseStream_;
+}
 
-StringBuffer &ClientEventController::getRecvBuffer() { return buffer_; }
+StringBuffer &ClientEventController::getRecvBuffer() { return recvBuffer_; }
 
 FilePath ClientEventController::getRequestResourcePath() {
   const LocationConfig *config = getLocationConfig();
@@ -158,9 +160,9 @@ void ClientEventController::init() {
 
 void ClientEventController::handleEvent(const Multiplexer::Event &event) {
   if (event.filter == WEB_READ) {
-    std::vector<char> recvBuffer;
-    recvBuffer.resize(MAX_BUFFER_SIZE);
-    int size = recv(fd_, recvBuffer.data(), MAX_BUFFER_SIZE, 0);
+    std::vector<char> buffer;
+    buffer.resize(MAX_BUFFER_SIZE);
+    int size = recv(fd_, buffer.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
       print(Log::info, "read error");
       clear(true);
@@ -170,8 +172,8 @@ void ClientEventController::handleEvent(const Multiplexer::Event &event) {
       clear(true);
       return;
     }
-    recvBuffer.resize(size);
-    buffer_.addBuffer(recvBuffer);
+    buffer.resize(size);
+    recvBuffer_.addBuffer(buffer);
   }
   if (event.filter == WEB_WRITE) {
     int size = responseStream_.popToClient(fd_);

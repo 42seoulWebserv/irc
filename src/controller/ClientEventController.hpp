@@ -38,11 +38,11 @@ class ClientEventController : public EventController, public IClient {
   const LocationConfig *config_;
   std::vector<ServerConfig *> serverConfigs_;
 
-  StringBuffer buffer_;
   Request request_;
   Response response_;
-  DataStream responseStream_;
   std::string body_;
+  StringBuffer recvBuffer_;
+  DataStream responseStream_;
 
   ClientEventController(int clientSocket);
   ClientEventController(const ClientEventController &src);
