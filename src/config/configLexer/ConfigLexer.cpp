@@ -10,7 +10,7 @@
 #include "PatternSequence.hpp"
 #include "PatternWord.hpp"
 
-const Directive ConfigLexer::run(const std::string raw) {
+const Directive ConfigLexer::makeDirective(const std::string raw) {
   if (raw.empty()) {
     return Directive();
   }

@@ -9,7 +9,7 @@
 
 class ConfigLexer {
  public:
-  static const Directive run(const std::string rawContent);
+  static const Directive makeDirective(const std::string rawContent);
 
  private:
   static const Directive parseResultToDirective(const ParseResult &res);

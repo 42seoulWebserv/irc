@@ -81,7 +81,7 @@ static void installSignals() {
 int main(int argc, char **argv) {
   try {
     std::string configStr = getConfigStr(argc, argv);
-    Directive directive = ConfigLexer::run(configStr);
+    Directive directive = ConfigLexer::makeDirective(configStr);
     RootConfig config = ConfigMaker::makeConfig(directive);
     installSignals();
     createServers(config);
