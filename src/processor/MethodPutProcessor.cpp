@@ -47,7 +47,7 @@ ProcessResult MethodPutProcessor::process() {
   }
   client_.setResponseStatusCode(existFile ? 200 : 201);
   client_.setResponseHeader("Content-Length", "0");
-  client_.getDataStream().readStr(client_.getResponse().toString());
-  client_.getDataStream().setEof(true);
+  client_.getDataStream().push(client_.getResponse().toString());
+  client_.getDataStream().markEOF();
   return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }

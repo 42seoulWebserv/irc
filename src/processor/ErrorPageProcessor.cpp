@@ -46,8 +46,8 @@ ProcessResult ErrorPageProcessor::process() {
   std::string body = ss.str();
   client_.setResponseHeader("Content-Length", intToString(body.size()));
   client_.setResponseHeader("Connection", "close");
-  client_.getDataStream().readStr(response.toString() + body);
-  client_.getDataStream().setEof(true);
+  client_.getDataStream().push(response.toString() + body);
+  client_.getDataStream().markEOF();
 
   return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }

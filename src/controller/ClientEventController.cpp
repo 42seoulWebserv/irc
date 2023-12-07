@@ -174,7 +174,7 @@ void ClientEventController::handleEvent(const Multiplexer::Event &event) {
     buffer_.addBuffer(recvBuffer);
   }
   if (event.filter == WEB_WRITE) {
-    int size = stream_.writeToClient(fd_);
+    int size = stream_.popToClient(fd_);
     if (size == -1) {
       clear(true);
       return;

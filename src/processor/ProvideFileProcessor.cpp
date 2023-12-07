@@ -36,8 +36,8 @@ ProcessResult ProvideFileProcessor::process() {
   if (path_.getFileSize() == 0) {
     fileSize_ = 0;
     client_.setResponseHeader("Content-Length", "0");
-    client_.getDataStream().readStr(response.toString());
-    client_.getDataStream().setEof(true);
+    client_.getDataStream().push(response.toString());
+    client_.getDataStream().markEOF();
     return ProcessResult().setWriteOn(true).setNextProcessor(
         new WaitProcessor());
   }
@@ -49,9 +49,9 @@ ProcessResult ProvideFileProcessor::process() {
     client_.setResponseHeader("Content-Type", "image/jpeg");
   }
   client_.setResponseHeader("Content-Length", ss.str());
-  client_.getDataStream().readStr(response.toString());
+  client_.getDataStream().push(response.toString());
   if (fileSize_ == 0) {
-    client_.getDataStream().setEof(true);
+    client_.getDataStream().markEOF();
     return ProcessResult().setWriteOn(true).setNextProcessor(
         new WaitProcessor());
   }
@@ -64,7 +64,7 @@ ProcessResult ProvideFileProcessor::process() {
 }
 
 ProcessResult ProvideFileProcessor::processReadFile() {
-  int size = client_.getDataStream().readFile(file_);
+  int size = client_.getDataStream().push(file_);
   if (size == DELAYED_FILE_READ) {
     return ProcessResult();
   }
@@ -81,6 +81,6 @@ ProcessResult ProvideFileProcessor::processReadFile() {
     return ProcessResult().setError(true);
   }
 
-  client_.getDataStream().setEof(true);
+  client_.getDataStream().markEOF();
   return ProcessResult().setNextProcessor(new WaitProcessor());
 }
