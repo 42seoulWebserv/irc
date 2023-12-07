@@ -10,7 +10,7 @@ MethodDeleteProcessor::MethodDeleteProcessor(IClient &client)
 }
 
 static void deleteFile(FilePath &filepath) {
-  int code = remove(filepath.c_str());
+  int code = std::remove(filepath.c_str());
   if (code != 0) {
     throw std::invalid_argument("file remove error");
   }
