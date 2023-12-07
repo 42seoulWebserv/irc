@@ -66,8 +66,10 @@ int main(int argc, char **argv) {
   try {
     Directive directive = ConfigLexer::run(configStr);
     RootConfig config = ConfigMaker::makeConfig(directive);
-    config.printRootConfig();  // debug
-    signal(SIGPIPE, SIG_IGN);
+    config.printRootConfig();
+    if (signal(SIGPIPE, SIG_IGN) == SIG_ERR) {
+      throw std::runtime_error("fail to install signal");
+    }
     run(config);
   } catch (const std::exception &e) {
     Log::error << "error: " << e.what() << NL;
