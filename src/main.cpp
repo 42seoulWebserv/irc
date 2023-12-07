@@ -8,9 +8,24 @@
 #include "ServerConfig.hpp"
 #include "ServerEventController.hpp"
 
-int run(RootConfig &config) {
-  Multiplexer &Multiplexer = Multiplexer::getInstance();
+#define BACKLOG 20
 
+static void mainloop() {
+  Multiplexer &multiplexer = Multiplexer::getInstance();
+
+  while (1) {
+    std::vector<Multiplexer::Event> events = multiplexer.wait(BACKLOG);
+    for (size_t i = 0; i < events.size(); i++) {
+      if (events[i].controller->isDeprecated() == false) {
+        events[i].controller->handleEvent(events[i]);
+      }
+    }
+    multiplexer.deleteAddedControllers();
+  }
+}
+
+static void createServers(RootConfig &config) {
+  config.printRootConfig();
   std::vector<ServerConfig> &serverConfigs = config.getServerConfigs();
   std::map<int, ServerEventController *> servers;
   for (size_t i = 0; i < serverConfigs.size(); i++) {
@@ -18,6 +33,9 @@ int run(RootConfig &config) {
       int port = serverConfigs[i].getPort();
       ServerEventController *server =
           ServerEventController::addEventController(port);
+      if (server == NULL) {
+        throw std::runtime_error("open server error");
+      }
       server->init();
       servers.insert(std::make_pair(serverConfigs[i].getPort(), server));
     }
@@ -32,45 +50,42 @@ int run(RootConfig &config) {
       }
     }
   }
-
-  while (1) {
-    std::vector<Multiplexer::Event> events = Multiplexer.wait(5);
-    for (size_t i = 0; i < events.size(); i++) {
-      if (events[i].controller->isDeprecated() == false) {
-        events[i].controller->handleEvent(events[i]);
-      }
-    }
-    Multiplexer::getInstance().deleteAddedControllers();
-  }
-  return 0;
 }
 
-int main(int argc, char **argv) {
+static std::string getConfigStr(int argc, char **argv) {
   std::string filepath;
   if (argc < 2) {
     filepath = "default.conf";
   } else if (argc == 2) {
     filepath = argv[1];
   } else {
-    Log::error << "too many args" << NL;
-    return 1;
+    throw std::runtime_error("too many args");
   }
   std::ifstream configFile(filepath.c_str());
   if (!configFile.is_open()) {
-    Log::error << "config file open error" << NL;
-    return 1;
+    throw std::runtime_error("config file open error");
   }
-  std::string configStr((std::istreambuf_iterator<char>(configFile)),
-                        std::istreambuf_iterator<char>());
+  std::string configStr =
+      std::string(std::istreambuf_iterator<char>(configFile),
+                  std::istreambuf_iterator<char>());
   configFile.close();
+  return configStr;
+}
+
+static void installSignals() {
+  if (signal(SIGPIPE, SIG_IGN) == SIG_ERR) {
+    throw std::runtime_error("fail to install signal");
+  }
+}
+
+int main(int argc, char **argv) {
   try {
+    std::string configStr = getConfigStr(argc, argv);
     Directive directive = ConfigLexer::run(configStr);
     RootConfig config = ConfigMaker::makeConfig(directive);
-    config.printRootConfig();
-    if (signal(SIGPIPE, SIG_IGN) == SIG_ERR) {
-      throw std::runtime_error("fail to install signal");
-    }
-    run(config);
+    installSignals();
+    createServers(config);
+    mainloop();
   } catch (const std::exception &e) {
     Log::error << "error: " << e.what() << NL;
     return 1;
