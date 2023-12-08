@@ -7,6 +7,7 @@
 
 #include <cstring>
 #include <sstream>
+#include <cstdlib>
 
 #include "CgiInProcessor.hpp"
 #include "Log.hpp"
@@ -82,7 +83,7 @@ void CgiEventController::init() {
 
     execve(program, argvList.data(), envpList.data());
     perror("execve");
-    _exit(1);
+    std::exit(1);
   }
   close(fd[1]);
   setFd(fd[0]);
