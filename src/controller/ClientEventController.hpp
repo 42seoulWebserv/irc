@@ -47,7 +47,8 @@ class ClientEventController : public EventController, public IClient {
   ClientEventController(int clientSocket);
   ClientEventController(const ClientEventController &src);
   ClientEventController &operator=(const ClientEventController &rhs);
-  void clear(bool forceClose);
+  void clearKeepAlive();
+  void clearForce();
 };
 
 std::ostream &operator<<(std::ostream &o,
