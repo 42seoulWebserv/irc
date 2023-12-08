@@ -7,7 +7,7 @@
 
 CgiOutProcessor::CgiOutProcessor(ICgi& cgi, IClient& client)
     : cgi_(cgi), client_(client) {
-  client_.print(Log::info, "  CgiOutProcessor");
+  cgi_.print(Log::info, "  CgiOutProcessor");
 }
 
 ProcessResult CgiOutProcessor::process() {
