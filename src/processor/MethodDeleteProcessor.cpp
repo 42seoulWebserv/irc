@@ -43,5 +43,6 @@ ProcessResult MethodDeleteProcessor::process() {
   client_.setResponseStatusCode(200);
   client_.setResponseHeader("Content-Length", "0");
   client_.getResponseStream().push(client_.getResponse().toString());
+  client_.getResponseStream().markEOF();
   return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }
