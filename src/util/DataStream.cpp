@@ -19,7 +19,7 @@ DataStream::Chunk::Chunk(int seq, int size)
 
 DataStream::Chunk::~Chunk() { delete[] buffer_; }
 
-int DataStream::readStr(const std::string &str) {
+int DataStream::push(const std::string &str) {
   if (str.size() == 0) {
     return 0;
   }
@@ -30,7 +30,7 @@ int DataStream::readStr(const std::string &str) {
   return str.size();
 }
 
-int DataStream::readFile(int fd) {
+int DataStream::push(int fd) {
   if (isEOF_) {
     return 0;
   }
@@ -50,7 +50,7 @@ int DataStream::readFile(int fd) {
   return size;
 }
 
-int DataStream::readFile(std::ifstream &file) {
+int DataStream::push(std::ifstream &file) {
   if (isEOF_) {
     return 0;
   }
@@ -71,7 +71,7 @@ int DataStream::readFile(std::ifstream &file) {
   return size;
 }
 
-int DataStream::writeToClient(int fd) {
+int DataStream::popToClient(int fd) {
   if (list_.size() == 0) {
     return 0;
   }
@@ -90,7 +90,7 @@ int DataStream::writeToClient(int fd) {
   return size;
 }
 
-int DataStream::writeToFile(std::ofstream &file) {
+int DataStream::popToFile(std::ofstream &file) {
   if (list_.size() == 0) {
     return 0;
   }
@@ -118,7 +118,7 @@ int DataStream::getTotalWrite() const { return totalWrite_; }
 
 bool DataStream::isEOF() const { return list_.size() == 0 && isEOF_; }
 
-void DataStream::setEof(bool eof) { isEOF_ = eof; }
+void DataStream::markEOF() { isEOF_ = true; }
 
 void DataStream::writeTo(DataStream &data) {
   while (list_.size() > 0) {

@@ -25,9 +25,9 @@ ProcessResult CgiProcessor::process() {
     std::stringstream ss;
     ss << client_.getBody().size();
     client_.setResponseHeader("Content-Length", ss.str());
-    client_.getDataStream().readStr(client_.getResponse().toString());
-    client_.getDataStream().readStr(client_.getBody());
-    client_.getDataStream().setEof(true);
+    client_.getResponseStream().push(client_.getResponse().toString());
+    client_.getResponseStream().push(client_.getBody());
+    client_.getResponseStream().markEOF();
 
     return ProcessResult().setNextProcessor(new WaitProcessor());
   }

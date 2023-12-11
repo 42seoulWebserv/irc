@@ -17,8 +17,8 @@ ProcessResult CgiInProcessor::process() {
   if (isPushStr_ == false) {
     isPushStr_ = true;
     const char* request = client_.getRequest().getBody().c_str();
-    cgi_.getWriteBuffer().readStr(request);
-    cgi_.getWriteBuffer().setEof(true);
+    cgi_.getWriteBuffer().push(request);
+    cgi_.getWriteBuffer().markEOF();
   }
   if (cgi_.getWriteBuffer().isEOF() == true) {
     return ProcessResult().setNextProcessor(new CgiOutProcessor(cgi_, client_));

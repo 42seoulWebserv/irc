@@ -6,4 +6,4 @@ Log::Log(std::ostream &os, const char *color, int level)
 Log Log::debug(std::cout, LOG_WHITE, LOG_DEBUG);
 Log Log::info(std::cout, LOG_GREEN, LOG_INFO);
 Log Log::warn(std::cout, LOG_YELLOW, LOG_WARN);
-Log Log::error(std::cout, LOG_RED, LOG_ERROR);
+Log Log::error(std::cerr, LOG_RED, LOG_ERROR);

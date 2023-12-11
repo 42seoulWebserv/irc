@@ -10,7 +10,6 @@
 class ICgi {
  public:
   virtual ~ICgi(){};
-
   virtual int getFd() = 0;
   virtual StringBuffer &getRecvBuffer() = 0;
   virtual DataStream &getWriteBuffer() = 0;

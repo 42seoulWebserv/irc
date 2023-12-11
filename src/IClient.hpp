@@ -23,7 +23,7 @@ class IClient {
                                  const std::string &value) = 0;
   virtual void setBody(const std::string &body) = 0;
   virtual std::string &getBody() = 0;
-  virtual DataStream &getDataStream() = 0;
+  virtual DataStream &getResponseStream() = 0;
   virtual StringBuffer &getRecvBuffer() = 0;
   virtual FilePath getRequestResourcePath() = 0;
   virtual const LocationConfig *getLocationConfig() = 0;

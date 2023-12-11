@@ -13,15 +13,15 @@ class DataStream {
  public:
   DataStream();
   ~DataStream();
-  int readStr(const std::string &str);
-  int readFile(int fd);
-  int readFile(std::ifstream &file);
-  int writeToClient(int fd);
-  int writeToFile(std::ofstream &file);
+  int push(int fd);
+  int push(std::ifstream &file);
+  int push(const std::string &str);
+  int popToClient(int fd);
+  int popToFile(std::ofstream &file);
   int getTotalRead() const;
   int getTotalWrite() const;
   bool isEOF() const;
-  void setEof(bool eof);
+  void markEOF();
   void writeTo(DataStream &data);
 
  private:

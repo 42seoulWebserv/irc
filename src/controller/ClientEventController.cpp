@@ -56,9 +56,11 @@ void ClientEventController::setBody(const std::string &body) { body_ = body; }
 
 std::string &ClientEventController::getBody() { return body_; }
 
-DataStream &ClientEventController::getDataStream() { return stream_; }
+DataStream &ClientEventController::getResponseStream() {
+  return responseStream_;
+}
 
-StringBuffer &ClientEventController::getRecvBuffer() { return buffer_; }
+StringBuffer &ClientEventController::getRecvBuffer() { return recvBuffer_; }
 
 FilePath ClientEventController::getRequestResourcePath() {
   const LocationConfig *config = getLocationConfig();
@@ -158,61 +160,63 @@ void ClientEventController::init() {
 
 void ClientEventController::handleEvent(const Multiplexer::Event &event) {
   if (event.filter == WEB_READ) {
-    std::vector<char> recvBuffer;
-    recvBuffer.resize(MAX_BUFFER_SIZE);
-    int size = recv(fd_, recvBuffer.data(), MAX_BUFFER_SIZE, 0);
+    std::vector<char> buffer;
+    buffer.resize(MAX_BUFFER_SIZE);
+    int size = recv(fd_, buffer.data(), MAX_BUFFER_SIZE, 0);
     if (size == -1) {
       print(Log::info, "read error");
-      clear(true);
+      clearForce();
       return;
     }
     if (size == 0) {
-      clear(true);
+      clearForce();
       return;
     }
-    recvBuffer.resize(size);
-    buffer_.addBuffer(recvBuffer);
+    buffer.resize(size);
+    recvBuffer_.addBuffer(buffer);
   }
   if (event.filter == WEB_WRITE) {
-    int size = stream_.writeToClient(fd_);
+    int size = responseStream_.popToClient(fd_);
     if (size == -1) {
-      clear(true);
+      clearForce();
       return;
     }
-    if (stream_.isEOF()) {
-      clear(false);
+    if (responseStream_.isEOF()) {
+      clearKeepAlive();
       return;
     }
   }
   if (event.filter == WEB_TIMEOUT) {
     print(Log::info, "timeout");
-    clear(true);
-
+    clearForce();
     return;
   }
   if (loopProcess()) {
-    clear(true);
+    clearForce();
     return;
   }
 }
 
-void ClientEventController::clear(bool forceClose) {
-  Multiplexer::getInstance().addDeleteController(this);
-  if (response_.hasHeader("Connection") &&
-      response_.getHeader("Connection") == "keep-alive" &&
-      forceClose == false) {
-    ClientEventController *client =
-        ClientEventController::addEventController(fd_, serverConfigs_);
-    if (client == NULL) {
-      print(Log::info, "close socket");
-      close(fd_);
-      return;
-    }
-    client->getRecvBuffer().addBuffer(getRecvBuffer().getBuffer());
-  } else {
-    print(Log::info, "close socket");
-    close(fd_);
+void ClientEventController::clearKeepAlive() {
+  if (response_.hasHeader("Connection") == false ||
+      response_.getHeader("Connection") != "keep-alive") {
+    clearForce();
+    return;
   }
+  Multiplexer::getInstance().addDeleteController(this);
+  ClientEventController *client =
+      ClientEventController::addEventController(fd_, serverConfigs_);
+  if (client == NULL) {
+    clearForce();
+    return;
+  }
+  client->getRecvBuffer().addBuffer(getRecvBuffer().getBuffer());
+}
+
+void ClientEventController::clearForce() {
+  Multiplexer::getInstance().addDeleteController(this);
+  close(fd_);
+  print(Log::info, "close socket");
 }
 
 std::ostream &operator<<(std::ostream &o,

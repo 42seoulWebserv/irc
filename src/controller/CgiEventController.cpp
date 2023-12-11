@@ -135,7 +135,7 @@ void CgiEventController::handleEvent(const Multiplexer::Event& event) {
     recvBuffer_.addBuffer(buff);
   }
   if (event.filter == WEB_WRITE) {
-    int size = writeBuffer_.writeToClient(fd_);
+    int size = writeBuffer_.popToClient(fd_);
     if (size == -1) {
       clear(true);
       return;

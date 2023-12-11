@@ -10,7 +10,7 @@ MethodDeleteProcessor::MethodDeleteProcessor(IClient &client)
 }
 
 static void deleteFile(FilePath &filepath) {
-  int code = remove(filepath.c_str());
+  int code = std::remove(filepath.c_str());
   if (code != 0) {
     throw std::invalid_argument("file remove error");
   }
@@ -42,6 +42,7 @@ ProcessResult MethodDeleteProcessor::process() {
   deleteFile(filepath);
   client_.setResponseStatusCode(200);
   client_.setResponseHeader("Content-Length", "0");
-  client_.getDataStream().readStr(client_.getResponse().toString());
+  client_.getResponseStream().push(client_.getResponse().toString());
+  client_.getResponseStream().markEOF();
   return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
 }
