@@ -69,7 +69,7 @@ method = os.environ['REQUEST_METHOD']
 if 'CONTENT_LENGTH' not in os.environ:
     sys.exit(1)
 bodyLen = int(os.environ["CONTENT_LENGTH"])
-body = sys.stdin.read(bodyLen)
+body = sys.stdin.buffer.read(bodyLen).decode()
 
 
 if method == 'GET':
