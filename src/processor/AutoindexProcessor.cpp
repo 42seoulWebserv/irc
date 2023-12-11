@@ -50,9 +50,9 @@ ProcessResult AutoindexProcessor::process() {
       ss << "<br>";
     } else {
       ss << std::right << std::setw(70 - fileName.size())
-         << getFileTimeInfo(fileName);
+         << getFileTimeInfo(path + fileName);
       ss << " ";
-      ss << std::right << std::setw(10) << getFileSize(fileName);
+      ss << std::right << std::setw(10) << getFileSize(path + fileName);
       ss << "<br>";
     }
   } while (entry != NULL);
