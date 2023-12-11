@@ -18,9 +18,9 @@ SRC_DIR := src
 BUILD_DIR := build
 
 CXX := c++
-CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -MMD -MP -g3 $(INC_DIR)
+CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -MMD -MP $(INC_DIR)
 ifdef DEBUG
-CXXFLAGS += -fsanitize=address -DLOG_LEVEL=4
+CXXFLAGS += -g3 -fsanitize=address -DLOG_LEVEL=4
 endif
 
 # ===============================================
