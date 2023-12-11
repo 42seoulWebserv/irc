@@ -11,6 +11,7 @@ ServerConfig::ServerConfig(const RootConfig &src)
       limitClientBodySize_(0),
       index_("index.html") {
   this->rootPath_ = src.getRootPath();
+  this->autoindex_ = src.getAutoindex();
   this->limitClientBodySize_ = src.getLimitClientBodySize();
   this->errorPages_ = src.getErrorPages();
 }

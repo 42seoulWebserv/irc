@@ -11,6 +11,7 @@ LocationConfig::LocationConfig(const ServerConfig &src)
       redirectionStatusCode_(0),
       indexPath_("index.html") {
   this->rootPath_ = src.getRootPath();
+  this->autoindex_ = src.getAutoindex();
   this->limitClientBodySize_ = src.getLimitClientBodySize();
   this->errorPages_ = src.getErrorPages();
 }
