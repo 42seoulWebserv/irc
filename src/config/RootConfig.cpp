@@ -5,7 +5,8 @@
 #include "Log.hpp"
 
 RootConfig::RootConfig()
-    : indexPath_("index.html"),
+    : rootPath_("./html"),
+      indexPath_("index.html"),
       clientMaxBodySize_(1 * 1024 * 1024),
       autoindex_(false) {}
 
