@@ -182,7 +182,7 @@ const std::string &LocationConfig::getCgiProgram(const std::string &key) const {
 }
 
 void LocationConfig::addErrorPage(int errorCode, const std::string &page) {
-  errorPages_.insert(std::pair<int, std::string>(errorCode, page));
+  errorPages_[errorCode] = page;
 }
 
 const std::string LocationConfig::getErrorPage(int errorCode) const {
