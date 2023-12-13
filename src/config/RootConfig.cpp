@@ -5,9 +5,9 @@
 #include "Log.hpp"
 
 RootConfig::RootConfig()
-    : clientMaxBodySize_(1 * 1024 * 1024),
-      autoindex_(false),
-      indexPath_("index.html") {}
+    : indexPath_("index.html"),
+      clientMaxBodySize_(1 * 1024 * 1024),
+      autoindex_(false) {}
 
 RootConfig::RootConfig(const RootConfig &src) { *this = src; }
 
@@ -108,10 +108,4 @@ const std::string RootConfig::getErrorPage(int errorCode) const {
 
 const std::map<int, std::string> &RootConfig::getErrorPages() const {
   return errorPages_;
-}
-
-std::string RootConfig::getIndexPath() const { return indexPath_; }
-
-void RootConfig::setIndexPath(const std::string &indexPath) {
-  indexPath_ = indexPath;
 }
