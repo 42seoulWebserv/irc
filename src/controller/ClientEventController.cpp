@@ -137,7 +137,9 @@ const LocationConfig *ClientEventController::getLocationConfig() {
   if (config_ == NULL) {
     ServerConfig *serverConfig = selectServerConfig(request_, serverConfigs_);
     if (serverConfig == NULL) {
-      response_.setStatusCode(400);
+      if (response_.getStatusCode() == 100) {
+        response_.setStatusCode(400);
+      }
       return NULL;
     }
     config_ = selectLocationConfig(serverConfig->getLocationConfigs(),
