@@ -80,6 +80,8 @@ bool LocationConfig::getAutoindex() const { return autoindex_; }
 void LocationConfig::setAutoindex(const std::string &autoindex) {
   if (autoindex == "on") {
     autoindex_ = true;
+  } else {
+    autoindex_ = false;
   }
 }
 
