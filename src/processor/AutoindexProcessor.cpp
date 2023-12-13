@@ -16,6 +16,7 @@ AutoindexProcessor::AutoindexProcessor(IClient& client) : client_(client) {
 
 ProcessResult AutoindexProcessor::process() {
   FilePath uri = client_.getRequest().getUri();
+  uri = uri.toDirectoryPath();
   FilePath path = client_.getRequestResourcePath().toDirectoryPath();
   client_.print(Log::debug, "uri: " + uri);
   client_.print(Log::debug, "path: " + path);
@@ -45,7 +46,7 @@ ProcessResult AutoindexProcessor::process() {
     if (entry->d_type == DT_DIR) {
       fileName = fileName.toDirectoryPath();
     }
-    ss << "<a href=\"" << fileName << "\">" << fileName << "</a>";
+    ss << "<a href=\"" << uri + fileName << "\">" << fileName << "</a>";
     if (fileName == "../") {
       ss << "<br>";
     } else {
