@@ -6,10 +6,8 @@
 #include "RootConfig.hpp"
 
 ServerConfig::ServerConfig(const RootConfig &src)
-    : autoindex_(false),
-      port_(80),
-      limitClientBodySize_(0),
-      index_("index.html") {
+    : autoindex_(false), port_(80), limitClientBodySize_(0) {
+  this->indexPath_ = src.getIndexPath();
   this->rootPath_ = src.getRootPath();
   this->autoindex_ = src.getAutoindex();
   this->limitClientBodySize_ = src.getLimitClientBodySize();
@@ -27,7 +25,7 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &rhs) {
   this->limitClientBodySize_ = rhs.limitClientBodySize_;
   this->rootPath_ = rhs.rootPath_;
   this->serverName_ = rhs.serverName_;
-  this->index_ = rhs.index_;
+  this->indexPath_ = rhs.indexPath_;
   this->errorPages_ = rhs.errorPages_;
   this->locationConfigs_ = rhs.locationConfigs_;
   this->errorPages_ = rhs.errorPages_;
@@ -43,7 +41,7 @@ void ServerConfig::printServerConfig(void) {
   Log::debug << "  client_max_body_size: " << this->limitClientBodySize_ << NL;
   Log::debug << "  listen: " << this->port_ << NL;
   Log::debug << "  autoindex: " << std::boolalpha << this->autoindex_ << NL;
-  Log::debug << "  index: " << this->index_ << NL;
+  Log::debug << "  index: " << this->indexPath_ << NL;
   std::map<int, std::string>::const_iterator errorPage;
   for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
        errorPage++) {
@@ -96,9 +94,11 @@ void ServerConfig::setServerName(const std::string &serverName) {
   serverName_ = serverName;
 }
 
-std::string ServerConfig::getIndex() const { return index_; }
+std::string ServerConfig::getIndexPath() const { return indexPath_; }
 
-void ServerConfig::setIndex(const std::string &index) { index_ = index; }
+void ServerConfig::setIndexPath(const std::string &indexPath) {
+  indexPath_ = indexPath;
+}
 
 void ServerConfig::setErrorPages(const std::map<int, std::string> &errorPages) {
   errorPages_ = errorPages;

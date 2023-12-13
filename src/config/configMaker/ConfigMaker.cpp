@@ -83,7 +83,7 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
     } else if (element->getKey() == "client_max_body_size") {
       res.setLimitClientBodySize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "index") {
-      res.setIndex(element->getElementAtIndexValues(0));
+      res.setIndexPath(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "error_page") {
       std::vector<std::string> values = element->getValues();
       std::vector<std::string>::const_iterator it;
@@ -110,6 +110,8 @@ RootConfig ConfigMaker::makeConfig(Directive directive) {
       res.setLimitClientBodySize(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "autoindex") {
       res.setAutoindex(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "index") {
+      res.setIndexPath(element->getElementAtIndexValues(0));
     } else if (element->getKey() == "server") {
       ServerConfig serverConf(res);
       res.addServerConfigs(makeSingleServerConfig(serverConf, *element));

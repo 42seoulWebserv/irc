@@ -30,6 +30,8 @@ class RootConfig {
   void addErrorPage(int errorCode, const std::string &page);
   const std::string getErrorPage(int errorCode) const;
   const std::map<int, std::string> &getErrorPages() const;
+  std::string getIndexPath() const;
+  void setIndexPath(const std::string &indexPath);
 
  private:
   std::string rootPath_;
@@ -37,6 +39,7 @@ class RootConfig {
   bool autoindex_;
   std::vector<ServerConfig> serverConfigs_;
   std::map<int, std::string> errorPages_;
+  std::string indexPath_;
 };
 
 #endif

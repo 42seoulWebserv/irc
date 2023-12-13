@@ -6,10 +6,8 @@
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
-    : limitClientBodySize_(0),
-      autoindex_(false),
-      redirectionStatusCode_(0),
-      indexPath_("index.html") {
+    : limitClientBodySize_(0), autoindex_(false), redirectionStatusCode_(0) {
+  this->indexPath_ = src.getIndexPath();
   this->rootPath_ = src.getRootPath();
   this->autoindex_ = src.getAutoindex();
   this->limitClientBodySize_ = src.getLimitClientBodySize();
