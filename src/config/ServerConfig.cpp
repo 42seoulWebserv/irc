@@ -8,8 +8,8 @@
 ServerConfig::ServerConfig(const RootConfig &src)
     : rootPath_(src.getRootPath()),
       port_(80),
-      redirectionStatusCode_(0),
       indexPath_(src.getIndexPath()),
+      redirectionStatusCode_(0),
       clientMaxBodySize_(src.getClientMaxBodySize()),
       errorPages_(src.getErrorPages()),
       autoindex_(src.getAutoindex()) {}
