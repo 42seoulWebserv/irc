@@ -7,7 +7,8 @@
 
 LocationConfig::LocationConfig(const ServerConfig &src)
     : rootPath_(src.getRootPath()),
-      redirectionStatusCode_(0),
+      redirectionStatusCode_(src.getRedirectionStatusCode()),
+      redirectionPath_(src.getRedirectionPath()),
       indexPath_(src.getIndexPath()),
       clientMaxBodySize_(src.getClientMaxBodySize()),
       errorPages_(src.getErrorPages()),
