@@ -6,11 +6,13 @@
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
-    : limitClientBodySize_(0), autoindex_(false), redirectionStatusCode_(0) {
-  this->indexPath_ = src.getIndexPath();
+    : clientMaxBodySize_(0),
+      autoindex_(false),
+      redirectionStatusCode_(0),
+      indexPath_(src.getIndexPath()) {
   this->rootPath_ = src.getRootPath();
   this->autoindex_ = src.getAutoindex();
-  this->limitClientBodySize_ = src.getLimitClientBodySize();
+  this->clientMaxBodySize_ = src.getClientMaxBodySize();
   this->errorPages_ = src.getErrorPages();
 }
 
@@ -20,7 +22,7 @@ LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
   if (this == &rhs) {
     return *this;
   }
-  this->limitClientBodySize_ = rhs.limitClientBodySize_;
+  this->clientMaxBodySize_ = rhs.clientMaxBodySize_;
   this->autoindex_ = rhs.autoindex_;
   this->redirectionStatusCode_ = rhs.redirectionStatusCode_;
   this->uri_ = rhs.uri_;
@@ -38,7 +40,7 @@ LocationConfig::~LocationConfig(void) {}
 void LocationConfig::printLocationConfig(void) {
   Log::debug << "  location " << uri_ << " {" << NL;
   Log::debug << "    root: " << rootPath_ << NL;
-  Log::debug << "    client_max_body_size: " << limitClientBodySize_ << NL;
+  Log::debug << "    client_max_body_size: " << clientMaxBodySize_ << NL;
   Log::debug << "    return " << redirectionStatusCode_ << ' '
              << redirectionPath_ << NL;
   Log::debug << "    index: " << indexPath_ << NL;
@@ -67,16 +69,14 @@ void LocationConfig::printLocationConfig(void) {
   Log::debug << "  }" << NL;
 }
 
-int LocationConfig::getLimitClientBodySize() const {
-  return limitClientBodySize_;
-}
+int LocationConfig::getClientMaxBodySize() const { return clientMaxBodySize_; }
 
-void LocationConfig::setLimitClientBodySize(
+void LocationConfig::setClientMaxBodySize(
     const std::string &limitClientBodySize) {
   std::stringstream ss;
   ss << limitClientBodySize;
-  ss >> limitClientBodySize_;
-  limitClientBodySize_ = limitClientBodySize_ * 1024 * 1024;
+  ss >> clientMaxBodySize_;
+  clientMaxBodySize_ = clientMaxBodySize_ * 1024 * 1024;
 }
 
 bool LocationConfig::getAutoindex() const { return autoindex_; }
