@@ -99,8 +99,8 @@ static void checkServerClientMaxBodySize(std::string str) {
 static void checkErrorPageDirective(const std::vector<std::string> &values) {
   for (size_t i = 0; i < values.size() - 1; i++) {
     int statusCode = strToInt(values[i]);
-    if (statusCode < 100 || statusCode > 600) {
-      throw std::invalid_argument("status code is out of range");
+    if (Response::getStatusMsg(statusCode) == "") {
+      throw std::invalid_argument("error_page status code is out of range");
     }
   }
   if (values.size()) {
@@ -114,7 +114,7 @@ static void checkErrorPageDirective(const std::vector<std::string> &values) {
 static void checkReturnStatusCode(std::string str) {
   int statusCode = strToInt(str);
   if (Response::getStatusMsg(statusCode) == "") {
-    throw std::invalid_argument("status code is out of range");
+    throw std::invalid_argument("return status code is out of range");
   }
   return;
 }
