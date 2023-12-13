@@ -5,9 +5,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <cstdlib>
 #include <cstring>
 #include <sstream>
-#include <cstdlib>
 
 #include "CgiInProcessor.hpp"
 #include "Log.hpp"
@@ -57,14 +57,19 @@ void CgiEventController::init() {
     dup2(fd[1], STDOUT_FILENO);
     close(fd[1]);
 
-    std::string root = cgiPath(client_);
+    FilePath scriptPath = client_.getRequestResourcePath();
+    if (chdir(scriptPath.substr(0, scriptPath.rfind('/')).c_str()) == -1) {
+      perror("chdir");
+      std::exit(1);
+    }
 
+    FilePath root = cgiPath(client_);
     char* program = new char[root.size() + 1];
     std::strcpy(program, root.c_str());
 
     std::vector<char*> argvList;
     argvList.push_back(program);
-    argvList.push_back(strdup(client_.getRequestResourcePath().c_str()));
+    argvList.push_back(strdup(scriptPath.c_str()));
     argvList.push_back(NULL);
 
     const Request& req = client_.getRequest();
