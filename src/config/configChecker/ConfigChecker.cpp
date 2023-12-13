@@ -40,7 +40,7 @@ static bool hasHttpDirective(Directive directive) {
 // checkServer -> listen
 
 static void checkValidPort(int port) {
-  if (port < 0 || port > 65536) {
+  if (port < 2 || port > 65536) {
     throw std::invalid_argument("port number is out of range");
   }
   return;
