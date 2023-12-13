@@ -47,16 +47,16 @@ class LocationConfig {
   const std::map<int, std::string> &getErrorPages() const;
 
  private:
-  long long clientMaxBodySize_;
-  bool autoindex_;
-  int redirectionStatusCode_;
   std::string uri_;
   std::string rootPath_;
-  std::string indexPath_;
+  int redirectionStatusCode_;
   std::string redirectionPath_;
+  std::string indexPath_;
+  long long clientMaxBodySize_;
+  std::map<int, std::string> errorPages_;
+  bool autoindex_;
   std::vector<std::string> acceptMethods_;
   std::map<std::string, std::string> cgiPrograms_;
-  std::map<int, std::string> errorPages_;
 };
 
 #endif

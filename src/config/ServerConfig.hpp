@@ -39,15 +39,21 @@ class ServerConfig {
   void addErrorPage(int errorCode, const std::string &page);
   const std::string getErrorPage(int errorCode) const;
   const std::map<int, std::string> &getErrorPages() const;
+  int getRedirectionStatusCode() const;
+  void setRedirectionStatusCode(int statusCode);
+  const std::string &getRedirectionPath() const;
+  void setRedirectionPath(const std::string &path);
 
  private:
-  bool autoindex_;
-  int port_;
-  long long clientMaxBodySize_;
   std::string rootPath_;
+  int port_;
   std::string serverName_;
   std::string indexPath_;
+  int redirectionStatusCode_;
+  std::string redirectionPath_;
+  long long clientMaxBodySize_;
   std::map<int, std::string> errorPages_;
+  bool autoindex_;
   std::vector<LocationConfig> locationConfigs_;
 };
 

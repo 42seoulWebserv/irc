@@ -6,15 +6,12 @@
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
-    : clientMaxBodySize_(0),
-      autoindex_(false),
+    : rootPath_(src.getRootPath()),
       redirectionStatusCode_(0),
-      indexPath_(src.getIndexPath()) {
-  this->rootPath_ = src.getRootPath();
-  this->autoindex_ = src.getAutoindex();
-  this->clientMaxBodySize_ = src.getClientMaxBodySize();
-  this->errorPages_ = src.getErrorPages();
-}
+      indexPath_(src.getIndexPath()),
+      clientMaxBodySize_(src.getClientMaxBodySize()),
+      errorPages_(src.getErrorPages()),
+      autoindex_(src.getAutoindex()) {}
 
 LocationConfig::LocationConfig(const LocationConfig &src) { *this = src; }
 
@@ -22,16 +19,16 @@ LocationConfig &LocationConfig::operator=(const LocationConfig &rhs) {
   if (this == &rhs) {
     return *this;
   }
-  this->clientMaxBodySize_ = rhs.clientMaxBodySize_;
-  this->autoindex_ = rhs.autoindex_;
-  this->redirectionStatusCode_ = rhs.redirectionStatusCode_;
-  this->uri_ = rhs.uri_;
-  this->rootPath_ = rhs.rootPath_;
-  this->indexPath_ = rhs.indexPath_;
-  this->redirectionPath_ = rhs.redirectionPath_;
-  this->acceptMethods_ = rhs.acceptMethods_;
-  this->cgiPrograms_ = rhs.cgiPrograms_;
-  this->errorPages_ = rhs.errorPages_;
+  uri_ = rhs.uri_;
+  rootPath_ = rhs.rootPath_;
+  redirectionStatusCode_ = rhs.redirectionStatusCode_;
+  redirectionPath_ = rhs.redirectionPath_;
+  indexPath_ = rhs.indexPath_;
+  clientMaxBodySize_ = rhs.clientMaxBodySize_;
+  errorPages_ = rhs.errorPages_;
+  autoindex_ = rhs.autoindex_;
+  acceptMethods_ = rhs.acceptMethods_;
+  cgiPrograms_ = rhs.cgiPrograms_;
   return *this;
 }
 
@@ -40,10 +37,18 @@ LocationConfig::~LocationConfig(void) {}
 void LocationConfig::printLocationConfig(void) {
   Log::debug << "  location " << uri_ << " {" << NL;
   Log::debug << "    root: " << rootPath_ << NL;
-  Log::debug << "    client_max_body_size: " << clientMaxBodySize_ << NL;
-  Log::debug << "    return " << redirectionStatusCode_ << ' '
+  Log::debug << "    return: " << redirectionStatusCode_ << ' '
              << redirectionPath_ << NL;
   Log::debug << "    index: " << indexPath_ << NL;
+  Log::debug << "    client_max_body_size: " << clientMaxBodySize_ << NL;
+  std::map<int, std::string>::const_iterator errorPage;
+  for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
+       errorPage++) {
+    std::stringstream ss;
+    ss << errorPage->first;
+    Log::debug << "    error_page: " << ss.str() << " " << errorPage->second
+               << NL;
+  }
   Log::debug << "    autoindex: " << std::boolalpha << autoindex_ << NL;
   Log::debug << "    accept_methods ";
   std::vector<std::string>::iterator method;
@@ -53,17 +58,8 @@ void LocationConfig::printLocationConfig(void) {
   }
   Log::debug << NL;
   std::map<std::string, std::string>::iterator cgi;
-  for (cgi = this->cgiPrograms_.begin(); cgi != this->cgiPrograms_.end();
-       cgi++) {
+  for (cgi = cgiPrograms_.begin(); cgi != cgiPrograms_.end(); cgi++) {
     Log::debug << "    cgi_extension " << cgi->first << ' ' << cgi->second
-               << NL;
-  }
-  std::map<int, std::string>::const_iterator errorPage;
-  for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
-       errorPage++) {
-    std::stringstream ss;
-    ss << errorPage->first;
-    Log::debug << "    error_page: " << ss.str() << " " << errorPage->second
                << NL;
   }
   Log::debug << "  }" << NL;
