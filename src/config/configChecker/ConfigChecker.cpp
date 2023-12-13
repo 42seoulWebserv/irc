@@ -177,9 +177,14 @@ static void checkServerDirective(Directive server) {
   std::set<std::string> serverNames;
   std::vector<Directive>::iterator element;
   bool isServerNameExist = false;
+  bool isListenExist = false;
   for (element = server.beginChildren(); element != server.endChildren();
        element++) {
     if (element->getKey() == "listen") {
+      if (isListenExist) {
+        throw std::invalid_argument("listen already exist");
+      }
+      isListenExist = true;
       checkValidPort(strToInt(element->getElementAtIndexValues(0)));
     } else if (element->getKey() == "location") {
       checkServerLocationDuplicate(element->getElementAtIndexValues(0),
