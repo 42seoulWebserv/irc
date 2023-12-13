@@ -204,6 +204,8 @@ static void checkServerDirective(Directive server) {
       checkErrorPageDirective(element->getValues());
     } else if (element->getKey() == "autoindex") {
       checkAutoindex(element->getElementAtIndexValues(0));
+    } else if (element->getKey() == "index") {
+      checkValidIndex(element->getElementAtIndexValues(0));
     } else {
       throw std::invalid_argument("invalid server directive");
     }
@@ -224,6 +226,8 @@ static void checkDirectiveChildren(Directive directive) {
       checkErrorPageDirective(it->getValues());
     } else if (it->getKey() == "autoindex") {
       checkAutoindex(it->getElementAtIndexValues(0));
+    } else if (it->getKey() == "index") {
+      checkValidIndex(it->getElementAtIndexValues(0));
     } else {
       throw std::invalid_argument('"' + it->getKey() + '"' +
                                   " is invalid config directive");

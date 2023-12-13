@@ -5,7 +5,9 @@
 #include "Log.hpp"
 
 RootConfig::RootConfig()
-    : limitClientBodySize_(1 * 1024 * 1024), autoindex_(false) {}
+    : limitClientBodySize_(1 * 1024 * 1024),
+      autoindex_(false),
+      indexPath_("index.html") {}
 
 RootConfig::RootConfig(const RootConfig &src) { *this = src; }
 
@@ -18,6 +20,7 @@ RootConfig &RootConfig::operator=(const RootConfig &rhs) {
   this->autoindex_ = rhs.autoindex_;
   this->serverConfigs_ = rhs.serverConfigs_;
   this->errorPages_ = rhs.errorPages_;
+  this->indexPath_ = rhs.indexPath_;
   return *this;
 }
 
@@ -28,6 +31,7 @@ void RootConfig::printRootConfig() {
   Log::debug << "root: " << this->rootPath_ << NL;
   Log::debug << "client_max_body_size: " << this->limitClientBodySize_ << NL;
   Log::debug << "autoindex: " << std::boolalpha << autoindex_ << NL;
+  Log::debug << "index: " << this->indexPath_ << NL;
   std::map<int, std::string>::const_iterator errorPage;
   for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
        errorPage++) {
@@ -99,4 +103,10 @@ const std::string RootConfig::getErrorPage(int errorCode) const {
 
 const std::map<int, std::string> &RootConfig::getErrorPages() const {
   return errorPages_;
+}
+
+std::string RootConfig::getIndexPath() const { return indexPath_; }
+
+void RootConfig::setIndexPath(const std::string &indexPath) {
+  indexPath_ = indexPath;
 }

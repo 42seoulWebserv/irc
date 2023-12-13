@@ -27,8 +27,8 @@ class ServerConfig {
   void setRootPath(const std::string &rootPath);
   std::string getServerName() const;
   void setServerName(const std::string &serverName);
-  std::string getIndex() const;
-  void setIndex(const std::string &index);
+  std::string getIndexPath() const;
+  void setIndexPath(const std::string &indexPath);
   void setErrorPages(const std::map<int, std::string> &errorPages);
   void addErrorPages(const std::pair<int, std::string> &errorPages);
   const std::vector<LocationConfig> &getLocationConfigs() const;
@@ -46,7 +46,7 @@ class ServerConfig {
   long long limitClientBodySize_;
   std::string rootPath_;
   std::string serverName_;
-  std::string index_;
+  std::string indexPath_;
   std::vector<LocationConfig> locationConfigs_;
   std::map<int, std::string> errorPages_;
 };
