@@ -104,7 +104,7 @@ const Directive ConfigLexer::makeDirective(const std::string raw) {
                    .flatResult())
           .add(PatternSequence("errorPagePattern")
                    .add("errorPage")
-                   .add("words2~")
+                   .add("words2")
                    .add("simpleEnd")
                    .setAlias("key")
                    .flatResult())
