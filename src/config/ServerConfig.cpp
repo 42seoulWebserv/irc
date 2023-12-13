@@ -6,13 +6,13 @@
 #include "RootConfig.hpp"
 
 ServerConfig::ServerConfig(const RootConfig &src)
-    : autoindex_(false), port_(80), limitClientBodySize_(0) {
-  this->indexPath_ = src.getIndexPath();
-  this->rootPath_ = src.getRootPath();
-  this->autoindex_ = src.getAutoindex();
-  this->limitClientBodySize_ = src.getLimitClientBodySize();
-  this->errorPages_ = src.getErrorPages();
-}
+    : rootPath_(src.getRootPath()),
+      port_(80),
+      indexPath_(src.getIndexPath()),
+      redirectionStatusCode_(0),
+      clientMaxBodySize_(src.getClientMaxBodySize()),
+      errorPages_(src.getErrorPages()),
+      autoindex_(src.getAutoindex()) {}
 
 ServerConfig::ServerConfig(const ServerConfig &src) { *this = src; }
 
@@ -20,15 +20,16 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &rhs) {
   if (this == &rhs) {
     return *this;
   }
-  this->autoindex_ = rhs.autoindex_;
-  this->port_ = rhs.port_;
-  this->limitClientBodySize_ = rhs.limitClientBodySize_;
-  this->rootPath_ = rhs.rootPath_;
-  this->serverName_ = rhs.serverName_;
-  this->indexPath_ = rhs.indexPath_;
-  this->errorPages_ = rhs.errorPages_;
-  this->locationConfigs_ = rhs.locationConfigs_;
-  this->errorPages_ = rhs.errorPages_;
+  rootPath_ = rhs.rootPath_;
+  port_ = rhs.port_;
+  serverName_ = rhs.serverName_;
+  redirectionStatusCode_ = rhs.redirectionStatusCode_;
+  redirectionPath_ = rhs.redirectionPath_;
+  indexPath_ = rhs.indexPath_;
+  clientMaxBodySize_ = rhs.clientMaxBodySize_;
+  errorPages_ = rhs.errorPages_;
+  autoindex_ = rhs.autoindex_;
+  locationConfigs_ = rhs.locationConfigs_;
   return *this;
 }
 
@@ -36,12 +37,13 @@ ServerConfig::~ServerConfig(void) {}
 
 void ServerConfig::printServerConfig(void) {
   Log::debug << "server {" << NL;
-  Log::debug << "  root: " << this->rootPath_ << NL;
-  Log::debug << "  server_name: " << this->serverName_ << NL;
-  Log::debug << "  client_max_body_size: " << this->limitClientBodySize_ << NL;
-  Log::debug << "  listen: " << this->port_ << NL;
-  Log::debug << "  autoindex: " << std::boolalpha << this->autoindex_ << NL;
-  Log::debug << "  index: " << this->indexPath_ << NL;
+  Log::debug << "  root: " << rootPath_ << NL;
+  Log::debug << "  listen: " << port_ << NL;
+  Log::debug << "  server_name: " << serverName_ << NL;
+  Log::debug << "  return: " << redirectionStatusCode_ << ' '
+             << redirectionPath_ << NL;
+  Log::debug << "  index: " << indexPath_ << NL;
+  Log::debug << "  client_max_body_size: " << clientMaxBodySize_ << NL;
   std::map<int, std::string>::const_iterator errorPage;
   for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
        errorPage++) {
@@ -50,6 +52,7 @@ void ServerConfig::printServerConfig(void) {
     Log::debug << "  error_page: " << ss.str() << " " << errorPage->second
                << NL;
   }
+  Log::debug << "  autoindex: " << std::boolalpha << autoindex_ << NL;
   std::vector<LocationConfig>::iterator location;
   for (location = locationConfigs_.begin(); location != locationConfigs_.end();
        location++) {
@@ -70,16 +73,14 @@ int ServerConfig::getPort() const { return port_; }
 
 void ServerConfig::setPort(const int &port) { port_ = port; }
 
-int ServerConfig::getLimitClientBodySize() const {
-  return limitClientBodySize_;
-}
+int ServerConfig::getClientMaxBodySize() const { return clientMaxBodySize_; }
 
-void ServerConfig::setLimitClientBodySize(
+void ServerConfig::setClientMaxBodySize(
     const std::string &limitClientBodySize) {
   std::stringstream ss;
   ss << limitClientBodySize;
-  ss >> limitClientBodySize_;
-  limitClientBodySize_ = limitClientBodySize_ * 1024 * 1024;
+  ss >> clientMaxBodySize_;
+  clientMaxBodySize_ = clientMaxBodySize_ * 1024 * 1024;
 }
 
 std::string ServerConfig::getRootPath() const { return rootPath_; }
@@ -144,4 +145,20 @@ const std::string ServerConfig::getErrorPage(int errorCode) const {
 
 const std::map<int, std::string> &ServerConfig::getErrorPages() const {
   return errorPages_;
+}
+
+int ServerConfig::getRedirectionStatusCode() const {
+  return redirectionStatusCode_;
+}
+
+void ServerConfig::setRedirectionStatusCode(int statusCode) {
+  redirectionStatusCode_ = statusCode;
+}
+
+const std::string &ServerConfig::getRedirectionPath() const {
+  return redirectionPath_;
+}
+
+void ServerConfig::setRedirectionPath(const std::string &path) {
+  redirectionPath_ = path;
 }

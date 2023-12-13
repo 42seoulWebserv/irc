@@ -120,8 +120,8 @@ bool ParseRequestHeadProcessor::checkContentLength() {
       client_.setResponseStatusCode(404);
       return false;
     }
-    if (config->getLimitClientBodySize() != 0 &&
-        contentLen > config->getLimitClientBodySize()) {
+    if (config->getClientMaxBodySize() != 0 &&
+        contentLen > config->getClientMaxBodySize()) {
       client_.setResponseStatusCode(413);
       return false;
     }

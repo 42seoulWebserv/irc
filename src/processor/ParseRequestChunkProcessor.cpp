@@ -51,9 +51,9 @@ ProcessResult ParseRequestChunkProcessor::process() {
       client_.setRequest(request_);
       return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
     }
-    if (config->getLimitClientBodySize() != 0 &&
+    if (config->getClientMaxBodySize() != 0 &&
         static_cast<long long>(request_.getBody().size()) >
-            config->getLimitClientBodySize()) {
+            config->getClientMaxBodySize()) {
       client_.setResponseStatusCode(413);
       client_.setRequest(request_);
       return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));

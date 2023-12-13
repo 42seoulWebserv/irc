@@ -20,6 +20,16 @@ std::string Response::getStatusMsg() const {
   return statusMap_[statusCode_];
 }
 
+std::string Response::getStatusMsg(int code) {
+  if (statusMap_.size() == 0) {
+    createStatusMap();
+  }
+  if (statusMap_.find(code) == statusMap_.end()) {
+    return "";
+  }
+  return statusMap_[code];
+}
+
 void Response::setStatusCode(const int statusCode) { statusCode_ = statusCode; }
 
 const std::map<std::string, std::string> &Response::getHeaders() const {
