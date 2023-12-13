@@ -48,6 +48,9 @@ ProcessResult ProvideFileProcessor::process() {
   if (FilePath::getExtension(client_.getRequestResourcePath()) == "jpg") {
     client_.setResponseHeader("Content-Type", "image/jpeg");
   }
+  if (FilePath::getExtension(client_.getRequestResourcePath()) == "mp4") {
+    client_.setResponseHeader("Content-Type", "video/mp4");
+  }
   client_.setResponseHeader("Content-Length", ss.str());
   client_.getResponseStream().push(response.toString());
   if (fileSize_ == 0) {
