@@ -93,6 +93,10 @@ static void checkServerClientMaxBodySize(std::string str) {
       throw std::invalid_argument(errMsg);
     }
   }
+  int clientMaxBodySize = strToInt(str);
+  if (clientMaxBodySize > 1024) {
+    throw std::invalid_argument(errMsg + ": over max size(1024m)");
+  }
   return;
 }
 
