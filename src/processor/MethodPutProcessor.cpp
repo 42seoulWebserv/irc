@@ -5,17 +5,33 @@
 #include "WaitProcessor.hpp"
 
 MethodPutProcessor::MethodPutProcessor(IClient &client)
-    : file_(), client_(client) {
+    : client_(client), path_(), file_(NULL), fileEvent_(), existFile_(false) {
   client_.print(Log::info, " MethodPutProcessor");
 }
 
 MethodPutProcessor::~MethodPutProcessor() {
-  if (file_.is_open()) {
-    file_.close();
+  if (file_ != NULL) {
+    file_->cancel();
   }
 }
 
 ProcessResult MethodPutProcessor::process() {
+  if (fileEvent_.end_) {
+    if (fileEvent_.error_) {
+      client_.setResponseStatusCode(502);
+      return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+    }
+    client_.setResponseStatusCode(existFile_ ? 200 : 201);
+    client_.setResponseHeader("Content-Length", "0");
+    client_.getResponseStream().push(client_.getResponse().toString());
+    client_.getResponseStream().markEOF();
+    return ProcessResult().setNextProcessor(new WaitProcessor());
+  }
+
+  if (file_ != NULL) {
+    return ProcessResult();
+  }
+
   FilePath filepath = client_.getRequestResourcePath();
   // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
@@ -31,21 +47,21 @@ ProcessResult MethodPutProcessor::process() {
     client_.setResponseStatusCode(403);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  bool existFile = filepath.isFile();
-  std::string content = client_.getRequest().getBody();
-  file_.open(filepath.c_str(), std::ios::binary | std::ios::trunc);
-  if (file_.is_open() == false) {
+
+  // 들어온값에 이미 같은 이름의 파일이 존재하는지 체크
+  existFile_ = filepath.isFile();
+  buffer_.push(client_.getRequest().getBody());
+  buffer_.markEOF();
+  file_ = FileEventController::addEventController(filepath, buffer_, O_WRONLY,
+                                                  this);
+  if (file_ == NULL) {
     client_.setResponseStatusCode(502);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  file_ << content;
-  if (file_.fail()) {
-    client_.setResponseStatusCode(502);
-    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
-  }
-  client_.setResponseStatusCode(existFile ? 200 : 201);
-  client_.setResponseHeader("Content-Length", "0");
-  client_.getResponseStream().push(client_.getResponse().toString());
-  client_.getResponseStream().markEOF();
-  return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
+  return ProcessResult().setWriteOn(true);
+}
+
+void MethodPutProcessor::onEvent(const FileEventController::Event &e) {
+  file_ = NULL;
+  fileEvent_ = e;
 }
