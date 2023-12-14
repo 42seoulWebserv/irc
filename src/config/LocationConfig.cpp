@@ -130,7 +130,10 @@ void LocationConfig::setAcceptMethods(
 }
 
 void LocationConfig::addAcceptMethods(const std::string &acceptMethods) {
-  acceptMethods_.push_back(acceptMethods);
+  if (std::find(acceptMethods_.begin(), acceptMethods_.end(), acceptMethods) ==
+      acceptMethods_.end()) {
+    acceptMethods_.push_back(acceptMethods);
+  }
 }
 
 const std::vector<std::string>::iterator LocationConfig::beginAcceptMethods() {
