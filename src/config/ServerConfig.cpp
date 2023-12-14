@@ -105,11 +105,6 @@ void ServerConfig::setErrorPages(const std::map<int, std::string> &errorPages) {
   errorPages_ = errorPages;
 }
 
-void ServerConfig::addErrorPages(
-    const std::pair<int, std::string> &errorPages) {
-  errorPages_.insert(errorPages);
-}
-
 const std::vector<LocationConfig> &ServerConfig::getLocationConfigs() const {
   return locationConfigs_;
 }
