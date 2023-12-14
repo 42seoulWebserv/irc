@@ -24,7 +24,6 @@ static void fillInAcceptMethods(LocationConfig &res,
 static void fillInCgiExtension(LocationConfig &res,
                                std::vector<std::string> values) {
   res.addCgiPrograms(std::make_pair(values[0], values[1]));
-  // res.cgiPrograms_.insert(std::make_pair(values[0], values[1]));
   return;
 }
 

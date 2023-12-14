@@ -28,7 +28,7 @@ ProcessResult ParseRequestHeadProcessor::process() {
       }
     }
     if (readStatus_ == BODY) {
-      printParseHeadResult();  // debug
+      printParseHeadResult();
       client_.setRequest(request_);
       if (isChunk()) {
         return ProcessResult().setNextProcessor(
