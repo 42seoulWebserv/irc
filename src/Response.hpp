@@ -10,6 +10,7 @@ class Response {
   void setVersion(const std::string &version);
   int getStatusCode() const;
   std::string getStatusMsg() const;
+  static std::string getStatusMsg(int code);
   void setStatusCode(const int statusCode);
   const std::map<std::string, std::string> &getHeaders() const;
   void setHeaders(const std::map<std::string, std::string> &headers);

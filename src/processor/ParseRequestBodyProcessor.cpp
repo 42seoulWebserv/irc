@@ -41,7 +41,7 @@ void ParseRequestBodyProcessor::setContentLength() {
     char* end;
     double contentLen = std::strtod(it->second.c_str(), &end);
     if ((end && *end != '\0') || contentLen < 0) {
-      throw std::length_error("wrong Content-Length format");  // debug
+      throw std::length_error("wrong Content-Length format");
     }
     contentLength_ = static_cast<size_t>(contentLen);
   }

@@ -15,8 +15,8 @@ class LocationConfig {
 
   void printLocationConfig(void);
 
-  int getLimitClientBodySize() const;
-  void setLimitClientBodySize(const std::string &limitClientBodySize);
+  int getClientMaxBodySize() const;
+  void setClientMaxBodySize(const std::string &limitClientBodySize);
   bool getAutoindex() const;
   void setAutoindex(const std::string &autoindex);
   int getRedirectionStatusCode() const;
@@ -47,16 +47,16 @@ class LocationConfig {
   const std::map<int, std::string> &getErrorPages() const;
 
  private:
-  long long limitClientBodySize_;
-  bool autoindex_;
-  int redirectionStatusCode_;
   std::string uri_;
   std::string rootPath_;
-  std::string indexPath_;
+  int redirectionStatusCode_;
   std::string redirectionPath_;
+  std::string indexPath_;
+  long long clientMaxBodySize_;
+  std::map<int, std::string> errorPages_;
+  bool autoindex_;
   std::vector<std::string> acceptMethods_;
   std::map<std::string, std::string> cgiPrograms_;
-  std::map<int, std::string> errorPages_;
 };
 
 #endif

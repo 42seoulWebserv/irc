@@ -20,6 +20,7 @@ ProcessResult ParseRequestHeadProcessor::process() {
       if (!startLine_.empty()) {
         parseStartLine();
       }
+      client_.print(Log::info, " request uri: " + request_.getUri());
     }
     if (readStatus_ == HEADER && header_.empty()) {
       header_ = client_.getRecvBuffer().nextSeek("\r\n\r\n");
@@ -28,7 +29,7 @@ ProcessResult ParseRequestHeadProcessor::process() {
       }
     }
     if (readStatus_ == BODY) {
-      printParseHeadResult();  // debug
+      printParseHeadResult();
       client_.setRequest(request_);
       if (isChunk()) {
         return ProcessResult().setNextProcessor(
@@ -120,10 +121,16 @@ bool ParseRequestHeadProcessor::checkContentLength() {
       client_.setResponseStatusCode(404);
       return false;
     }
-    if (config->getLimitClientBodySize() != 0 &&
-        contentLen > config->getLimitClientBodySize()) {
-      client_.setResponseStatusCode(413);
-      return false;
+    if (config->getClientMaxBodySize() == 0) {
+      if (contentLen > 1024 * 1024 * 1024) {
+        client_.setResponseStatusCode(413);
+        return false;
+      }
+    } else {
+      if (contentLen > config->getClientMaxBodySize()) {
+        client_.setResponseStatusCode(413);
+        return false;
+      }
     }
   }
   return true;

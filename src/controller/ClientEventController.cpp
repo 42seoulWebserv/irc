@@ -137,11 +137,19 @@ const LocationConfig *ClientEventController::getLocationConfig() {
   if (config_ == NULL) {
     ServerConfig *serverConfig = selectServerConfig(request_, serverConfigs_);
     if (serverConfig == NULL) {
-      response_.setStatusCode(400);
+      if (response_.getStatusCode() == 100) {
+        response_.setStatusCode(400);
+      }
       return NULL;
     }
     config_ = selectLocationConfig(serverConfig->getLocationConfigs(),
                                    String(request_.getUri()).trim());
+    if (config_ == NULL) {
+      if (response_.getStatusCode() == 100) {
+        response_.setStatusCode(400);
+      }
+      return NULL;
+    }
     Log::debug << fd_ << ":  selected location path: " << config_->getUri()
                << NL;
   }

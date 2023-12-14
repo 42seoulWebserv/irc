@@ -5,7 +5,10 @@
 #include "Log.hpp"
 
 RootConfig::RootConfig()
-    : limitClientBodySize_(1 * 1024 * 1024), autoindex_(false) {}
+    : rootPath_("./html"),
+      indexPath_("index.html"),
+      clientMaxBodySize_(1 * 1024 * 1024),
+      autoindex_(false) {}
 
 RootConfig::RootConfig(const RootConfig &src) { *this = src; }
 
@@ -13,11 +16,12 @@ RootConfig &RootConfig::operator=(const RootConfig &rhs) {
   if (this == &rhs) {
     return *this;
   }
-  this->rootPath_ = rhs.rootPath_;
-  this->limitClientBodySize_ = rhs.limitClientBodySize_;
-  this->autoindex_ = rhs.autoindex_;
-  this->serverConfigs_ = rhs.serverConfigs_;
-  this->errorPages_ = rhs.errorPages_;
+  rootPath_ = rhs.rootPath_;
+  indexPath_ = rhs.indexPath_;
+  clientMaxBodySize_ = rhs.clientMaxBodySize_;
+  errorPages_ = rhs.errorPages_;
+  autoindex_ = rhs.autoindex_;
+  serverConfigs_ = rhs.serverConfigs_;
   return *this;
 }
 
@@ -25,9 +29,9 @@ RootConfig::~RootConfig() {}
 
 void RootConfig::printRootConfig() {
   std::vector<ServerConfig>::iterator server;
-  Log::debug << "root: " << this->rootPath_ << NL;
-  Log::debug << "client_max_body_size: " << this->limitClientBodySize_ << NL;
-  Log::debug << "autoindex: " << std::boolalpha << autoindex_ << NL;
+  Log::debug << "root: " << rootPath_ << NL;
+  Log::debug << "index: " << indexPath_ << NL;
+  Log::debug << "client_max_body_size: " << clientMaxBodySize_ << NL;
   std::map<int, std::string>::const_iterator errorPage;
   for (errorPage = errorPages_.begin(); errorPage != errorPages_.end();
        errorPage++) {
@@ -35,8 +39,9 @@ void RootConfig::printRootConfig() {
     ss << errorPage->first;
     Log::debug << "error_page: " << ss.str() << " " << errorPage->second << NL;
   }
-  for (server = this->serverConfigs_.begin();
-       server != this->serverConfigs_.end(); server++) {
+  Log::debug << "autoindex: " << std::boolalpha << autoindex_ << NL;
+  for (server = serverConfigs_.begin(); server != serverConfigs_.end();
+       server++) {
     server->printServerConfig();
   }
 }
@@ -47,14 +52,19 @@ void RootConfig::setRootPath(const std::string &rootPath) {
   rootPath_ = rootPath;
 }
 
-int RootConfig::getLimitClientBodySize() const { return limitClientBodySize_; }
+std::string RootConfig::getIndexPath() const { return indexPath_; }
 
-void RootConfig::setLimitClientBodySize(
-    const std::string &limitClientBodySize) {
+void RootConfig::setIndexPath(const std::string &indexPath) {
+  indexPath_ = indexPath;
+}
+
+int RootConfig::getClientMaxBodySize() const { return clientMaxBodySize_; }
+
+void RootConfig::setClientMaxBodySize(const std::string &limitClientBodySize) {
   std::stringstream ss;
   ss << limitClientBodySize;
-  ss >> limitClientBodySize_;
-  limitClientBodySize_ = limitClientBodySize_ * 1024 * 1024;
+  ss >> clientMaxBodySize_;
+  clientMaxBodySize_ = clientMaxBodySize_ * 1024 * 1024;
 }
 
 void RootConfig::setAutoindex(const std::string &autoindex) {
@@ -87,7 +97,7 @@ const std::vector<ServerConfig>::iterator RootConfig::endServerConfigs() {
 }
 
 void RootConfig::addErrorPage(int errorCode, const std::string &page) {
-  errorPages_.insert(std::pair<int, std::string>(errorCode, page));
+  errorPages_[errorCode] = page;
 }
 
 const std::string RootConfig::getErrorPage(int errorCode) const {

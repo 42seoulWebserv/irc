@@ -27,9 +27,9 @@ ProcessResult ProvideFileProcessor::process() {
     return processReadFile();
   }
   if (path_.isFile() == false || path_.isAccessible(FilePath::READ) == false) {
+    client_.setResponseStatusCode(404);
     ErrorPageProcessor* errorPage = new ErrorPageProcessor(client_);
     errorPage->forceProvideDefaultPage();
-    client_.setResponseStatusCode(404);
     return ProcessResult().setNextProcessor(errorPage);
   }
   const Response& response = client_.getResponse();
@@ -47,6 +47,9 @@ ProcessResult ProvideFileProcessor::process() {
   ss << path_.getFileSize();
   if (FilePath::getExtension(client_.getRequestResourcePath()) == "jpg") {
     client_.setResponseHeader("Content-Type", "image/jpeg");
+  }
+  if (FilePath::getExtension(client_.getRequestResourcePath()) == "mp4") {
+    client_.setResponseHeader("Content-Type", "video/mp4");
   }
   client_.setResponseHeader("Content-Length", ss.str());
   client_.getResponseStream().push(response.toString());

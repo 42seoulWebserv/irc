@@ -58,3 +58,40 @@ bool type 함수는 `bool isTrue()` 형식 추천
 - if 한 줄이도 무조건 괄호
 - 괄호는 바로 옆에
 ```
+
+### Processor
+
+```mermaid
+flowchart LR
+  StartProcessor --> ParseRequestHeadProcessor
+  ParseRequestHeadProcessor --> ParseRequestChunkProcessor
+  ParseRequestHeadProcessor --> ParseRequestBodyProcessor
+  ParseRequestHeadProcessor --> Error1[ErrorPageProcessor]
+  ParseRequestChunkProcessor --> Error2[ErrorPageProcessor]
+  ParseRequestChunkProcessor --> SelectMethodProcessor
+  ParseRequestBodyProcessor --> SelectMethodProcessor
+  ParseRequestBodyProcessor --> Error3[ErrorPageProcessor]
+  SelectMethodProcessor --> CgiProcessor
+  SelectMethodProcessor --> RedirectionProcessor
+  SelectMethodProcessor --> MethodGetProcessor
+  SelectMethodProcessor --> MethodPostProcessor
+  SelectMethodProcessor --> MethodDeleteProcessor
+  SelectMethodProcessor --> MethodPutProcessor 
+  SelectMethodProcessor --> ErrorPageProcessor
+  CgiProcessor --> Wait1[WaitProcessor]
+  CgiProcessor --> Error4[ErrorPageProcessor]
+  RedirectionProcessor --> Wait2[WaitProcessor]
+  MethodGetProcessor --> AutoindexProcessor
+  MethodGetProcessor --> ProvideFileProcessor
+  MethodGetProcessor --> Error5[ErrorPageProcessor]
+  MethodPostProcessor --> Wait3[WaitProcessor]
+  MethodPostProcessor --> Error6[ErrorPageProcessor]
+  MethodDeleteProcessor --> Wait4[WaitProcessor]
+  MethodDeleteProcessor --> Error7[ErrorPageProcessor]
+  MethodPutProcessor --> Wait5[WaitProcessor]
+  MethodPutProcessor --> Error8[ErrorPageProcessor]
+  AutoindexProcessor --> Wait6[WaitProcessor]
+  AutoindexProcessor --> Error9[ErrorPageProcessor]
+  ProvideFileProcessor --> Wait7[WaitProcessor]
+  ProvideFileProcessor --> Error10[ErrorPageProcessor]
+```
