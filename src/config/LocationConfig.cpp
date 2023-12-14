@@ -6,7 +6,8 @@
 #include "ServerConfig.hpp"
 
 LocationConfig::LocationConfig(const ServerConfig &src)
-    : rootPath_(src.getRootPath()),
+    : uri_("/"),
+      rootPath_(src.getRootPath()),
       redirectionStatusCode_(src.getRedirectionStatusCode()),
       redirectionPath_(src.getRedirectionPath()),
       indexPath_(src.getIndexPath()),

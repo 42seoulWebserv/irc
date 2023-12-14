@@ -67,6 +67,7 @@ LocationConfig &makeLocationConfig(LocationConfig &res, Directive location) {
 
 ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
   std::vector<Directive>::iterator element;
+  int locationCnt = 0;
   for (element = server.beginChildren(); element != server.endChildren();
        element++) {
     if (element->getKey() == "root") {
@@ -95,7 +96,13 @@ ServerConfig &makeSingleServerConfig(ServerConfig &res, Directive server) {
     } else if (element->getKey() == "location") {
       LocationConfig locationConf(res);
       res.addLocationConfigs(makeLocationConfig(locationConf, *element));
+      locationCnt++;
     }
+  }
+  if (locationCnt == 0) {
+    LocationConfig locationConf(res);
+    locationConf.addAcceptMethods("GET");
+    res.addLocationConfigs(locationConf);
   }
   return res;
 }
