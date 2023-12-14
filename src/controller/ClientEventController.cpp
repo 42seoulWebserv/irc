@@ -144,6 +144,12 @@ const LocationConfig *ClientEventController::getLocationConfig() {
     }
     config_ = selectLocationConfig(serverConfig->getLocationConfigs(),
                                    String(request_.getUri()).trim());
+    if (config_ == NULL) {
+      if (response_.getStatusCode() == 100) {
+        response_.setStatusCode(400);
+      }
+      return NULL;
+    }
     Log::debug << fd_ << ":  selected location path: " << config_->getUri()
                << NL;
   }

@@ -223,6 +223,7 @@ static void checkServerDirective(Directive server) {
 
 static void checkDirectiveChildren(Directive directive) {
   std::vector<Directive>::iterator it;
+  int serverCnt = 0;
   for (it = directive.beginChildren(); it != directive.endChildren(); it++) {
     if (it->getKey() == "root") {
       checkRootDirective(*it);
@@ -236,10 +237,14 @@ static void checkDirectiveChildren(Directive directive) {
       checkAutoindex(it->getElementAtIndexValues(0));
     } else if (it->getKey() == "server") {
       checkServerDirective(*it);
+      serverCnt++;
     } else {
       throw std::invalid_argument('"' + it->getKey() + '"' +
                                   " is invalid config directive");
     }
+  }
+  if (serverCnt == 0) {
+    throw std::invalid_argument("no server");
   }
 }
 
