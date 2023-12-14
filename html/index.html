@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <title>irc</title>
   <script>
@@ -10,9 +11,9 @@
         method: "POST",
         credentials: "same-origin",
         body,
-      }).then(function(response) {
+      }).then(function (response) {
         alert(`${response.status} ${response.statusText}`);
-      }).catch(function(error) {
+      }).catch(function (error) {
         alert(error);
       });
     }
@@ -26,9 +27,9 @@
       fetch(`/static/${title}`, {
         method: "DELETE",
         credentials: "same-origin",
-      }).then(function(response) {
+      }).then(function (response) {
         alert(`${response.status} ${response.statusText}`);
-      }).catch(function(error) {
+      }).catch(function (error) {
         alert(error);
       });
     }
@@ -37,9 +38,9 @@
       fetch(`/api/cart.py`, {
         method: "GET",
         credentials: "same-origin",
-      }).then(async function(response) {
+      }).then(async function (response) {
         alert(`${response.status} ${response.statusText}\n${await response.text()}`);
-      }).catch(function(error) {
+      }).catch(function (error) {
         alert(error);
       })
     }
@@ -50,9 +51,9 @@
         method: "POST",
         credentials: "same-origin",
         body,
-      }).then(function(response) {
+      }).then(function (response) {
         alert(`${response.status} ${response.statusText}`);
-      }).catch(function(error) {
+      }).catch(function (error) {
         alert(error);
       })
     }
@@ -63,19 +64,20 @@
         method: "DELETE",
         credentials: "same-origin",
         body,
-      }).then(function(response) {
+      }).then(function (response) {
         alert(`${response.status} ${response.statusText}`);
-      }).catch(function(error) {
+      }).catch(function (error) {
         alert(error);
       })
     }
   </script>
 </head>
+
 <body>
-  <h1>It is not irc</h1>
+  <h1>This is not irc</h1>
   <li><a href="/static/">GET static file</a></li>
   <li><a href="javascript:postText()">POST static text</a></li>
-  <li><a href="javascript:postFile()">POST static file</a><input id="file" hidden type="file"/></li>
+  <li><a href="javascript:postFile()">POST static file</a><input id="file" hidden type="file" /></li>
   <li><a href="javascript:deleteText()">DELETE static file</a></li>
   <li><a href="/redirection/file">Redirect page</a></li>
   <li><a href="javascript:getCgi()">GET CGI</a></li>
@@ -90,11 +92,12 @@
         method: "POST",
         credentials: "same-origin",
         body,
-      }).then(function(response) {
+      }).then(function (response) {
         alert(`${response.status} ${response.statusText}`);
-      }).catch(function(error) {
+      }).catch(function (error) {
         alert(error);
       })
     });
   </script>
+
 </html>
