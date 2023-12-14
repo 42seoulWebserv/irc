@@ -20,6 +20,7 @@ ProcessResult ParseRequestHeadProcessor::process() {
       if (!startLine_.empty()) {
         parseStartLine();
       }
+      client_.print(Log::info, " request uri: " + request_.getUri());
     }
     if (readStatus_ == HEADER && header_.empty()) {
       header_ = client_.getRecvBuffer().nextSeek("\r\n\r\n");
