@@ -5,9 +5,6 @@
 #include "Multiplexer.hpp"
 #include "ProcessResult.hpp"
 
-/* event hadling
-** kqueue가 발생시키는 event를 handle
-*/
 class EventController {
  public:
   EventController(IProcessor *processor);

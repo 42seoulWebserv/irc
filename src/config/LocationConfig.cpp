@@ -164,7 +164,7 @@ void LocationConfig::setCgiPrograms(
 
 void LocationConfig::addCgiPrograms(
     const std::pair<std::string, std::string> &cgiPrograms) {
-  cgiPrograms_.insert(cgiPrograms);
+  cgiPrograms_[cgiPrograms.first] = cgiPrograms.second;
 }
 
 const std::map<std::string, std::string>::iterator

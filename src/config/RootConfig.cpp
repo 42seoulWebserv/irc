@@ -97,7 +97,7 @@ const std::vector<ServerConfig>::iterator RootConfig::endServerConfigs() {
 }
 
 void RootConfig::addErrorPage(int errorCode, const std::string &page) {
-  errorPages_.insert(std::pair<int, std::string>(errorCode, page));
+  errorPages_[errorCode] = page;
 }
 
 const std::string RootConfig::getErrorPage(int errorCode) const {

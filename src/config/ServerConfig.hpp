@@ -30,7 +30,6 @@ class ServerConfig {
   std::string getIndexPath() const;
   void setIndexPath(const std::string &indexPath);
   void setErrorPages(const std::map<int, std::string> &errorPages);
-  void addErrorPages(const std::pair<int, std::string> &errorPages);
   const std::vector<LocationConfig> &getLocationConfigs() const;
   void setLocationConfigs(const std::vector<LocationConfig> &locationConfigs);
   void addLocationConfigs(const LocationConfig &locationConfigs);
