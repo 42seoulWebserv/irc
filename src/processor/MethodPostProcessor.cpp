@@ -5,17 +5,33 @@
 #include "WaitProcessor.hpp"
 
 MethodPostProcessor::MethodPostProcessor(IClient &client)
-    : file_(), client_(client) {
+    : client_(client), path_(), file_(NULL), fileEvent_() {
   client_.print(Log::info, " MethodPostProcessor");
 }
 
 MethodPostProcessor::~MethodPostProcessor() {
-  if (file_.is_open()) {
-    file_.close();
+  if (file_ != NULL) {
+    file_->cancel();
   }
 }
 
 ProcessResult MethodPostProcessor::process() {
+  if (fileEvent_.end_) {
+    if (fileEvent_.error_) {
+      client_.setResponseStatusCode(502);
+      return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+    }
+    client_.setResponseStatusCode(201);
+    client_.setResponseHeader("Content-Length", "0");
+    client_.getResponseStream().push(client_.getResponse().toString());
+    client_.getResponseStream().markEOF();
+    return ProcessResult().setNextProcessor(new WaitProcessor());
+  }
+
+  if (file_ != NULL) {
+    return ProcessResult();
+  }
+
   FilePath filepath = client_.getRequestResourcePath();
   // 들어온값이 directory 형태라면 실패.
   if (filepath.isDirectory()) {
@@ -37,20 +53,18 @@ ProcessResult MethodPostProcessor::process() {
     client_.setResponseStatusCode(409);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  std::string content = client_.getRequest().getBody();
-  file_.open(filepath.c_str(), std::ios::binary | std::ios::trunc);
-  if (file_.is_open() == false) {
+  buffer_.push(client_.getRequest().getBody());
+  buffer_.markEOF();
+  file_ = FileEventController::addEventController(filepath, buffer_, O_WRONLY,
+                                                  this);
+  if (file_ == NULL) {
     client_.setResponseStatusCode(502);
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
-  file_ << content;
-  if (file_.fail()) {
-    client_.setResponseStatusCode(502);
-    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
-  }
-  client_.setResponseStatusCode(201);
-  client_.setResponseHeader("Content-Length", "0");
-  client_.getResponseStream().push(client_.getResponse().toString());
-  client_.getResponseStream().markEOF();
-  return ProcessResult().setWriteOn(true).setNextProcessor(new WaitProcessor());
+  return ProcessResult().setWriteOn(true);
+}
+
+void MethodPostProcessor::onEvent(const FileEventController::Event &e) {
+  file_ = NULL;
+  fileEvent_ = e;
 }

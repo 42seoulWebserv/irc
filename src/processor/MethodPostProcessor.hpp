@@ -1,20 +1,24 @@
 #ifndef MethodPostProcessor_HPP_
 #define MethodPostProcessor_HPP_
 
-#include <fstream>
-
+#include "FileEventController.hpp"
+#include "FilePath.hpp"
 #include "IProcessor.hpp"
 
-class MethodPostProcessor : public IProcessor {
+class MethodPostProcessor : public IProcessor,
+                            public IObserver<FileEventController::Event> {
  public:
   MethodPostProcessor(IClient &client);
   ~MethodPostProcessor();
   ProcessResult process();
-  ProcessResult process(const ProcessResult &prevResult);
+  void onEvent(const FileEventController::Event &e);
 
  private:
-  std::ofstream file_;
   IClient &client_;
+  FilePath path_;
+  DataStream buffer_;
+  FileEventController *file_;
+  FileEventController::Event fileEvent_;
 };
 
 #endif
