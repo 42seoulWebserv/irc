@@ -112,6 +112,25 @@ int DataStream::popToFile(std::ofstream &file) {
   return size;
 }
 
+int DataStream::popToFile(int fd) {
+  if (list_.size() == 0) {
+    return 0;
+  }
+  Chunk *chunk = list_.front();
+  int left = chunk->size_ - chunk->offset_;
+  int size = write(fd, chunk->buffer_ + chunk->offset_, left);
+  if (size <= 0) {
+    return size;
+  }
+  totalWrite_ += size;
+  chunk->offset_ += size;
+  if (chunk->size_ - chunk->offset_ == 0) {
+    list_.pop_front();
+    delete chunk;
+  }
+  return size;
+}
+
 int DataStream::getTotalRead() const { return totalRead_; }
 
 int DataStream::getTotalWrite() const { return totalWrite_; }

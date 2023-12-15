@@ -1,25 +1,23 @@
 #ifndef ProvideFileProcessor_HPP_
 #define ProvideFileProcessor_HPP_
 
-#include <fstream>
-
+#include "FileEventController.hpp"
 #include "FilePath.hpp"
 #include "IProcessor.hpp"
 
-class ProvideFileProcessor : public IProcessor {
+class ProvideFileProcessor : public IProcessor,
+                             public IObserver<FileEventController::Event> {
  public:
   ProvideFileProcessor(IClient &client, const FilePath &path);
   ~ProvideFileProcessor();
   ProcessResult process();
-  ProcessResult processReadFile();
+  void onEvent(const FileEventController::Event &e);
 
  private:
   IClient &client_;
   FilePath path_;
-  int fileSize_;
-  int totalReadSize_;
-  bool processReadFile_;
-  std::ifstream file_;
+  FileEventController *file_;
+  FileEventController::Event fileEvent_;
 };
 
 #endif

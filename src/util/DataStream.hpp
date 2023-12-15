@@ -18,6 +18,7 @@ class DataStream {
   int push(const std::string &str);
   int popToClient(int fd);
   int popToFile(std::ofstream &file);
+  int popToFile(int fd);
   int getTotalRead() const;
   int getTotalWrite() const;
   bool isEOF() const;

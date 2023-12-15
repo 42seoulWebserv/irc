@@ -55,6 +55,7 @@ CONTROLLER_NAME := \
 	EventController.cpp \
 	ServerEventController.cpp \
 	ClientEventController.cpp \
+	FileEventController.cpp \
 	CgiEventController.cpp \
 
 PASER_LEXER_DIR := $(SRC_DIR)/parser/lexer/
