@@ -48,8 +48,17 @@ ProcessResult MethodPutProcessor::process() {
     return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
   }
 
-  // 들어온값에 이미 같은 이름의 파일이 존재하는지 체크
   existFile_ = filepath.isFile();
+  if (existFile_) {
+    if (!filepath.isAccessible(FilePath::READ) ||
+        !filepath.isAccessible(FilePath::WRITE)) {
+      client_.print(Log::debug, " PUT: not accessible to this file");
+      client_.setResponseStatusCode(403);
+      return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+    }
+  }
+
+  // 들어온값에 이미 같은 이름의 파일이 존재하는지 체크
   buffer_.push(client_.getRequest().getBody());
   buffer_.markEOF();
   file_ = FileEventController::addEventController(filepath, buffer_, O_WRONLY,
