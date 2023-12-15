@@ -37,7 +37,11 @@ ProcessResult MethodDeleteProcessor::process() {
   if (!filepath.isFile()) {
     client_.print(Log::debug, " DELETE: non exits file");
     client_.setResponseStatusCode(204);  // 204 No Content
-    return ProcessResult().setNextProcessor(new ErrorPageProcessor(client_));
+    client_.setResponseHeader("Content-Length", "0");
+    client_.getResponseStream().push(client_.getResponse().toString());
+    client_.getResponseStream().markEOF();
+    return ProcessResult().setWriteOn(true).setNextProcessor(
+        new WaitProcessor());
   }
   deleteFile(filepath);
   client_.setResponseStatusCode(200);
