@@ -10,8 +10,6 @@ class MethodGetProcessor : public IProcessor {
   ProcessResult process();
 
  private:
-  void createAutoindex(FilePath filename);
-
   IClient &client_;
 };
 
